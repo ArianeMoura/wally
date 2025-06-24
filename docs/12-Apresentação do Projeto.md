@@ -47,11 +47,12 @@ Apresentamos a seguir os elementos que sustentam a personalidade do Wally:
 <img width="416" alt="image" src="https://github.com/user-attachments/assets/d7ef6c34-4e5c-41d1-b10a-3f0229c49493" />
 </div>
 
-
-
 ## Estrutura e Apresentação do Projeto
 
-[Protótipo Interativo - Wally](https://www.figma.com/proto/MiuZNsY107HDiJqKnMdyIm/Projeto-Wally?page-id=0%3A1&node-id=1-14&viewport=215%2C293%2C0.81&t=uLjzv6SkBrleFN8Z-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=1%3A14).
+[Apresentação do Wally.pdf](https://github.com/user-attachments/files/20883653/Wally.1.pdf)
+
+[Protótipo Interativo](https://www.figma.com/proto/MiuZNsY107HDiJqKnMdyIm/Projeto-Wally?page-id=0%3A1&node-id=1-14&viewport=215%2C293%2C0.81&t=uLjzv6SkBrleFN8Z-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=1%3A14)
+
 
 ## Links Úteis
 
