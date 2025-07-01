@@ -18,19 +18,6 @@ Projetado para simplificar o gerenciamento de **ganhos** e **despesas**, tanto i
 
 Com duas áreas principais, o Wally permite que você tenha **total controle sobre suas finanças pessoais**, registrando e categorizando entradas e saídas em tempo real, acompanhando seu saldo e tomando decisões mais inteligentes. Além disso, a funcionalidade de **gestão de despesas em grupo** facilita a organização de gastos compartilhados, proporcionando mais transparência e praticidade ao dividir contas com amigos, familiares ou colegas. Com o Wally, você não apenas administra seu dinheiro – você assume o controle do seu futuro financeiro! 
 
-## Integrantes
-
-* Alexsander Lima de Andrade Vieira
-* Ariane Silveira Almeida Moura
-* Danielle Gomes dos Santos
-* Estevão Barboza da Gama dos Reis Silva
-* Raphael Rodrigues de Figueiredo Lage
-* Vinicius Simoes dos Santos
-
-## Orientador
-
-* Udo Fritzke Junior
-
 <!--
 ## Instruções de utilização
 
