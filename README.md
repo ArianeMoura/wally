@@ -46,7 +46,3 @@ Assim que a primeira versão do sistema estiver disponível, deverá complementa
 # Código
 
 <li><a href="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/wally/README.md"> Código Fonte</a></li>
-
-# Apresentação
-
-<li><a href="presentation/README.md"> Apresentação da solução</a></li>
