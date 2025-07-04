@@ -1,11 +1,5 @@
 # Wally - A Sua Carteira Inteligente 💲
 
-`Análise e Desenvolvimento de Sistema - PUC Minas`
-
-`Projeto: Desenvolvimento de uma Aplicação Móvel em um Ambiente de Negócio - Turma 02`
-
-`3º Semestre/2025`
-
 <div align="center">
 
 ![image](https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8)
