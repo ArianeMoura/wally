@@ -24,7 +24,7 @@ export class Transacao {
   @Column({ type: 'enum', enum: ['RECEITA', 'DESPESA'] })
   tipo: string
 
-  @ManyToOne(() => Usuario)
+  @ManyToOne(() => Usuario, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'usuario_id' })
   user: Usuario
 

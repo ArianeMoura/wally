@@ -112,6 +112,13 @@ const createGrupoSchema = {
   },
 }
 
+const deleteGrupoSchema = {
+  tags: ['grupos'],
+  summary: 'Deletar grupo',
+  description: 'Deleta um grupo do sistema',
+  security: [{ bearerAuth: [] }],
+}
+
 export async function gruposRoutes(app: FastifyInstance) {
   app.get(
     '/grupos',
@@ -122,5 +129,10 @@ export async function gruposRoutes(app: FastifyInstance) {
     '/grupos',
     { schema: createGrupoSchema, preHandler: authMiddleware },
     gruposController.create,
+  )
+  app.delete(
+    '/grupos/:id',
+    { schema: deleteGrupoSchema, preHandler: authMiddleware },
+    gruposController.delete,
   )
 }

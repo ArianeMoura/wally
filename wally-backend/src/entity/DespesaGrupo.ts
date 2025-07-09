@@ -45,7 +45,7 @@ export class DespesaGrupo {
   @Column({ type: 'boolean', default: false })
   usuario_criador: boolean
 
-  @ManyToOne(() => GrupoMembro)
+  @ManyToOne(() => GrupoMembro, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'grupo_membros_id' })
   grupo_membro: GrupoMembro
 

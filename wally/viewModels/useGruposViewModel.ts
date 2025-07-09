@@ -163,8 +163,20 @@ export function useGruposViewModel({ id }: { id?: string }) {
         }
     }), [criarDespesa])
 
-    const handleDeleteGrupo = useCallback((id: string) => {
+    const handleDeleteGrupo = useCallback(async (id: string) => {
+        const response = await fetch(`${API_URL}/grupos/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        })
 
+        if (!response.ok) {
+            console.log(response)
+            throw new Error('Erro ao deletar grupo')
+        }
+
+        await refetchGrupos()
     }, [])
 
     return {

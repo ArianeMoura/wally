@@ -18,7 +18,7 @@ export class PagamentoDespesa {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   valor: number
 
-  @ManyToOne(() => DespesaGrupo)
+  @ManyToOne(() => DespesaGrupo, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'despesa_id' })
   despesa: DespesaGrupo
 

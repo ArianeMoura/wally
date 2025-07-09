@@ -16,4 +16,9 @@ export class GruposRepositorio {
   async findById(id: string): Promise<Grupo | null> {
     return this.repositorio.findOne({ where: { id } })
   }
+
+  async delete(id: string): Promise<void> {
+    console.log({ id })
+    await this.repositorio.delete(id)
+  }
 }

@@ -3,6 +3,7 @@ import { GruposRepositorio } from '../repositorios/GruposRepositorio'
 import { GrupoMembrosRepositorio } from '../repositorios/GrupoMembrosRepositorio'
 import { CreateGrupoUseCase } from '../use-cases/grupos/CreateGrupoUseCase'
 import { GetGruposByUsuarioIdUseCase } from '../use-cases/grupos/GetGruposByUsuarioIdUseCase'
+import { DeleteGrupoUseCase } from 'use-cases/grupos/DeleteGrupoUseCase'
 
 const gruposRepositorio = new GruposRepositorio()
 const grupoMembrosRepositorio = new GrupoMembrosRepositorio()
@@ -63,6 +64,24 @@ export class GruposController {
       return reply
         .status(500)
         .send({ message: 'Erro ao buscar grupos', error: error.message })
+    }
+  }
+
+  async delete(request: FastifyRequest, reply: FastifyReply) {
+    try {
+      const { id } = request.params as { id: string }
+
+      const deleteGrupoUseCase = new DeleteGrupoUseCase(gruposRepositorio)
+
+      console.log({ id })
+      await deleteGrupoUseCase.execute(id)
+
+      return reply.status(200).send({ message: 'Grupo deletado com sucesso' })
+    } catch (error) {
+      console.log(error)
+      return reply
+        .status(500)
+        .send({ message: 'Erro ao deletar grupo', error: error.message })
     }
   }
 }

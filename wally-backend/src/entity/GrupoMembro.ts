@@ -16,14 +16,14 @@ export class GrupoMembro {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @ManyToOne(() => Grupo)
+  @ManyToOne(() => Grupo, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'grupo_id' })
   grupo: Grupo
 
   @Column({ type: 'uuid' })
   grupo_id: string
 
-  @ManyToOne(() => Usuario)
+  @ManyToOne(() => Usuario, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'usuario_id' })
   user: Usuario
 
