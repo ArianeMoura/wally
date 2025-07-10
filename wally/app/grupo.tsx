@@ -75,12 +75,12 @@ export default function GrupoScreen() {
           <Text style={styles.subTitulo}>Você deve {((statusGrupo?.data?.usuario.deve ?? 0) as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
 
           <View>
-            <Text>Membros</Text>
+            <Text style={styles.subTituloMembros}>Membros:</Text>
             <FlatList
               data={statusGrupo?.data?.membros}
               renderItem={({ item }) => (
                 <View>
-                  <Text>{item.user.nome}</Text>
+                  <Text style={styles.nomeMembros}>{item.user.nome}</Text>
                 </View>
               )}
               showsVerticalScrollIndicator={false}
@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    paddingTop: 100,
-    paddingBottom: 100,
+    paddingTop: 80,
+    paddingBottom: 60,
     paddingHorizontal: 30,
   },
   titulo: {
@@ -174,11 +174,22 @@ const styles = StyleSheet.create({
   subTitulo: {
     fontFamily: 'Poppins_300Light',
     fontSize: 14,
-    color: '#000',
-    fontWeight: 'bold',
+    color: '#777',
     textAlign: 'center',
-    marginBottom: 46,
-    marginTop: 6,
+    marginTop: 26,
+  },
+  subTituloMembros: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 14,
+    color: '#006A71',
+    textAlign: 'center',
+    marginTop: 26,
+  },
+  nomeMembros: {
+    fontFamily: 'Poppins_300Light',
+    fontSize: 14,
+    color: '#444',
+    textAlign: 'center',
   },
   tituloLista: {
     fontFamily: 'Poppins_700Bold',
@@ -193,6 +204,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     marginBottom: 8,
     borderRadius: 8,
+    borderColor: '#9ACBD0',
+    borderWidth: 2,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -202,19 +215,23 @@ const styles = StyleSheet.create({
   itemTexto: {
     fontFamily: 'Inter',
     fontSize: 14,
-    color: '#000',
-    padding: 10,
+    color: '#666',
+    padding: 8,
+    marginLeft: 8,
   },
   itemTextoValor: {
     fontFamily: 'Inter',
     fontSize: 12,
-    color: '#000',
-    padding: 10,
+    color: '#333',
+    padding: 8,
+    paddingBottom: 10,
+    marginLeft: 8,
   },
   containerBotoes: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 26,
+    marginTop: 36,
   },
   botaoAdicionar: {
     backgroundColor: "#48A6A7",
