@@ -184,8 +184,6 @@ RF-012 | O aplicativo deve permitir que os usuários adicionem despesas ao grupo
 
 RF-004 | O aplicativo deve permitir que os usuários editem seu perfil (nome, foto, senha).
 
-<br>
-
 ### Banco de Dados e Back-End (Node.js):
 
 `Artefato:`
