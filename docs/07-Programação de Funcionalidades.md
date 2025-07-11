@@ -8,8 +8,6 @@
 
 **API URL:** http://ec2-18-231-92-232.sa-east-1.compute.amazonaws.com:3333/wally
 
-<br>
-
 `🔐 Credenciais de Acesso (Administrador):`
 
 **E-mail:** admin@email.com
@@ -19,8 +17,6 @@
 ## Código Fonte:
 
 [Projeto Wally](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/tree/main/src)
-
-<br>
 
 ## Artefatos Criados:
 
@@ -147,7 +143,6 @@ RF-016 | O aplicativo deve exibir uma tela com a lista de grupos do usuário.
 RF-011 | O aplicativo deve permitir a criação de grupos para divisão de despesas. 
 
 ### Modal – Adicionar Membros
-**Responsável:** Raphael
 
 `Artefato:`
 
