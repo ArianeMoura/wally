@@ -1,11 +1,5 @@
 # Wally - A Sua Carteira Inteligente 💲
 
-`Análise e Desenvolvimento de Sistema - PUC Minas`
-
-`Projeto: Desenvolvimento de uma Aplicação Móvel em um Ambiente de Negócio - Turma 02`
-
-`3º Semestre/2025`
-
 <div align="center">
 
 ![image](https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8)
@@ -17,25 +11,6 @@ O **Wally** é mais do que um simples aplicativo de gestão financeira – é o 
 Projetado para simplificar o gerenciamento de **ganhos** e **despesas**, tanto individuais quanto compartilhadas, o Wally oferece uma experiência intuitiva, acessível e eficiente para transformar a forma como você lida com seu dinheiro. </br>
 
 Com duas áreas principais, o Wally permite que você tenha **total controle sobre suas finanças pessoais**, registrando e categorizando entradas e saídas em tempo real, acompanhando seu saldo e tomando decisões mais inteligentes. Além disso, a funcionalidade de **gestão de despesas em grupo** facilita a organização de gastos compartilhados, proporcionando mais transparência e praticidade ao dividir contas com amigos, familiares ou colegas. Com o Wally, você não apenas administra seu dinheiro – você assume o controle do seu futuro financeiro! 
-
-## Integrantes
-
-* Alexsander Lima de Andrade Vieira
-* Ariane Silveira Almeida Moura
-* Danielle Gomes dos Santos
-* Estevão Barboza da Gama dos Reis Silva
-* Raphael Rodrigues de Figueiredo Lage
-* Vinicius Simoes dos Santos
-
-## Orientador
-
-* Udo Fritzke Junior
-
-<!--
-## Instruções de utilização
-
-Assim que a primeira versão do sistema estiver disponível, deverá complementar com as instruções de utilização. Descreva como instalar eventuais dependências e como executar a aplicação. 
--->
 
 # Documentação
 

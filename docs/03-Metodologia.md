@@ -44,23 +44,6 @@ Cada issue é atribuída a um membro da equipe, e o progresso das tarefas é mon
 
 ## Gerenciamento de Projeto
 
-### Divisão de Papéis
-
-Com base na organização de papéis do método ágil SCRUM, a equipe foi estruturada para garantir uma colaboração eficaz e o alcance dos objetivos do projeto de maneira eficiente e coordenada. A abordagem é baseada na distribuição de responsabilidades claras e bem definidas, o que facilita o processo de desenvolvimento e promove a entrega de valor contínuo ao cliente.
-
-A estrutura organizacional da equipe foi definida da seguinte forma:
-
-– **Scrum Master:** Danielle.
-<br>
-– **Product Owner:** Ariane.
-<br>
-– **Equipe de Desenvolvimento:** Alexsander, Ariane, Danielle, Estevão, Raphael e Vinicius.
-<br>
-– **Equipe de Design:** Ariane.
-
-Cada membro desempenha um papel fundamental dentro do time, garantindo que todos os aspectos do desenvolvimento sejam abordados de maneira eficaz e alinhada com os objetivos do projeto. Essa estrutura de papéis bem definida assegura uma gestão eficiente do projeto, facilitando a comunicação entre os membros da equipe.
-
-
 ### Processo
 
 Para a implementação do SCRUM, adotamos uma série de práticas ágeis que garantem a organização, eficiência e transparência ao longo do desenvolvimento do projeto. Essas práticas não só promovem a colaboração da equipe, mas também asseguram que as entregas sejam feitas de forma incremental e alinhada com os objetivos do cliente.
