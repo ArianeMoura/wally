@@ -148,10 +148,9 @@ export default function CriarGrupoScreen() {
       >
 
         <View style={styles.photoSection}>
-          <TouchableOpacity style={styles.addPhotoButton} activeOpacity={0.7}>
-            <MaterialIcons name="add-a-photo" size={56} color="#006A71" />
+          <TouchableOpacity activeOpacity={0.7}>
+            <MaterialIcons name="add-a-photo" size={46} color="#006A71" />
           </TouchableOpacity>
-          <Text style={styles.addPhotoText}>Atualizar foto de perfil</Text>
         </View>
 
 
@@ -370,14 +369,6 @@ const styles = StyleSheet.create({
   },
   photoSection: {
     alignItems: 'center',
-    paddingVertical: 24,
-    marginBottom: 16,
-  },
-  addPhotoButton: {
-    width: 80,
-    height: 80,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   addPhotoText: {
     fontFamily: "Poppins_300Light",
@@ -387,17 +378,18 @@ const styles = StyleSheet.create({
   formSection: {
     marginHorizontal: 16,
     borderRadius: 12,
-    padding: 20,
+    padding: 8,
     marginBottom: 16,
   },
   inputGroup: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   inputLabel: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 14,
     color: "#333",
     marginBottom: 16,
+    marginTop: 18,
   },
   textInput: {
     height: 50,
@@ -505,7 +497,7 @@ const styles = StyleSheet.create({
   },
   emptyMembersContainer: {
     alignItems: 'center',
-    padding: 32,
+    padding: 26,
     backgroundColor: '#FAFAFA',
     borderRadius: 8,
   },
@@ -523,7 +515,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   bottomActions: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 26,
     paddingVertical: 16,
   },
   createButton: {

@@ -112,7 +112,7 @@ export default function AdicionarDespesaGrupo() {
             render={({ field }) => (
               <TextInput
                 style={styles.input}
-                placeholder="Data"
+                placeholder="Data (DD/MM/AAAA)"
                 value={field.value}
                 onChangeText={field.onChange}
               />

@@ -15,7 +15,6 @@ import { Stack } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useGruposViewModel } from '@/viewModels/useGruposViewModel';
 
-
 export default function TabTwoScreen() {
 
   const router = useRouter();
@@ -42,34 +41,39 @@ export default function TabTwoScreen() {
           resizeMode="contain" />
       </View>
 
-      <Text style={styles.titulo}>Grupos</Text>
-
-      <FlatList
-        data={grupos}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <Pressable onPress={() => router.push({
-            pathname: '/grupo',
-            params: {
-              id: item.id,
-            }
-          })}>
-            <View style={styles.item}>
-              <Text style={styles.itemTexto}>{item.nome}</Text>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => handleDeleteGrupo(item.id)}
-                accessible={true}
-                accessibilityHint="Toque para excluir este grupo"
-              >
-                <MaterialIcons name="delete" size={22} color="#84B3B6" />
-              </TouchableOpacity>
-            </View>
-
-          </Pressable>
-        )}
-        showsVerticalScrollIndicator={true}
-      />
+      {grupos && grupos.length > 0 ? (
+        <FlatList
+          data={grupos}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => router.push({
+              pathname: '/grupo',
+              params: {
+                id: item.id,
+              }
+            })}>
+              <View style={styles.item}>
+                <Text style={styles.itemTexto}>{item.nome}</Text>
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => handleDeleteGrupo(item.id)}
+                  accessible={true}
+                  accessibilityHint="Toque para excluir este grupo"
+                >
+                  <MaterialIcons name="delete" size={22} color="#84B3B6" />
+                </TouchableOpacity>
+              </View>
+            </Pressable>
+          )}
+          showsVerticalScrollIndicator={true}
+        />
+      ) : (
+        <View style={styles.emptyGroupsContainer}>
+          <MaterialIcons name="group" size={64} color="#ccc" />
+          <Text style={styles.emptyGroupsText}>Nenhum grupo criado</Text>
+          <Text style={styles.emptyGroupsSubtext}>Toque em "Criar Grupo" para começar a dividir despesas com seus amigos</Text>
+        </View>
+      )}
 
       <View style={styles.containerBotao}>
         <Pressable
@@ -82,10 +86,8 @@ export default function TabTwoScreen() {
           <MaterialIcons name="group-add" size={28} color="#fff" />
           <Text style={styles.textoBotao}>CRIAR GRUPO</Text>
         </Pressable>
-
       </View>
 
-      
     </SafeAreaView>
   );
 }
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     top: 36,
     zIndex: 2,
+    marginBottom: 66,
   },
   logo: {
     width: 76,
@@ -160,5 +163,30 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     padding: 4,
+  },
+  emptyGroupsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 30,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginHorizontal: 20,
+  },
+  emptyGroupsText: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 14,
+    color: '#777',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  emptyGroupsSubtext: {
+    fontFamily: 'Poppins_300Light',
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 12,
+    lineHeight: 20,
   },
 });

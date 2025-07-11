@@ -14,11 +14,11 @@ export default function TabLayout() {
     fadeInUp30px: {
       0: {
         opacity: 0,
-        translateY: 30, // Start from below
+        translateY: 30, 
       },
       1: {
         opacity: 1,
-        translateY: 0, // End at its normal position
+        translateY: 0, 
       },
     }
   }

@@ -17,6 +17,7 @@ import { useAuthStore } from '@/store/authStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useGruposViewModel } from '@/viewModels/useGruposViewModel';
 import { format } from 'date-fns';
+
 interface Transacao {
   nome: string
   usuario_id: string
@@ -117,29 +118,35 @@ export default function GrupoScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* <Text style={styles.tituloLista}>Maio 2025</Text> */}
+          {statusGrupo?.data?.transacoes && statusGrupo.data.transacoes.length > 0 ? (
+            <FlatList
+              data={statusGrupo?.data?.transacoes}
+              renderItem={({ item }) => (
+                <View style={styles.item}>
+                  <Text style={styles.itemTexto}>{format(new Date(item.data), 'MMMM dd, yyyy')}</Text>
+                  <Text style={styles.itemTexto}>{item.nome}</Text>
+                  {item.emprestou && (
+                    <Text style={styles.itemTextoValor}>Você pagou {(item.valor_total as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
+                  )}
 
-          <FlatList
-            data={statusGrupo?.data?.transacoes}
-            renderItem={({ item }) => (
-              <View style={styles.item}>
-                <Text style={styles.itemTexto}>{format(new Date(item.data), 'MMMM dd, yyyy')}</Text>
-                <Text style={styles.itemTexto}>{item.nome}</Text>
-                {item.emprestou && (
-                  <Text style={styles.itemTextoValor}>Você pagou {(item.valor_total as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
-                )}
+                  {!item.emprestou && item.envolvido && (
+                    <Text style={styles.itemTextoValor}>Você pegou {(item.valor_pego_emprestado ?? 0 as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} emprestado</Text>
+                  )}
 
-                {!item.emprestou && item.envolvido && (
-                  <Text style={styles.itemTextoValor}>Você pegou {(item.valor_pego_emprestado ?? 0 as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} emprestado</Text>
-                )}
-
-                {!item.envolvido && !item.emprestou && (
-                  <Text style={styles.itemTextoValor}>{`${item.usuario_nome} pagou ${(item.valor_total as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} - Não envolvido`}</Text>
-                )}
-              </View>
-            )}
-            showsVerticalScrollIndicator={false}
-          />
+                  {!item.envolvido && !item.emprestou && (
+                    <Text style={styles.itemTextoValor}>{`${item.usuario_nome} pagou ${(item.valor_total as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} - Não envolvido`}</Text>
+                  )}
+                </View>
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View style={styles.emptyExpensesContainer}>
+              <MaterialIcons name="receipt-long" size={48} color="#ccc" />
+              <Text style={styles.emptyExpensesText}>Nenhuma despesa adicionada</Text>
+              <Text style={styles.emptyExpensesSubtext}>Toque em "Adicionar Despesa" para criar a primeira despesa do grupo</Text>
+            </View>
+          )}
         </View>
       </SafeAreaView>
     </>
@@ -276,5 +283,28 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_300Light",
     fontSize: 14,
     color: "#006A71",
+  },
+  emptyExpensesContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+  },
+  emptyExpensesText: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 14,
+    color: '#777',
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  emptyExpensesSubtext: {
+    fontFamily: 'Poppins_300Light',
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 8,
+    paddingHorizontal: 20,
   },
 })

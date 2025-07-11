@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   semTransacao: {
     alignItems: "center",
     justifyContent: "center",
-    padding: 40,
+    padding: 20,
   },
   semTransacaoTexto: {
     fontFamily: "Poppins_700Bold",
@@ -39,6 +39,5 @@ const styles = StyleSheet.create({
     color: "#666",
     textAlign: "center",
     lineHeight: 20,
-    marginBottom: 20,
   },
 })
