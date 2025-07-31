@@ -12,7 +12,7 @@ Projetado para simplificar o gerenciamento de **ganhos** e **despesas**, tanto i
 
 Com duas áreas principais, o Wally permite que você tenha **total controle sobre suas finanças pessoais**, registrando e categorizando entradas e saídas em tempo real, acompanhando seu saldo e tomando decisões mais inteligentes. Além disso, a funcionalidade de **gestão de despesas em grupo** facilita a organização de gastos compartilhados, proporcionando mais transparência e praticidade ao dividir contas com amigos, familiares ou colegas. Com o Wally, você não apenas administra seu dinheiro – você assume o controle do seu futuro financeiro! 
 
-# Documentação
+### Documentação
 
 <ol>
 <li><a href="docs/01-Documentação de Contexto.md"> Documentação de Contexto</a></li>
@@ -31,10 +31,49 @@ Com duas áreas principais, o Wally permite que você tenha **total controle sob
 <li><a href="docs/14-Referências.md"> Referências</a></li>
 </ol>
 
-# Código
+### Código
 
 <li><a href="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/wally/README.md"> Código Fonte</a></li>
 
-# Apresentação
+### 💰 Funcionalidades Principais 
 
-<li><a href="presentation/README.md"> Apresentação da solução</a></li>
+- **Cadastro e Controle de Receitas e Despesas:** Registro detalhado de todas as transações financeiras.
+- **Cálculo Automático de Saldo Total:** Visão clara do saldo atual, atualizado em tempo real.
+- **Histórico Organizado:** Transações facilmente consultáveis por tipo (receita/despesa) e data.
+- **Filtro e Busca Personalizada:** Ferramentas intuitivas para encontrar transações específicas de forma rápida.
+- **Criação e Gestão de Grupos:** Organize despesas por categorias como viagens, casa, trabalho, etc.
+- **Inclusão de Despesas Compartilhadas:** Vincule gastos a participantes específicos do grupo.
+- **Cálculo Individual de Saldo:** Monitore o saldo devedor/credor de cada integrante do grupo.
+- **Histórico de Despesas Compartilhadas:** Acompanhe todas as transações realizadas dentro dos grupos.
+- **Autenticação Segura:** Login com e-mail e senha para acesso protegido.
+- **Recuperação de Senha:** Processo simplificado para redefinir o acesso à conta.
+- **Edição de Perfil:** Personalização de informações como nome, foto e senha.
+  
+### 📲 Tecnologia Utilizadas
+
+- **React Native + Expo:** Framework para desenvolvimento mobile multiplataforma (iOS/Android).
+- **Expo Go:** Visualização e testes rápidos da aplicação diretamente no smartphone.
+- **JavaScript / TypeScript:** Linguagens utilizadas no front-end.
+- **Node.js + Fastify:** Backend eficiente e escalável.
+- **PostgreSQL:** Banco de dados relacional para persistência dos dados.
+- **Docker:** Containerização dos ambientes de desenvolvimento e produção.
+- **AWS:** Hospedagem dos serviços na nuvem.
+- **Visual Studio Code:** Editor de código com suporte amplo a extensões.
+
+### ⚙️ Ferramentas e Método Ágil
+
+- **GitHub:** Versionamento, gerenciamento de branches e Kanban (GitHub Projects).
+- **DBeaver:** Manipulação, análise e visualização de dados no PostgreSQL.
+- **Microsoft Teams:** Comunicação oficial e colaboração entre membros.
+- **Figma:** Design de interfaces, wireframes e protótipos colaborativos.
+- **Canva:** Criação de identidade visual e materiais gráficos.
+- **Lucid:** Diagramas de fluxo e arquitetura da aplicação.
+- **SCRUM:** Metodologia ágil adotada para planejar e organizar o trabalho.
+  
+### 💡 Propostas de Melhorias
+
+- Implementação de **gamificação** (metas, conquistas e desafios).
+- Inclusão de recursos de **educação financeira**.
+- Desenvolvimento de **dashboard web** responsivo para usuários e administradores.
+- Expansão das **funcionalidades** de grupo (chat, notificações).
+
