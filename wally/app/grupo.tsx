@@ -1,5 +1,3 @@
-"use client"
-
 import { View, StyleSheet, Text, SafeAreaView, FlatList, TouchableOpacity, StatusBar, Pressable } from "react-native"
 import { useRouter, useLocalSearchParams } from "expo-router"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
@@ -75,7 +73,7 @@ export default function GrupoScreen() {
           </Text>
 
           <View style={styles.membrosContainer}>
-            <Text style={styles.subTituloMembros}>Membros do Grupo</Text>
+            <Text style={styles.subTituloMembros}>Participantes</Text>
             <View style={styles.membrosListContainer}>
               <FlatList
                 data={statusGrupo?.data?.membros}

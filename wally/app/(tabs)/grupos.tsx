@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemTexto: {
-    fontFamily: 'Inter',
+    fontFamily: 'Poppins_300Light',
     fontSize: 16,
     color: '#000',
   },
