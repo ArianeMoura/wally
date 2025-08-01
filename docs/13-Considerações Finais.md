@@ -23,4 +23,3 @@ A gestão do trabalho da equipe no projeto Wally foi visualizada e acompanhada d
 
 <img width="1024" alt="image" src="https://github.com/user-attachments/assets/c19cf054-6b34-41f1-a5c5-77693b51cb2e" />
 
-Acesse a **Programação de Funcionalidades** do Wally: [Clique aqui](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/docs/06-Template%20Padr%C3%A3o%20da%20Aplica%C3%A7%C3%A3o.md).
