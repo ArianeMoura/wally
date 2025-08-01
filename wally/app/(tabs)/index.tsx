@@ -4,6 +4,7 @@ import {
   StatusBar,
   SafeAreaView,
   Pressable,
+  Alert,
 } from "react-native"
 import { PaperProvider } from "react-native-paper"
 import { Header } from "@/components/Header"
@@ -63,17 +64,37 @@ export default function Wallet() {
     handleSubmitTransaction,
   } = useWalletViewModel()
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+      Alert.alert(
+        "Sessão Encerrada",
+        "Você foi desconectado com sucesso!",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              router.replace("/(auth)/login")
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      Alert.alert(
+        "Erro",
+        "Erro ao desconectar. Tente novamente.",
+        [{ text: "OK" }]
+      );
+    }
+  };
+
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor="#9ACBD0" barStyle="dark-content" />
 
         <Header />
-        <Pressable
-          onPress={async () => {
-            await logout()
-            router.replace("/(auth)/login")
-          }}>
+        <Pressable onPress={handleLogout}>
           <AntDesign style={styles.logout} name="logout" size={20} color="#006A71" />
         </Pressable>
         <ScrollView
