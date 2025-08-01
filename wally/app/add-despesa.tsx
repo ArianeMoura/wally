@@ -52,7 +52,7 @@ export default function AdicionarDespesaGrupo() {
     handleSubmitDespesaGrupo()
  
     Alert.alert(
-      "Sucesso",
+      "Salvo",
       "Despesa adicionada ao grupo!",
       [
         {

@@ -19,7 +19,6 @@ import { useGruposViewModel } from '@/viewModels/useGruposViewModel';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-
 interface Transacao {
   nome: string
   usuario_id: string
@@ -167,8 +166,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    paddingTop: 80,
-    paddingBottom: 60,
+    paddingTop: 56,
     paddingHorizontal: 30,
   },
   titulo: {
@@ -177,8 +175,6 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 16,
-    marginTop: 36,
   },
   subTitulo: {
     fontFamily: 'Poppins_300Light',

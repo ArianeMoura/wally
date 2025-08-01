@@ -1,4 +1,4 @@
-import { View, StyleSheet, StatusBar, Text, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView, Dimensions } from "react-native"
+import { View, StyleSheet, StatusBar, Text, SafeAreaView, TextInput, Pressable, FlatList, TouchableOpacity, ScrollView, Dimensions, Alert } from "react-native"
 import { useCallback, useMemo, useState } from "react"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
@@ -24,6 +24,22 @@ export default function CriarGrupoScreen() {
   ]
 
   const { grupoForm, handleSubmitGrupo } = useGruposViewModel({})
+
+  const handleSubmitGrupoWithAlert = () => {
+
+    handleSubmitGrupo()
+
+    Alert.alert(
+      "Concluído",
+      "Grupo criado!",
+      [
+        {
+          text: "OK",
+          onPress: () => router.push('/(tabs)/grupos')
+        }
+      ]
+    )
+  }
 
   const handleSearchDebounce = useCallback((value: string) => {
     if (searchText && searchText.length >= 3) {
@@ -59,8 +75,8 @@ export default function CriarGrupoScreen() {
 
   const membersFiltered = useMemo(() => {
     if (searchText) {
-      return usuarios.filter(usuario => 
-        usuario.email.toLowerCase().includes(searchText.toLowerCase()) || 
+      return usuarios.filter(usuario =>
+        usuario.email.toLowerCase().includes(searchText.toLowerCase()) ||
         usuario.nome.toLowerCase().includes(searchText.toLowerCase())
       )
     }
@@ -69,7 +85,7 @@ export default function CriarGrupoScreen() {
 
   const handleSelectMember = useCallback((u: { id: string; nome: string; email: string }) => {
     if (!usuario) return
-    
+
     setSelectedMembros((prev) => {
       const index = prev.findIndex((usuario) => usuario.id === u.id);
 
@@ -88,8 +104,8 @@ export default function CriarGrupoScreen() {
   }, [usuario, grupoForm]);
 
   const renderMemberItem = ({ item }: { item: { id: string; nome: string; email: string } }) => (
-    <TouchableOpacity 
-      style={styles.memberItem} 
+    <TouchableOpacity
+      style={styles.memberItem}
       onPress={() => handleSelectMember(item)}
       activeOpacity={0.7}
     >
@@ -103,10 +119,10 @@ export default function CriarGrupoScreen() {
 
   const renderPopoverMemberItem = ({ item }: { item: { id: string; nome: string; email: string } }) => {
     const isSelected = selectedMembros.some(member => member.id === item.id);
-    
+
     return (
-      <TouchableOpacity 
-        style={[styles.popoverMemberItem, isSelected && styles.popoverMemberItemSelected]} 
+      <TouchableOpacity
+        style={[styles.popoverMemberItem, isSelected && styles.popoverMemberItemSelected]}
         onPress={() => handleSelectMember(item)}
         activeOpacity={0.7}
       >
@@ -118,10 +134,10 @@ export default function CriarGrupoScreen() {
             {item.email}
           </Text>
         </View>
-        <MaterialIcons 
-          name={isSelected ? "check-circle" : "add-circle-outline"} 
-          size={24} 
-          color={isSelected ? "#48A6A7" : "#999"} 
+        <MaterialIcons
+          name={isSelected ? "check-circle" : "add-circle-outline"}
+          size={24}
+          color={isSelected ? "#48A6A7" : "#999"}
         />
       </TouchableOpacity>
     );
@@ -130,7 +146,7 @@ export default function CriarGrupoScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#9ACBD0" barStyle="light-content" />
-      
+
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -141,7 +157,7 @@ export default function CriarGrupoScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -155,7 +171,7 @@ export default function CriarGrupoScreen() {
 
 
         <View style={styles.formSection}>
- 
+
           <View style={styles.inputGroup}>
             <Text style={styles.inputLabel}>Nome do Grupo</Text>
             <Controller
@@ -183,7 +199,7 @@ export default function CriarGrupoScreen() {
                   {tiposGrupo.map((tipo) => {
                     const IconComponent = tipo.component
                     const isSelected = tipoSelecionado === tipo.id
-                    
+
                     return (
                       <View key={tipo.id} style={styles.tipoWrapper}>
                         <TouchableOpacity
@@ -194,10 +210,10 @@ export default function CriarGrupoScreen() {
                           }}
                           activeOpacity={0.7}
                         >
-                          <IconComponent 
-                            name={tipo.icon as any} 
-                            size={28} 
-                            color={isSelected ? "#fff" : "#48A6A7"} 
+                          <IconComponent
+                            name={tipo.icon as any}
+                            size={28}
+                            color={isSelected ? "#fff" : "#48A6A7"}
                           />
                         </TouchableOpacity>
                         <Text style={[styles.tipoLabel, isSelected && styles.tipoLabelSelected]}>
@@ -248,90 +264,90 @@ export default function CriarGrupoScreen() {
       <View style={styles.bottomActions}>
         <TouchableOpacity
           style={styles.createButton}
-          onPress={handleSubmitGrupo}
+          onPress={handleSubmitGrupoWithAlert}
           activeOpacity={0.8}
         >
           <Text style={styles.createButtonText}>CRIAR GRUPO</Text>
         </TouchableOpacity>
       </View>
 
- {openMembersPopover && (
-  <Popover
-    title="Adicionar Membros"
-    onDismiss={() => setOpenMembersPopover(false)}
-    contentStyle={styles.popoverContent}
-  >
-    <View style={styles.popoverBody}>
-      <View style={styles.searchContainer}>
-        <MaterialIcons name="search" size={20} color="#999" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar por nome ou email"
-          value={searchText ?? ''}
-          onChangeText={handleSearchDebounce}
-          placeholderTextColor="#999"
-        />
-        {searchText && (
-          <TouchableOpacity onPress={() => setSearchText(null)}>
-            <MaterialIcons name="clear" size={20} color="#999" />
-          </TouchableOpacity>
-        )}
-      </View>
-
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 16 }}>
-        {selectedMembros.length > 0 && (
-          <View style={styles.popoverSection}>
-            <Text style={styles.sectionTitle}>Membros Selecionados ({selectedMembros.length})</Text>
-          <FlatList
-  data={selectedMembros}
-  keyExtractor={item => `selected-${item.id}`}
-  renderItem={renderPopoverMemberItem}
-  style={styles.membersList}
-  scrollEnabled={false}
-  showsVerticalScrollIndicator={false}
-/>
-          </View>
-        )}
-
-        {membersFiltered.length > 0 && (
-          <View style={styles.popoverSection}>
-            <Text style={styles.sectionTitle}>Resultados da Busca</Text>
-         <FlatList
-  data={membersFiltered}
-  keyExtractor={item => `filtered-${item.id}`}
-  renderItem={renderPopoverMemberItem}
-  style={styles.membersList}
-  scrollEnabled={false}
-  showsVerticalScrollIndicator={false}
-/>
-          </View>
-        )}
-
-        {searchText && searchText.length >= 3 && membersFiltered.length === 0 && (
-          <View style={styles.emptySearchContainer}>
-            <MaterialIcons name="search-off" size={48} color="#ccc" />
-            <Text style={styles.emptySearchText}>Nenhum resultado encontrado</Text>
-            <Text style={styles.emptySearchSubtext}>Tente buscar por outro nome ou email</Text>
-          </View>
-        )}
-      </ScrollView>
-
-      <View style={{ alignItems: 'center', marginTop: 12 }}>
-        <TouchableOpacity
-          onPress={() => setOpenMembersPopover(false)}
-          style={{
-            backgroundColor: '#006A71',
-            paddingVertical: 10,
-            paddingHorizontal: 18,
-            borderRadius: 8,
-          }}
+      {openMembersPopover && (
+        <Popover
+          title="Adicionar Membros"
+          onDismiss={() => setOpenMembersPopover(false)}
+          contentStyle={styles.popoverContent}
         >
-          <Text style={{ color: '#fff', fontFamily: 'Poppins_600SemiBold', fontSize: 14 }}>Adicionar</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </Popover>
-)}
+          <View style={styles.popoverBody}>
+            <View style={styles.searchContainer}>
+              <MaterialIcons name="search" size={20} color="#999" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Buscar por nome ou email"
+                value={searchText ?? ''}
+                onChangeText={handleSearchDebounce}
+                placeholderTextColor="#999"
+              />
+              {searchText && (
+                <TouchableOpacity onPress={() => setSearchText(null)}>
+                  <MaterialIcons name="clear" size={20} color="#999" />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 16 }}>
+              {selectedMembros.length > 0 && (
+                <View style={styles.popoverSection}>
+                  <Text style={styles.sectionTitle}>Membros Selecionados ({selectedMembros.length})</Text>
+                  <FlatList
+                    data={selectedMembros}
+                    keyExtractor={item => `selected-${item.id}`}
+                    renderItem={renderPopoverMemberItem}
+                    style={styles.membersList}
+                    scrollEnabled={false}
+                    showsVerticalScrollIndicator={false}
+                  />
+                </View>
+              )}
+
+              {membersFiltered.length > 0 && (
+                <View style={styles.popoverSection}>
+                  <Text style={styles.sectionTitle}>Resultados da Busca</Text>
+                  <FlatList
+                    data={membersFiltered}
+                    keyExtractor={item => `filtered-${item.id}`}
+                    renderItem={renderPopoverMemberItem}
+                    style={styles.membersList}
+                    scrollEnabled={false}
+                    showsVerticalScrollIndicator={false}
+                  />
+                </View>
+              )}
+
+              {searchText && searchText.length >= 3 && membersFiltered.length === 0 && (
+                <View style={styles.emptySearchContainer}>
+                  <MaterialIcons name="search-off" size={48} color="#ccc" />
+                  <Text style={styles.emptySearchText}>Nenhum resultado encontrado</Text>
+                  <Text style={styles.emptySearchSubtext}>Tente buscar por outro nome ou email</Text>
+                </View>
+              )}
+            </ScrollView>
+
+            <View style={{ alignItems: 'center', marginTop: 12 }}>
+              <TouchableOpacity
+                onPress={() => setOpenMembersPopover(false)}
+                style={{
+                  backgroundColor: '#006A71',
+                  paddingVertical: 10,
+                  paddingHorizontal: 18,
+                  borderRadius: 8,
+                }}
+              >
+                <Text style={{ color: '#fff', fontFamily: 'Poppins_600SemiBold', fontSize: 14 }}>Adicionar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Popover>
+      )}
     </SafeAreaView>
   )
 }
@@ -450,7 +466,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 6,  
+    paddingVertical: 6,
     backgroundColor: '#C6DFE2',
     borderRadius: 16,
   },

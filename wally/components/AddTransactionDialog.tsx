@@ -1,4 +1,4 @@
-import { View, Pressable, StyleSheet, Text } from "react-native"
+import { View, Pressable, StyleSheet, Text, Alert } from "react-native"
 import { Dialog, Button, TextInput } from "react-native-paper"
 import { MaterialIcons } from "@expo/vector-icons"
 import { TransactionType } from "@/app/types"
@@ -37,6 +37,24 @@ export const AddTransactionDialog = ({
 
   const getTitleByType = (type: TransactionType) => {
     return type === "RECEITA" ? "Adicionar Receita" : "Adicionar Despesa"
+  }
+
+  const handleSubmitWithAlert = () => {
+
+    handleSubmitTransaction()
+    
+    const message = activeTransactionType === "RECEITA" ? "Receita adicionada!" : "Despesa adicionada!"
+    
+    Alert.alert(
+      "Registrado",
+      message,
+      [
+        {
+          text: "OK",
+          onPress: () => onDismiss() 
+        }
+      ]
+    )
   }
 
   return (
@@ -138,7 +156,7 @@ export const AddTransactionDialog = ({
           CANCELAR
         </Button>
         <Button
-          onPress={handleSubmitTransaction}
+          onPress={handleSubmitWithAlert}
           mode="contained"
           buttonColor={activeTransactionType === "RECEITA" ? "#249B24" : "#EA1919"}
           style={styles.dialogButton}
