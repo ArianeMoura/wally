@@ -33,7 +33,7 @@ Com duas áreas principais, o Wally permite que você tenha **total controle sob
 
 ### Código
 
-<li><a href="https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/wally/README.md"> Código Fonte</a></li>
+<li><a href="https://github.com/ArianeMoura/wally/blob/main/wally/README.md"> Código Fonte</a></li>
 
 ### 💰 Funcionalidades Principais 
 
