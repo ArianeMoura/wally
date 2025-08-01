@@ -7,7 +7,7 @@ import {
   Text,
   Pressable,
   TouchableOpacity,
-  TextInput,
+  Alert, 
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -22,6 +22,15 @@ export default function TabTwoScreen() {
   const { grupos, handleDeleteGrupo } = useGruposViewModel({})
 
   const [openMembersPopover, setOpenMembersPopover] = useState(false)
+
+  const onDeleteGrupo = async (grupoId) => {
+    try {
+      await handleDeleteGrupo(grupoId);
+      Alert.alert("Removido", "Grupo excluído!");
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível excluir o grupo");
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -56,7 +65,7 @@ export default function TabTwoScreen() {
                 <Text style={styles.itemTexto}>{item.nome}</Text>
                 <TouchableOpacity
                   style={styles.deleteButton}
-                  onPress={() => handleDeleteGrupo(item.id)}
+                  onPress={() => onDeleteGrupo(item.id)} 
                   accessible={true}
                   accessibilityHint="Toque para excluir este grupo"
                 >

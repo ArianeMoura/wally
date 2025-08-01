@@ -1,23 +1,12 @@
-import {
-  View,
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  FlatList,
-  TouchableOpacity,
-  StatusBar,
-  Pressable,
-} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import React, { useMemo } from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useQuery } from '@tanstack/react-query';
-import { API_URL } from '@env';
-import { useAuthStore } from '@/store/authStore';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { useGruposViewModel } from '@/viewModels/useGruposViewModel';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+"use client"
+
+import { View, StyleSheet, Text, SafeAreaView, FlatList, TouchableOpacity, StatusBar, Pressable } from "react-native"
+import { useRouter, useLocalSearchParams } from "expo-router"
+import MaterialIcons from "@expo/vector-icons/MaterialIcons"
+import Ionicons from "@expo/vector-icons/Ionicons"
+import { useGruposViewModel } from "@/viewModels/useGruposViewModel"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 
 interface Transacao {
   nome: string
@@ -42,57 +31,66 @@ interface IResponse {
 
 export default function GrupoScreen() {
   const { id } = useLocalSearchParams()
-
-  const router = useRouter();
-
+  const router = useRouter()
   const { statusGrupo, usuario } = useGruposViewModel({ id: id as string })
 
   console.log({ id })
-
   console.log({ statusGrupo: statusGrupo })
 
   // const saldoDevedor = useMemo(() => {
   //   return statusGrupo?.data?.transacoes.reduce((acc, current) => acc.)
   // }, [])
 
+  const renderMembro = ({ item, index }) => (
+    <View style={styles.membroCard}>
+      <View style={styles.membroAvatar}>
+        <Text style={styles.membroAvatarText}>{item.user.nome.charAt(0).toUpperCase()}</Text>
+      </View>
+      <View style={styles.membroInfo}>
+        <Text style={styles.membroNome}>{item.user.nome}</Text>
+        <Text style={styles.membroStatus}>Membro ativo</Text>
+      </View>
+    </View>
+  )
+
   return (
     <>
       <SafeAreaView style={styles.container}>
-
         <StatusBar backgroundColor="#9ACBD0" barStyle="light-content" />
 
         <View style={styles.botaoVoltar}>
-
-          <Pressable
-            onPress={() => router.push('/(tabs)/grupos')}>
+          <Pressable onPress={() => router.push("/(tabs)/grupos")}>
             <MaterialIcons name="arrow-back-ios" size={24} color="#006A71" />
           </Pressable>
-
         </View>
 
         <View style={styles.mainContent}>
-
           <Text style={styles.titulo}>{statusGrupo?.data?.nome}</Text>
+          <Text style={styles.subTitulo}>
+            Você deve{" "}
+            {((statusGrupo?.data?.usuario.deve ?? 0) as number).toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </Text>
 
-          <Text style={styles.subTitulo}>Você deve {((statusGrupo?.data?.usuario.deve ?? 0) as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
-
-          <View>
-            <Text style={styles.subTituloMembros}>Membros:</Text>
-            <FlatList
-              data={statusGrupo?.data?.membros}
-              renderItem={({ item }) => (
-                <View>
-                  <Text style={styles.nomeMembros}>{item.user.nome}</Text>
-                </View>
-              )}
-              showsVerticalScrollIndicator={false}
-            />
+          <View style={styles.membrosContainer}>
+            <Text style={styles.subTituloMembros}>Membros do Grupo</Text>
+            <View style={styles.membrosListContainer}>
+              <FlatList
+                data={statusGrupo?.data?.membros}
+                renderItem={renderMembro}
+                keyExtractor={(item, index) => `membro-${index}`}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.membrosListContent}
+              />
+            </View>
           </View>
 
           <View style={styles.containerBotoes}>
             <TouchableOpacity
               style={styles.botaoQuitar}
-              onPress={() => ("")}
+              onPress={() => ""}
               accessible={true}
               accessibilityLabel="Adicionar Despesa"
               accessibilityHint="Toque para adicionar uma nova despesa no grupo"
@@ -106,7 +104,7 @@ export default function GrupoScreen() {
 
             <TouchableOpacity
               style={styles.botaoAdicionar}
-              onPress={() => router.push({ pathname: '/add-despesa', params: { grupoId: id } })}
+              onPress={() => router.push({ pathname: "/add-despesa", params: { grupoId: id } })}
               accessible={true}
               accessibilityLabel="Adicionar Despesa"
               accessibilityHint="Toque para adicionar uma nova despesa no grupo"
@@ -124,18 +122,35 @@ export default function GrupoScreen() {
               data={statusGrupo?.data?.transacoes}
               renderItem={({ item }) => (
                 <View style={styles.item}>
-                  <Text style={styles.itemTexto}>{format(new Date(item.data), 'MMMM dd, yyyy', { locale: ptBR }).replace(/^\w/, (c) => c.toUpperCase())}</Text>
+                  <Text style={styles.itemTexto}>
+                    {format(new Date(item.data), "MMMM dd, yyyy", { locale: ptBR }).replace(/^\w/, (c) =>
+                      c.toUpperCase(),
+                    )}
+                  </Text>
                   <Text style={styles.itemTexto}>{item.nome}</Text>
+
                   {item.emprestou && (
-                    <Text style={styles.itemTextoValor}>Você pagou {(item.valor_total as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>
+                    <Text style={styles.itemTextoValor}>
+                      Você pagou{" "}
+                      {(item.valor_total as number).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                    </Text>
                   )}
 
                   {!item.emprestou && item.envolvido && (
-                    <Text style={styles.itemTextoValor}>Você pegou {(item.valor_pego_emprestado ?? 0 as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} emprestado</Text>
+                    <Text style={styles.itemTextoValor}>
+                      Você pegou{" "}
+                      {(item.valor_pego_emprestado ?? (0 as number)).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}{" "}
+                      emprestado
+                    </Text>
                   )}
 
                   {!item.envolvido && !item.emprestou && (
-                    <Text style={styles.itemTextoValor}>{`${item.usuario_nome} pagou ${(item.valor_total as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} - Não envolvido`}</Text>
+                    <Text style={styles.itemTextoValor}>
+                      {`${item.usuario_nome} pagou ${(item.valor_total as number).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} - Não envolvido`}
+                    </Text>
                   )}
                 </View>
               )}
@@ -145,22 +160,24 @@ export default function GrupoScreen() {
             <View style={styles.emptyExpensesContainer}>
               <MaterialIcons name="receipt-long" size={48} color="#ccc" />
               <Text style={styles.emptyExpensesText}>Nenhuma despesa adicionada</Text>
-              <Text style={styles.emptyExpensesSubtext}>Toque em "Adicionar Despesa" para criar a primeira despesa do grupo</Text>
+              <Text style={styles.emptyExpensesSubtext}>
+                Toque em "Adicionar Despesa" para criar a primeira despesa do grupo
+              </Text>
             </View>
           )}
         </View>
       </SafeAreaView>
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F2F2',
+    backgroundColor: "#F4F2F2",
   },
   botaoVoltar: {
-    position: 'absolute',
+    position: "absolute",
     left: 8,
     padding: 16,
   },
@@ -170,64 +187,116 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   titulo: {
-    fontFamily: 'Poppins_300Light',
+    fontFamily: "Poppins_300Light",
     fontSize: 20,
-    color: '#000',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#000",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   subTitulo: {
-    fontFamily: 'Poppins_300Light',
+    fontFamily: "Poppins_300Light",
     fontSize: 14,
-    color: '#777',
-    textAlign: 'center',
+    color: "#777",
+    textAlign: "center",
+    marginTop: 26,
+  },
+  membrosContainer: {
     marginTop: 26,
   },
   subTituloMembros: {
-    fontFamily: 'Poppins_700Bold',
+    fontFamily: "Poppins_700Bold",
     fontSize: 14,
-    color: '#006A71',
-    textAlign: 'center',
-    marginTop: 26,
+    color: "#006A71",
+    textAlign: "left",
+    marginBottom: 6,
+    paddingHorizontal: 8,
   },
-  nomeMembros: {
-    fontFamily: 'Poppins_300Light',
-    fontSize: 14,
-    color: '#444',
-    textAlign: 'center',
+  membrosListContainer: {
+    borderRadius: 16,
+    paddingVertical: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+  },
+  membrosListContent: {
+    paddingHorizontal: 2,
+  },
+  membroCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginVertical: 3,
+    backgroundColor: "#FAFAFA",
+    borderRadius: 16,
+    borderLeftWidth: 2,
+    borderLeftColor: "#48A6A7",
+  },
+  membroAvatar: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#48A6A7",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  membroAvatarText: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 12,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  membroInfo: {
+    flex: 1,
+  },
+  membroNome: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 12,
+    color: "#333",
+    fontWeight: "600",
+  },
+  membroStatus: {
+    fontFamily: "Poppins_300Light",
+    fontSize: 10,
+    color: "#666",
+    marginTop: 2,
+  },
+  membroIndicador: {
+    marginLeft: 8,
   },
   tituloLista: {
-    fontFamily: 'Poppins_700Bold',
+    fontFamily: "Poppins_700Bold",
     fontSize: 16,
-    color: '#777',
-    textAlign: 'left',
+    color: "#777",
+    textAlign: "left",
     marginBottom: 6,
     marginTop: 6,
     padding: 8,
   },
   item: {
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
     marginBottom: 8,
     borderRadius: 8,
-    borderColor: '#9ACBD0',
+    borderColor: "#9ACBD0",
     borderWidth: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
   itemTexto: {
-    fontFamily: 'Inter',
+    fontFamily: "Inter",
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     padding: 8,
     marginLeft: 8,
   },
   itemTextoValor: {
-    fontFamily: 'Inter',
+    fontFamily: "Inter",
     fontSize: 12,
-    color: '#333',
+    color: "#333",
     padding: 8,
     paddingBottom: 10,
     marginLeft: 8,
@@ -235,8 +304,8 @@ const styles = StyleSheet.create({
   containerBotoes: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 26,
-    marginTop: 36,
+    marginBottom: 16,
+    marginTop: 8,
   },
   botaoAdicionar: {
     backgroundColor: "#48A6A7",
@@ -284,24 +353,24 @@ const styles = StyleSheet.create({
   },
   emptyExpensesContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 40,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
   },
   emptyExpensesText: {
-    fontFamily: 'Poppins_700Bold',
+    fontFamily: "Poppins_700Bold",
     fontSize: 14,
-    color: '#777',
-    textAlign: 'center',
+    color: "#777",
+    textAlign: "center",
     marginTop: 16,
   },
   emptyExpensesSubtext: {
-    fontFamily: 'Poppins_300Light',
+    fontFamily: "Poppins_300Light",
     fontSize: 12,
-    color: '#999',
-    textAlign: 'center',
+    color: "#999",
+    textAlign: "center",
     marginTop: 8,
     paddingHorizontal: 20,
   },
