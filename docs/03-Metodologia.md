@@ -14,8 +14,8 @@ Os artefatos do projeto serão desenvolvidos utilizando **React Native** como fr
 | Ambiente | Plataforma | Link de Acesso |
 |---------------|----------------------------------------------|----------------|
 | Design e Prototipação | Figma | https://www.figma.com/proto/MiuZNsY107HDiJqKnMdyIm/Projeto-Wally?page-id=0%3A1&node-id=1-14&viewport=215%2C293%2C0.81&t=uLjzv6SkBrleFN8Z-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=1%3A14 |
-| Documentação do Projeto | Github | https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally |
-| Repositório do Código Fonte | Github | https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/tree/main/src |
+| Documentação do Projeto | Github | https://github.com/ArianeMoura/wally/tree/main/docs |
+| Repositório do Código Fonte | Github | https://github.com/ArianeMoura/wally/blob/main/wally/README.md |
 | Gerenciamento de Tarefas do Projeto | GitHub Projects | https://github.com/orgs/ICEI-PUC-Minas-PMV-ADS/projects/1894 |
 | Hospedagem | AWS | http://ec2-18-231-92-232.sa-east-1.compute.amazonaws.com:3333/wally |
 
@@ -266,4 +266,4 @@ Para garantir um desenvolvimento eficiente e colaborativo, adotamos diversas fer
 Cada membro da equipe utiliza seu próprio computador ou notebook como ambiente de desenvolvimento configurado para suportar as tecnologias adotadas. O sistema operacional varia de acordo com a preferência individual, desde que compatível com as ferramentas utilizadas.
 
 ## Estratégia de Organização de Codificação
-Todos os artefatos relacionados à implementação e visualização dos conteúdos do projeto da aplicação serão inseridos no [Código Fonte](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/src/README.md).
+Todos os artefatos relacionados à implementação e visualização dos conteúdos do projeto da aplicação serão inseridos no [Código Fonte](https://github.com/ArianeMoura/wally/blob/main/wally/README.md).

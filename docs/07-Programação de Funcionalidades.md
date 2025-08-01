@@ -14,10 +14,6 @@
 
 **Senha:** wallyadm
 
-## Código Fonte:
-
-[Projeto Wally](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/tree/main/src)
-
 ## Artefatos Criados:
 
 ### Tela Inicial

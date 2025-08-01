@@ -24,7 +24,7 @@ Para garantir a estruturação eficiente dos dados no Wally, foi desenvolvido o 
 
 O arquivo `banco.sql` contém os scripts necessários para essa implementação e está localizado na pasta `src\bd`.
 
-🔗 Acesse o arquivo pelo link: [banco.sql](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/src/bd/banco.sql).
+🔗 Acesse o arquivo pelo link: [banco.sql](https://github.com/ArianeMoura/wally/blob/main/src/bd/banco.sql).
 
 ## Tecnologias Utilizadas
 
