@@ -398,22 +398,23 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   inputGroup: {
-    marginBottom: 16,
+    marginBottom: 6,
   },
   inputLabel: {
-    fontFamily: "Poppins_600SemiBold",
+    fontFamily: "Poppins_300Light",
     fontSize: 14,
     color: "#333",
-    marginBottom: 16,
+    marginBottom: 10,
     marginTop: 18,
+    paddingHorizontal: 8,
   },
   textInput: {
-    height: 50,
+    height: 60,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
+    borderColor: "#ccc",
     borderRadius: 8,
     paddingHorizontal: 16,
-    fontSize: 16,
+    fontSize: 14,
     backgroundColor: "#FAFAFA",
     fontFamily: "Inter",
     color: "#333",
@@ -424,8 +425,6 @@ const styles = StyleSheet.create({
   },
   tipoWrapper: {
     alignItems: "center",
-    flex: 1,
-    marginHorizontal: 4,
   },
   tipoItem: {
     width: (screenWidth - 120) / 4,
@@ -445,7 +444,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   tipoLabel: {
-    fontFamily: "Poppins_400Regular",
+    fontFamily: "Poppins_300Light",
     fontSize: 11,
     color: "#666",
     marginTop: 6,
