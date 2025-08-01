@@ -56,7 +56,7 @@ Apresentamos a seguir os elementos que sustentam a personalidade do Wally:
 
 ## Links Úteis
 
-Acesse o **Template Padrão da Aplicação** e conheça mais sobre a Identidade Visual do Wally: [Clique aqui](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/docs/06-Template%20Padr%C3%A3o%20da%20Aplica%C3%A7%C3%A3o.md).
+Acesse o **Template Padrão da Aplicação** e conheça mais sobre a Identidade Visual do Wally: [Clique aqui](https://github.com/ArianeMoura/wally/blob/main/docs/06-Template%20Padr%C3%A3o%20da%20Aplica%C3%A7%C3%A3o.md).
 
-Acesse o **Projeto de Interface** do Wally: [Clique aqui](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/docs/04-Projeto%20de%20Interface.md).
+Acesse o **Projeto de Interface** do Wally: [Clique aqui](https://github.com/ArianeMoura/wally/blob/main/docs/04-Projeto%20de%20Interface.md).
 
