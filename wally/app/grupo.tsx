@@ -17,6 +17,8 @@ import { useAuthStore } from '@/store/authStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useGruposViewModel } from '@/viewModels/useGruposViewModel';
 import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
 
 interface Transacao {
   nome: string
@@ -123,7 +125,7 @@ export default function GrupoScreen() {
               data={statusGrupo?.data?.transacoes}
               renderItem={({ item }) => (
                 <View style={styles.item}>
-                  <Text style={styles.itemTexto}>{format(new Date(item.data), 'MMMM dd, yyyy')}</Text>
+                  <Text style={styles.itemTexto}>{format(new Date(item.data), 'MMMM dd, yyyy', { locale: ptBR }).replace(/^\w/, (c) => c.toUpperCase())}</Text>
                   <Text style={styles.itemTexto}>{item.nome}</Text>
                   {item.emprestou && (
                     <Text style={styles.itemTextoValor}>Você pagou {(item.valor_total as number).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Text>

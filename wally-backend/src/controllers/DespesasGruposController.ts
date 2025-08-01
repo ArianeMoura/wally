@@ -40,14 +40,17 @@ export class DespesasGruposController {
 
   async createDespesaGrupo(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const { nome, valor, usuario_id, grupo_id, membros_participantes } =
+      const { nome, valor, usuario_id, grupo_id, membros_participantes, data } =
         request.body as {
           nome: string
           valor: number
           usuario_id: string
           grupo_id: string
           membros_participantes: string[]
+          data: string
         }
+
+      console.log({ body: request.body })
 
       const criarDespesaGrupoUseCase = new CriarDespesaGrupoUseCase(
         despesasGruposRepositorio,
@@ -61,6 +64,7 @@ export class DespesasGruposController {
           usuario_id,
           grupo_id,
           membros_participantes,
+          data,
         })
 
       if (!success) {

@@ -2,8 +2,11 @@ import { useAuthStore } from "@/store/authStore"
 import { API_URL } from "@env"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { router } from "expo-router"
-import { useCallback } from "react"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
+import { Keyboard, Platform } from "react-native"
 
 interface Grupo {
     id: string
@@ -129,7 +132,7 @@ export function useGruposViewModel({ id }: { id?: string }) {
     const despesaGrupoForm = useForm<any>({
         defaultValues: {
             valor: '',
-            data: '',
+            data: new Date(),
             nome: '',
             usuario_id: usuario?.id,
             membros_participantes: statusGrupo?.data?.membros.map(membro => ({ ...membro.user, active: false })),
@@ -151,6 +154,7 @@ export function useGruposViewModel({ id }: { id?: string }) {
                     valor: Number(data.valor),
                     usuario_id: data.usuario_id,
                     grupo_id: data.grupo_id,
+                    data: data.data,
                     membros_participantes: data.membros_participantes.map(user => user.id)
                 })
 
@@ -179,6 +183,39 @@ export function useGruposViewModel({ id }: { id?: string }) {
         await refetchGrupos()
     }, [])
 
+    const [showPicker, setShowPicker] = useState(false);
+    const [transactionDate, setTransactionDate] = useState(new Date());
+
+    const handleDateChange = useCallback(
+        ({ type }: any, selectedDate?: Date) => {
+            console.log({ type, selectedDate });
+            if (type === "set" && selectedDate) {
+                // if (isFuture(selectedDate)) {
+                //     Alert.alert("Data inválida", "Não é possível adicionar transações com datas futuras.", [{ text: "OK" }])
+                //     return
+                // }
+
+                setTransactionDate(selectedDate);
+
+                if (Platform.OS === "android") {
+                    setShowPicker(false);
+                }
+            } else {
+                setShowPicker(false);
+            }
+        },
+        [],
+    );
+
+    const toggleDataPicker = () => {
+        Keyboard.dismiss();
+        setShowPicker(!showPicker);
+    };
+
+    const formatDateForDisplay = (date: Date) => {
+        return format(date, "dd/MM/yyyy", { locale: ptBR });
+    };
+
     return {
         grupos,
         grupoForm,
@@ -190,6 +227,13 @@ export function useGruposViewModel({ id }: { id?: string }) {
         despesaGrupoForm,
         handleSubmitDespesaGrupo,
         usuario,
-        handleDeleteGrupo
+        handleDeleteGrupo,
+        showPicker,
+        setShowPicker,
+        transactionDate,
+        setTransactionDate,
+        handleDateChange,
+        toggleDataPicker,
+        formatDateForDisplay,
     }
 }

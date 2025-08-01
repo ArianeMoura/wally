@@ -9,6 +9,7 @@ import {
   Pressable,
   FlatList,
 } from 'react-native';
+import { Dialog, Button, TextInput as TextInputPaper } from "react-native-paper"
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback } from 'react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
@@ -17,6 +18,7 @@ import { useAuthStore } from '@/store/authStore';
 import { Controller, useForm } from 'react-hook-form';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useGruposViewModel } from '@/viewModels/useGruposViewModel';
+import { TransactionDatePicker } from '@/components/TransactionDatePicker';
 interface Despesa {
   valor: string;
   data: string;
@@ -28,14 +30,24 @@ export default function AdicionarDespesaGrupo() {
 
   console.log({ grupoId })
 
-  const { statusGrupo, despesaGrupoForm, handleSubmitDespesaGrupo, refetchStatusGrupo } = useGruposViewModel({ id: String(grupoId) })
-
+  const { 
+    statusGrupo, 
+    despesaGrupoForm, 
+    handleSubmitDespesaGrupo, 
+    refetchStatusGrupo, 
+    showPicker, 
+    setShowPicker, 
+    handleDateChange, 
+    toggleDataPicker, 
+    formatDateForDisplay, 
+    transactionDate,
+  } = useGruposViewModel({ id: String(grupoId) })
 
   const handleSelectMember = useCallback(
     (u: any, membrosParticipantes: any[], onChange: (updated: any[]) => void) => {
       const index = membrosParticipantes.findIndex((usuario) => usuario.id === u.id);
 
-      console.log({index})
+      console.log({ index })
       if (index >= 0) {
         const updated = membrosParticipantes.map((m, i) =>
           i === index ? { ...m, active: !m.active } : m
@@ -48,7 +60,6 @@ export default function AdicionarDespesaGrupo() {
     },
     []
   );
-
 
   return (
     <>
@@ -106,22 +117,43 @@ export default function AdicionarDespesaGrupo() {
           />
 
           <Text style={styles.labelNome}>Data</Text>
+          <Pressable onPress={toggleDataPicker} style={styles.datePickerButton}>
+            <Controller
+              control={despesaGrupoForm.control}
+              name="data"
+              render={({ field }) => (
+                <TextInputPaper
+                  value={formatDateForDisplay(field.value)}
+                  editable={false}
+                  style={styles.dialogInput}
+                  mode="outlined"
+                  outlineColor="#DADADA"
+                  activeOutlineColor="#A6A6A6"
+                  right={<TextInputPaper.Icon icon="calendar" onPress={toggleDataPicker} />}
+                  accessible={true}
+                  accessibilityLabel={`Data: ${formatDateForDisplay(field.value)}`}
+                  accessibilityHint="Toque para selecionar uma data"
+                />
+              )}
+            />
+          </Pressable>
+
           <Controller
             control={despesaGrupoForm.control}
             name="data"
             render={({ field }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="Data (DD/MM/AAAA)"
-                value={field.value}
-                onChangeText={field.onChange}
+              <TransactionDatePicker
+                visible={showPicker}
+                onClose={() => setShowPicker(false)}
+                date={field.value}
+                onChange={(set, date) => {
+                  handleDateChange(set, date)
+
+                  field.onChange(date)
+                }}
               />
             )}
           />
-
-
-
-
 
           <View>
             <Text style={styles.labelDivisao}>Dividir entre:</Text>
@@ -137,14 +169,12 @@ export default function AdicionarDespesaGrupo() {
                     //console.log({ item })
                     return (
                       <Pressable onPress={() => handleSelectMember(item, field.value, field.onChange)}>
-
                         <View >
                           <Text style={{ opacity: item.active ? 1 : 0.25 }}>{item.nome}</Text>
                         </View>
                       </Pressable>
                     )
                   }
-
                   }
                   showsVerticalScrollIndicator={true}
                 />
@@ -240,5 +270,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Poppins_700Bold",
     fontSize: 16,
+  },
+  datePickerButton: {
+    flex: 1,
+    marginLeft: 8,
+  },
+  dialogInput: {
+    flex: 1,
+    backgroundColor: "#fff",
+    marginBottom: 16,
   },
 });

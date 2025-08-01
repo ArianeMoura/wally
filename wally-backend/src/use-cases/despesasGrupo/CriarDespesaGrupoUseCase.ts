@@ -7,8 +7,8 @@ interface CriarDespesaGrupoUseCaseProps {
   usuario_id: string
   nome: string
   valor: number
+  data: string
 }
-
 export class CriarDespesaGrupoUseCase {
   constructor(
     private readonly despesasGruposRepositorio: DespesasGrupoRepositorio,
@@ -21,6 +21,7 @@ export class CriarDespesaGrupoUseCase {
     usuario_id,
     nome,
     valor,
+    data,
   }: CriarDespesaGrupoUseCaseProps) {
     const grupoMembros = await this.grupoMembrosRepositorio.findByUserIds(
       membros_participantes,
@@ -69,6 +70,7 @@ export class CriarDespesaGrupoUseCase {
         grupo_membros_id: membro.id,
         total_pago: null,
         data_pago: null,
+        data_criacao: data,
       }
     })
 

@@ -35,6 +35,7 @@ export const TransactionDatePicker = ({ visible, onClose, date, onChange }: Tran
             minimumDate={new Date(2015, 0, 1)}
             maximumDate={add(new Date(), { years: 1 })}
             style={styles.datePicker}
+            locale='pt-BR'
           />
           <View style={styles.datePickerActions}>
             <Button onPress={onClose} mode="contained" buttonColor="#48A6A7" style={{ borderRadius: 8 }}>
