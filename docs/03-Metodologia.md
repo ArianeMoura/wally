@@ -266,4 +266,4 @@ Para garantir um desenvolvimento eficiente e colaborativo, adotamos diversas fer
 Cada membro da equipe utiliza seu próprio computador ou notebook como ambiente de desenvolvimento configurado para suportar as tecnologias adotadas. O sistema operacional varia de acordo com a preferência individual, desde que compatível com as ferramentas utilizadas.
 
 ## Estratégia de Organização de Codificação
-Todos os artefatos relacionados à implementação e visualização dos conteúdos do projeto da aplicação serão inseridos no [Código Fonte](https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-wally/blob/main/src/README.md).
+Todos os artefatos relacionados à implementação e visualização dos conteúdos do projeto da aplicação serão inseridos no [Código Fonte](https://github.com/ArianeMoura/wally/blob/main/wally/README.md).
