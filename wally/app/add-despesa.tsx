@@ -8,10 +8,11 @@ import {
   StatusBar,
   Pressable,
   FlatList,
+  Alert,
 } from 'react-native';
 import { Dialog, Button, TextInput as TextInputPaper } from "react-native-paper"
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { API_URL } from '@env';
 import { useAuthStore } from '@/store/authStore';
@@ -19,6 +20,7 @@ import { Controller, useForm } from 'react-hook-form';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useGruposViewModel } from '@/viewModels/useGruposViewModel';
 import { TransactionDatePicker } from '@/components/TransactionDatePicker';
+
 interface Despesa {
   valor: string;
   data: string;
@@ -43,6 +45,52 @@ export default function AdicionarDespesaGrupo() {
     transactionDate,
   } = useGruposViewModel({ id: String(grupoId) })
 
+  const [displayValue, setDisplayValue] = useState('R$ 0,00')
+
+  const handleSubmitDespesaGrupoWithAlert = () => {
+    
+    handleSubmitDespesaGrupo()
+ 
+    Alert.alert(
+      "Sucesso",
+      "Despesa adicionada ao grupo!",
+      [
+        {
+          text: "OK",
+          onPress: () => router.push({
+            pathname: '/grupo',
+            params: {
+              id: grupoId,
+            }
+          })
+        }
+      ]
+    )
+  }
+
+  const formatCurrency = (value: string) => {
+    
+    const numbers = value.replace(/\D/g, '')
+   
+    if (!numbers) return 'R$ 0,00'
+    
+    const amount = parseInt(numbers) / 100
+    
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(amount)
+  }
+
+  const handleValueChange = (text: string, onChange: (value: number) => void) => {
+    const formatted = formatCurrency(text)
+    setDisplayValue(formatted)
+    
+    const numbers = text.replace(/\D/g, '')
+    const numericValue = numbers ? parseInt(numbers) / 100 : 0
+    onChange(numericValue)
+  }
+
   const handleSelectMember = useCallback(
     (u: any, membrosParticipantes: any[], onChange: (updated: any[]) => void) => {
       const index = membrosParticipantes.findIndex((usuario) => usuario.id === u.id);
@@ -63,13 +111,10 @@ export default function AdicionarDespesaGrupo() {
 
   return (
     <>
-
       <SafeAreaView style={styles.container}>
-
         <StatusBar backgroundColor="#9ACBD0" barStyle="light-content" />
 
         <View style={styles.botaoVoltar}>
-
           <Pressable
             onPress={() => router.push({
               pathname: '/grupo',
@@ -79,14 +124,10 @@ export default function AdicionarDespesaGrupo() {
             })}>
             <MaterialIcons name="arrow-back-ios" size={24} color="#006A71" />
           </Pressable>
-
         </View>
 
         <View style={styles.mainContent}>
-
           <Text style={styles.titulo}>{statusGrupo.data.nome}</Text>
-
-          {/* <Text style={styles.tituloDois}>Você pagou:</Text> */}
 
           <Text style={styles.labelNome}>Nome da Despesa</Text>
           <Controller
@@ -109,31 +150,26 @@ export default function AdicionarDespesaGrupo() {
             render={({ field }) => (
               <TextInput
                 style={styles.input}
-                placeholder="Valor"
-                value={field.value.toString()}
-                onChangeText={field.onChange}
+                placeholder="R$ 0,00"
+                value={displayValue}
+                onChangeText={(text) => handleValueChange(text, field.onChange)}
+                keyboardType="numeric"
               />
             )}
           />
 
           <Text style={styles.labelNome}>Data</Text>
-          <Pressable onPress={toggleDataPicker} style={styles.datePickerButton}>
+          <Pressable onPress={toggleDataPicker} style={styles.datePickerContainer}>
             <Controller
               control={despesaGrupoForm.control}
               name="data"
               render={({ field }) => (
-                <TextInputPaper
-                  value={formatDateForDisplay(field.value)}
-                  editable={false}
-                  style={styles.dialogInput}
-                  mode="outlined"
-                  outlineColor="#DADADA"
-                  activeOutlineColor="#A6A6A6"
-                  right={<TextInputPaper.Icon icon="calendar" onPress={toggleDataPicker} />}
-                  accessible={true}
-                  accessibilityLabel={`Data: ${formatDateForDisplay(field.value)}`}
-                  accessibilityHint="Toque para selecionar uma data"
-                />
+                <View style={styles.dateInputContainer}>
+                  <Text style={styles.dateText}>
+                    {formatDateForDisplay(field.value)}
+                  </Text>
+                  <MaterialIcons name="calendar-today" size={20} color="#999" />
+                </View>
               )}
             />
           </Pressable>
@@ -148,7 +184,6 @@ export default function AdicionarDespesaGrupo() {
                 date={field.value}
                 onChange={(set, date) => {
                   handleDateChange(set, date)
-
                   field.onChange(date)
                 }}
               />
@@ -157,7 +192,6 @@ export default function AdicionarDespesaGrupo() {
 
           <View>
             <Text style={styles.labelDivisao}>Dividir entre:</Text>
-
             <Controller
               control={despesaGrupoForm.control}
               name="membros_participantes"
@@ -166,16 +200,21 @@ export default function AdicionarDespesaGrupo() {
                   data={field.value}
                   keyExtractor={item => item.id}
                   renderItem={({ item }) => {
-                    //console.log({ item })
                     return (
                       <Pressable onPress={() => handleSelectMember(item, field.value, field.onChange)}>
-                        <View >
-                          <Text style={{ opacity: item.active ? 1 : 0.25 }}>{item.nome}</Text>
+                        <View style={styles.memberItem}>
+                          <Text style={[styles.memberText, { opacity: item.active ? 1 : 0.25 }]}>
+                            {item.nome}
+                          </Text>
+                          <MaterialIcons 
+                            name={item.active ? "check-circle" : "radio-button-unchecked"} 
+                            size={20} 
+                            color={item.active ? "#006A71" : "#ccc"} 
+                          />
                         </View>
                       </Pressable>
                     )
-                  }
-                  }
+                  }}
                   showsVerticalScrollIndicator={true}
                 />
               )}
@@ -188,10 +227,9 @@ export default function AdicionarDespesaGrupo() {
             accessibilityLabel="Salvar"
             accessibilityHint="Toque para salvar despesa"
             accessibilityRole="button"
-            onPress={handleSubmitDespesaGrupo}>
+            onPress={handleSubmitDespesaGrupoWithAlert}>
             <Text style={styles.textoBotao}>SALVAR</Text>
           </TouchableOpacity>
-
         </View>
       </SafeAreaView >
     </>
@@ -220,7 +258,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 16,
-    marginTop: 56,
+    marginTop: 46,
   },
   tituloDois: {
     fontFamily: 'Poppins_300Light',
@@ -244,7 +282,6 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 14,
     color: "#777",
-    marginBottom: 6,
     marginTop: 6,
   },
   labelDivisao: {
@@ -252,18 +289,16 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 14,
     color: "#777",
-    marginBottom: 26,
-    marginTop: 6,
   },
   botaoSalvar: {
     width: 330,
     height: 52,
-    marginTop: 76,
     backgroundColor: '#006A71',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 3.6,
+    marginTop: 20,
   },
   textoBotao: {
     color: "#fff",
@@ -271,13 +306,41 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_700Bold",
     fontSize: 16,
   },
-  datePickerButton: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  dialogInput: {
-    flex: 1,
-    backgroundColor: "#fff",
+  datePickerContainer: {
     marginBottom: 16,
+  },
+  dateInputContainer: {
+    height: 60,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#fff",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  dateText: {
+    fontFamily: "Inter",
+    fontSize: 14,
+    color: "#333",
+    flex: 1,
+  },
+  memberItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  memberText: {
+    fontFamily: "Inter",
+    fontSize: 14,
+    color: "#333",
   },
 });
