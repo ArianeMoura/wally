@@ -5,9 +5,11 @@ Projetado para simplificar o gerenciamento de **ganhos** e **despesas**, tanto i
 
 Com duas áreas principais, o Wally permite que você tenha **total controle sobre suas finanças pessoais**, registrando e categorizando entradas e saídas em tempo real, acompanhando seu saldo e tomando decisões mais inteligentes. Além disso, a funcionalidade de **gestão de despesas em grupo** facilita a organização de gastos compartilhados, proporcionando mais transparência e praticidade ao dividir contas com amigos, familiares ou colegas. Com o Wally, você não apenas administra seu dinheiro – você assume o controle do seu futuro financeiro! 
 
+Evolução independente de um projeto acadêmico. Arquitetura moderna e novas funcionalidades serão integradas ao longo do desenvolvimento ativo.
+
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8)
+<img src="https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8" width="126" height="126" alt="Wally" />
 
 </div>
 
