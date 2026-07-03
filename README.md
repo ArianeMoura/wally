@@ -1,16 +1,15 @@
 # Wally - A Sua Carteira Inteligente 💲
 
+O **Wally** é mais do que um simples aplicativo de gestão financeira – é o aliado ideal para quem busca **controle**, **clareza** e **praticidade** no dia a dia. 
+Projetado para simplificar o gerenciamento de **ganhos** e **despesas**, tanto individuais quanto compartilhadas, o Wally oferece uma experiência intuitiva, acessível e eficiente para transformar a forma como você lida com seu dinheiro. </br>
+
+Com duas áreas principais, o Wally permite que você tenha **total controle sobre suas finanças pessoais**, registrando e categorizando entradas e saídas em tempo real, acompanhando seu saldo e tomando decisões mais inteligentes. Além disso, a funcionalidade de **gestão de despesas em grupo** facilita a organização de gastos compartilhados, proporcionando mais transparência e praticidade ao dividir contas com amigos, familiares ou colegas. Com o Wally, você não apenas administra seu dinheiro – você assume o controle do seu futuro financeiro! 
+
 <div align="center">
 
 ![image](https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8)
 
 </div>
-
-
-O **Wally** é mais do que um simples aplicativo de gestão financeira – é o aliado ideal para quem busca **controle**, **clareza** e **praticidade** no dia a dia. 
-Projetado para simplificar o gerenciamento de **ganhos** e **despesas**, tanto individuais quanto compartilhadas, o Wally oferece uma experiência intuitiva, acessível e eficiente para transformar a forma como você lida com seu dinheiro. </br>
-
-Com duas áreas principais, o Wally permite que você tenha **total controle sobre suas finanças pessoais**, registrando e categorizando entradas e saídas em tempo real, acompanhando seu saldo e tomando decisões mais inteligentes. Além disso, a funcionalidade de **gestão de despesas em grupo** facilita a organização de gastos compartilhados, proporcionando mais transparência e praticidade ao dividir contas com amigos, familiares ou colegas. Com o Wally, você não apenas administra seu dinheiro – você assume o controle do seu futuro financeiro! 
 
 ### Documentação
 
