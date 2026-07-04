@@ -1,0 +1,31 @@
+name: EAS Build (mobile)
+
+# Build do app mobile via EAS. Manual (workflow_dispatch) para não consumir
+# cota a cada push. Requer o segredo EXPO_TOKEN configurado no repositório.
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Perfil do EAS (development | preview | production)'
+        required: true
+        default: preview
+
+jobs:
+  build:
+    name: EAS build
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Build
+        working-directory: apps/mobile
+        run: eas build --non-interactive --no-wait --platform all --profile ${{ github.event.inputs.profile }}

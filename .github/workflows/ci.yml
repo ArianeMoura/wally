@@ -14,6 +14,32 @@ jobs:
   quality:
     name: Lint · Typecheck · Test · Build
     runs-on: ubuntu-latest
+
+    # Postgres para os testes de integração da API (RLS, concorrência, etc.).
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: wally
+          POSTGRES_PASSWORD: wally
+          POSTGRES_DB: wally
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U wally"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      # Dono (migrations/seed) e runtime (wally_app, sujeito à RLS).
+      DATABASE_URL: postgres://wally:wally@localhost:5432/wally
+      APP_DATABASE_URL: postgres://wally_app:wally_app@localhost:5432/wally
+      # Segredos apenas de CI (não são de produção).
+      JWT_ACCESS_SECRET: ci_access_secret_0123456789abcdef0123456789abcdef
+      JWT_REFRESH_SECRET: ci_refresh_secret_fedcba9876543210fedcba9876543210
+
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +52,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Apply migrations (creates schema + RLS + wally_app role)
+        run: pnpm --filter @wally/api db:migrate
+
+      - name: Seed default categories
+        run: pnpm --filter @wally/api db:seed
+
       - name: Typecheck
         run: pnpm typecheck
 
@@ -37,3 +69,14 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  secret-scan:
+    name: Secret scanning (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

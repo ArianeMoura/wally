@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance } from 'fastify'
+import { randomUUID } from 'node:crypto'
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
@@ -40,7 +41,19 @@ export async function buildApp(
 ): Promise<FastifyInstance> {
   const app = Fastify({
     logger: loggerOptions,
+    // Correlação (RNF-015): honra x-request-id de entrada ou gera um UUID.
+    genReqId: (req) => {
+      const header = req.headers['x-request-id']
+      return typeof header === 'string' && header.length > 0
+        ? header
+        : randomUUID()
+    },
   }).withTypeProvider<ZodTypeProvider>()
+
+  // Ecoa o id de correlação na resposta.
+  app.addHook('onSend', async (request, reply) => {
+    reply.header('x-request-id', request.id)
+  })
 
   // Validação e serialização baseadas em esquemas Zod.
   app.setValidatorCompiler(validatorCompiler)
