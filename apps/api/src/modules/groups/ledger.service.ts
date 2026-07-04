@@ -17,6 +17,7 @@ import {
 } from '../../db/schema/groups'
 import { BadRequestError, NotFoundError } from '../../http/errors'
 import { requestHash, withIdempotency } from '../../lib/idempotency'
+import { emitFinancialEvent } from '../audit/audit.service'
 import { resolveSplit, type ResolvedShare } from './split'
 
 type ExpenseRow = typeof groupExpenses.$inferSelect
@@ -133,7 +134,15 @@ export function createExpense(
         )
 
         await tx.execute(sql`SELECT bump_group_version(${groupId})`)
-        return toExpenseResponse(expense!, shares)
+        const response = toExpenseResponse(expense!, shares)
+        await emitFinancialEvent(tx, {
+          actorId: userId,
+          entityType: 'group_expense',
+          entityId: expense!.id,
+          eventType: 'created',
+          after: response,
+        })
+        return response
       },
     })
   })
@@ -175,7 +184,15 @@ export function createSettlement(
           .returning()
 
         await tx.execute(sql`SELECT bump_group_version(${groupId})`)
-        return toSettlementResponse(settlement!)
+        const response = toSettlementResponse(settlement!)
+        await emitFinancialEvent(tx, {
+          actorId: userId,
+          entityType: 'settlement',
+          entityId: settlement!.id,
+          eventType: 'created',
+          after: response,
+        })
+        return response
       },
     })
   })

@@ -103,7 +103,12 @@ export async function transactionRoutes(app: FastifyInstance): Promise<void> {
     },
     (request) =>
       runAsUser(request.currentUserId, (tx) =>
-        updateTransaction(tx, request.params.id, request.body),
+        updateTransaction(
+          tx,
+          request.currentUserId,
+          request.params.id,
+          request.body,
+        ),
       ),
   )
 
@@ -120,7 +125,7 @@ export async function transactionRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request, reply) => {
       await runAsUser(request.currentUserId, (tx) =>
-        deleteTransaction(tx, request.params.id),
+        deleteTransaction(tx, request.currentUserId, request.params.id),
       )
       return reply.status(204).send(null)
     },

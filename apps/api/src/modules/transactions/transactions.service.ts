@@ -21,6 +21,7 @@ import type { Tx } from '../../db/rls'
 import { transactions } from '../../db/schema/finance'
 import { NotFoundError } from '../../http/errors'
 import { monthRange } from '../../lib/dates'
+import { emitFinancialEvent } from '../audit/audit.service'
 
 type TransactionRow = typeof transactions.$inferSelect
 
@@ -53,6 +54,13 @@ export async function createTransaction(
       occurredAt: body.occurredAt ? new Date(body.occurredAt) : undefined,
     })
     .returning()
+  await emitFinancialEvent(tx, {
+    actorId: userId,
+    entityType: 'transaction',
+    entityId: row!.id,
+    eventType: 'created',
+    after: toResponse(row!),
+  })
   return toResponse(row!)
 }
 
@@ -99,9 +107,17 @@ export async function listTransactions(
 
 export async function updateTransaction(
   tx: Tx,
+  userId: string,
   id: string,
   body: UpdateTransactionBody,
 ): Promise<TransactionResponse> {
+  const [before] = await tx
+    .select()
+    .from(transactions)
+    .where(and(eq(transactions.id, id), isNull(transactions.deletedAt)))
+    .limit(1)
+  if (!before) throw new NotFoundError('Transação não encontrada')
+
   const patch: Partial<TransactionRow> = {}
   if (body.type !== undefined) patch.type = body.type
   if (body.amountCents !== undefined) patch.amountCents = body.amountCents
@@ -116,16 +132,37 @@ export async function updateTransaction(
     .where(and(eq(transactions.id, id), isNull(transactions.deletedAt)))
     .returning()
   if (!row) throw new NotFoundError('Transação não encontrada')
+
+  await emitFinancialEvent(tx, {
+    actorId: userId,
+    entityType: 'transaction',
+    entityId: id,
+    eventType: 'updated',
+    before: toResponse(before),
+    after: toResponse(row),
+  })
   return toResponse(row)
 }
 
-export async function deleteTransaction(tx: Tx, id: string): Promise<void> {
+export async function deleteTransaction(
+  tx: Tx,
+  userId: string,
+  id: string,
+): Promise<void> {
   const [row] = await tx
     .update(transactions)
     .set({ deletedAt: new Date() })
     .where(and(eq(transactions.id, id), isNull(transactions.deletedAt)))
-    .returning({ id: transactions.id })
+    .returning()
   if (!row) throw new NotFoundError('Transação não encontrada')
+
+  await emitFinancialEvent(tx, {
+    actorId: userId,
+    entityType: 'transaction',
+    entityId: id,
+    eventType: 'deleted',
+    before: toResponse(row),
+  })
 }
 
 /** RF-008 — saldo automático do período (padrão: mês corrente). */

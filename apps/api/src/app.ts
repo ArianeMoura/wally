@@ -19,6 +19,7 @@ import { categoryRoutes } from './modules/categories/categories.routes'
 import { transactionRoutes } from './modules/transactions/transactions.routes'
 import { budgetRoutes } from './modules/budgets/budgets.routes'
 import { groupRoutes } from './modules/groups/groups.routes'
+import { auditRoutes } from './modules/audit/audit.routes'
 
 export interface BuildAppOptions {
   /** Origem(ns) permitida(s) no CORS. `false` bloqueia cross-origin. */
@@ -77,6 +78,7 @@ export async function buildApp(
   await app.register(transactionRoutes, { prefix: '/api/v1/transactions' })
   await app.register(budgetRoutes, { prefix: '/api/v1/budgets' })
   await app.register(groupRoutes, { prefix: '/api/v1/groups' })
+  await app.register(auditRoutes, { prefix: '/api/v1/events' })
 
   return app
 }
