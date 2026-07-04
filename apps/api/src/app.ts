@@ -15,6 +15,9 @@ import { healthRoutes } from './http/routes/health'
 import { errorHandler } from './http/error-handler'
 import { authPlugin } from './plugins/auth'
 import { authRoutes } from './modules/auth/auth.routes'
+import { categoryRoutes } from './modules/categories/categories.routes'
+import { transactionRoutes } from './modules/transactions/transactions.routes'
+import { budgetRoutes } from './modules/budgets/budgets.routes'
 
 export interface BuildAppOptions {
   /** Origem(ns) permitida(s) no CORS. `false` bloqueia cross-origin. */
@@ -64,6 +67,9 @@ export async function buildApp(
 
   await app.register(healthRoutes, { checkDb: options.checkDb })
   await app.register(authRoutes, { prefix: '/api/v1/auth' })
+  await app.register(categoryRoutes, { prefix: '/api/v1/categories' })
+  await app.register(transactionRoutes, { prefix: '/api/v1/transactions' })
+  await app.register(budgetRoutes, { prefix: '/api/v1/budgets' })
 
   return app
 }
