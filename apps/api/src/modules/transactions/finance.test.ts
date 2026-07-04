@@ -7,7 +7,7 @@ import { pool, ownerPool } from '../../db/client'
 let app: FastifyInstance
 
 beforeAll(async () => {
-  app = await buildApp({})
+  app = await buildApp({ rateLimitMax: 100000 })
   await app.ready()
 })
 

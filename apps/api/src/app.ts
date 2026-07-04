@@ -18,12 +18,15 @@ import { authRoutes } from './modules/auth/auth.routes'
 import { categoryRoutes } from './modules/categories/categories.routes'
 import { transactionRoutes } from './modules/transactions/transactions.routes'
 import { budgetRoutes } from './modules/budgets/budgets.routes'
+import { groupRoutes } from './modules/groups/groups.routes'
 
 export interface BuildAppOptions {
   /** Origem(ns) permitida(s) no CORS. `false` bloqueia cross-origin. */
   corsOrigin?: string | string[] | boolean
   /** Readiness do banco (opcional em testes). */
   checkDb?: () => Promise<void>
+  /** Teto global de rate limit por minuto (default 100). Alto em testes. */
+  rateLimitMax?: number
 }
 
 /**
@@ -45,7 +48,10 @@ export async function buildApp(
 
   await app.register(helmet)
   await app.register(cors, { origin: options.corsOrigin ?? false })
-  await app.register(rateLimit, { max: 100, timeWindow: '1 minute' })
+  await app.register(rateLimit, {
+    max: options.rateLimitMax ?? 100,
+    timeWindow: '1 minute',
+  })
   await app.register(authPlugin)
 
   await app.register(swagger, {
@@ -70,6 +76,7 @@ export async function buildApp(
   await app.register(categoryRoutes, { prefix: '/api/v1/categories' })
   await app.register(transactionRoutes, { prefix: '/api/v1/transactions' })
   await app.register(budgetRoutes, { prefix: '/api/v1/budgets' })
+  await app.register(groupRoutes, { prefix: '/api/v1/groups' })
 
   return app
 }
