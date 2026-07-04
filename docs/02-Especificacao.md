@@ -56,10 +56,21 @@ automação da divisão de gastos em grupo e relatórios para tomada de decisão
 | RF-014 | Adicionar membros ao grupo. | Alta |
 | RF-015 | Exibir a lista de grupos do usuário. | Alta |
 | RF-016 | Exibir a tela inicial. | Alta |
+| RF-017 | Categorizar transações (`categories`): categoria com ícone/cor, com sugestão automática determinística a partir da descrição e edição pelo usuário. | Alta |
+| RF-018 | Acertar contas no grupo — *settle up* (`settlements`): registrar a liquidação de saldo entre membros e recalcular quem é devedor/credor. | Alta |
+| RF-019 | Definir orçamentos/metas por categoria (`budgets`) com alerta ao ultrapassar o teto do período. | Média |
+| RF-020 | Registrar trilha de auditoria financeira imutável (`financial_events`): toda mutação de saldo emite um evento (ator, tipo, estado anterior/posterior, data). | Média |
+| RF-021 | Gerar insights financeiros assistidos por IA (resumo mensal e detecção de gastos atípicos) sobre dados anonimizados e mediante consentimento explícito. | Baixa (roadmap) |
 
 > Nota de saneamento: o requisito "exibir a tela inicial" aparecia duplicado como
 > RF-016 e RF-017 em versões anteriores da documentação. Foi consolidado em
-> **RF-016**.
+> **RF-016**; o identificador **RF-017** foi reatribuído acima, no contexto do
+> Wally 2.0 (ver [12-Especificacao-Tecnica.md](12-Especificacao-Tecnica.md)).
+
+> **Nota de idioma (restrição 10).** Requisitos e documentação são redigidos em
+> PT-BR; os identificadores de código, schema e API são em inglês. Os nomes entre
+> parênteses acima (`categories`, `settlements`, …) referenciam as entidades do
+> novo schema descrito em [05-Arquitetura.md](05-Arquitetura.md).
 
 ## Requisitos não funcionais
 
@@ -71,6 +82,16 @@ automação da divisão de gastos em grupo e relatórios para tomada de decisão
 | RNF-004 | Segurança conforme [SECURITY.md](../SECURITY.md): TLS em trânsito, hashing de senha (Argon2id/bcrypt), autenticação JWT e conformidade com a LGPD. | Alta |
 | RNF-005 | Front-end em React Native e back-end em Node.js. | Alta |
 | RNF-006 | Testado em dispositivos de baixo e alto desempenho. | Média |
+| RNF-007 | Consistência transacional (ACID): toda operação que altera saldo executa em uma transação de banco atômica e isolada. | Alta |
+| RNF-008 | Controle de concorrência: operações de divisão/liquidação usam bloqueio pessimista (`FOR UPDATE`) no agregado do grupo, ou versionamento otimista com *retry*, evitando *lost update*. | Alta |
+| RNF-009 | Idempotência: endpoints de escrita financeira aceitam `Idempotency-Key`; *retries* de rede não geram registros duplicados. | Alta |
+| RNF-010 | Precisão monetária: valores em inteiros de centavos (`float` proibido); divisões usam distribuição por maior resto (soma das cotas == total). | Alta |
+| RNF-011 | Autenticação moderna: Argon2id; *access token* JWT curto (~15 min) + *refresh token* rotativo hasheado no servidor com detecção de reúso; rate limiting em login/reset. | Alta |
+| RNF-012 | Offline: leitura *cache-first* com cache persistido + escrita online otimista com reconciliação *server-authoritative*. | Alta |
+| RNF-013 | Qualidade em CI como *gate*: lint + typecheck estrito + testes + build verdes obrigatórios para *merge*, com piso de cobertura reforçado nos use-cases financeiros. | Alta |
+| RNF-014 | Privacidade para IA: nenhum dado pessoal identificável trafega para serviços de IA sem anonimização/pseudonimização e consentimento explícito (LGPD). | Alta |
+| RNF-015 | Observabilidade: logs estruturados (pino), métricas e tracing por correlação em toda requisição; SLOs de latência/erro. | Média |
+| RNF-016 | Internacionalização: textos de UI externalizados (`i18next`), PT-BR como padrão e prontos para inglês. | Média |
 
 ## Restrições
 
@@ -81,6 +102,11 @@ automação da divisão de gastos em grupo e relatórios para tomada de decisão
 | 03 | O código deve seguir boas práticas e ser documentado. |
 | 04 | O aplicativo deve estar em conformidade com a LGPD. |
 | 05 | O aplicativo deve permitir visualização offline de dados já sincronizados, exigindo conexão para sincronização. |
+| 06 | Valores monetários são representados como inteiros de centavos (ou `DECIMAL`); `float`/`double` é proibido para dinheiro. |
+| 07 | Toda mutação de saldo ocorre dentro de uma transação de banco com isolamento adequado e controle de concorrência. |
+| 08 | O suporte offline segue *cache-first* na leitura e escrita online otimista (refina e substitui o escopo da restrição 05). |
+| 09 | Nenhum dado identificável é enviado a serviços de IA sem anonimização e consentimento explícito (LGPD). |
+| 10 | Idioma: código, schema de banco e API em inglês; documentação em PT-BR; textos de UI via i18n. |
 
 ## Diagrama de casos de uso
 
@@ -109,6 +135,19 @@ acompanhar a cobertura de cada requisito.
 | RF-014 | | | | | | | | | | | | | | X | X | |
 | RF-015 | | | | | | | | | | | | | | X | X | |
 | RF-016 | | | | | | | | | | | | | | | | X |
+
+### Rastreabilidade dos requisitos do Wally 2.0 (RF-017…021)
+
+Para manter a matriz legível, as relações dos novos requisitos são descritas em
+lista (a matriz completa é expandida na implementação):
+
+| Requisito | Relaciona-se com | Racional |
+|-----------|------------------|----------|
+| RF-017 (categorias) | RF-005, RF-011 | Categoriza transações pessoais e despesas de grupo; base para RF-019 e RF-021. |
+| RF-018 (settle up) | RF-011, RF-012, RF-013 | Liquida os saldos calculados na divisão e alimenta o histórico do grupo. |
+| RF-019 (orçamentos) | RF-017, RF-008 | Consome categorias e o cálculo de saldo para alertar estouro. |
+| RF-020 (event log) | RF-005, RF-011, RF-012, RF-018 | Registra toda mutação de saldo (pessoal e de grupo). |
+| RF-021 (IA) | RF-017, RF-020 | Insights derivam de transações categorizadas e do event log anonimizado. |
 
 ## Casos de uso × telas
 

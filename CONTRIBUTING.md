@@ -11,10 +11,13 @@ Pull Requests descrito abaixo.
 
 ```
 wally/            # App mobile (Expo / React Native + TypeScript)
-wally-backend/    # API (Node.js / Fastify / TypeORM / PostgreSQL)
+wally-backend/    # API (Node.js / Fastify / Drizzle ORM / PostgreSQL)
 docs/             # Documentação de produto e engenharia
-src/bd/           # Snapshot SQL do schema (derivado das migrations)
 ```
+
+> **Wally 2.0.** A persistência usa **Drizzle ORM**; o schema/migrations vivem em
+> `wally-backend/src/db/`. Código, schema e API são em **inglês**; documentação em
+> **PT-BR** (ver *Convenção de idioma* abaixo).
 
 Cada projeto (`wally/`, `wally-backend/`) tem seu próprio `package.json` e é
 executado de forma independente.
@@ -60,10 +63,16 @@ Tipos comuns: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `ci`.
 
 ## 4. Padrões de código
 
-- **TypeScript** em todo o código; evitar `any`.
+- **Convenção de idioma (restrição 10).** Identificadores de **código, schema de
+  banco e API em inglês** (`users`, `groupExpenses`, `/api/v1/groups`);
+  **documentação em PT-BR**; textos de UI externalizados via **i18n** (PT-BR
+  padrão). Não misturar PT/EN em identificadores.
+- **TypeScript** em todo o código; `any` é **proibido** (typecheck estrito na CI).
 - **Back-end** — respeitar a arquitetura em camadas
-  (`controller → use-case → repositório → entity`). Regra de negócio vive nos
-  *use-cases*, nunca no controller. Ver [docs/05-Arquitetura.md](docs/05-Arquitetura.md).
+  (`controller → use-case → repository → schema (Drizzle)`). Regra de negócio vive
+  nos *use-cases*, nunca no controller. Toda mutação de saldo roda em transação com
+  controle de concorrência. Ver [docs/05-Arquitetura.md](docs/05-Arquitetura.md) e
+  [docs/12-Especificacao-Tecnica.md](docs/12-Especificacao-Tecnica.md).
 - **Mobile** — respeitar o padrão MVVM (`view` em `app/` e `components/`,
   lógica em `viewModels/`, estado em `store/`).
 - **Lint/format** — o código deve passar no ESLint antes do commit:

@@ -5,6 +5,15 @@ mobile (Expo/React Native) e uma API (Node.js/Fastify), com persistência em
 **PostgreSQL**. A arquitetura prioriza **separação de responsabilidades**,
 **testabilidade** e **escalabilidade**.
 
+> **Wally 2.0 — produto em evolução.** O Wally passou de projeto acadêmico a
+> produto pessoal, com **banco de dados novo**, API própria, hospedagem e evolução
+> contínua. Aproveitando a janela do banco *greenfield*, a persistência migrou de
+> TypeORM para **Drizzle ORM** (SQL-first) e o **schema/código/API nasceram em
+> inglês** (documentação permanece em PT-BR — restrição 10 em
+> [02-Especificacao.md](02-Especificacao.md)). Os casos de concorrência financeira
+> e a fundação de IA estão detalhados em
+> [12-Especificacao-Tecnica.md](12-Especificacao-Tecnica.md).
+
 ## Visão geral (C4 — nível de contêiner)
 
 ```
@@ -12,7 +21,7 @@ mobile (Expo/React Native) e uma API (Node.js/Fastify), com persistência em
 │   App Mobile         │  ───────────────────▶   │        API (Fastify)      │
 │   Expo / RN (MVVM)   │  ◀───────────────────   │  Clean Architecture       │
 └─────────────────────┘        JWT (Bearer)      └───────────┬──────────────┘
-                                                             │ TypeORM
+                                                             │ Drizzle ORM
                                                              ▼
                                                   ┌──────────────────────────┐
                                                   │      PostgreSQL           │
@@ -36,7 +45,7 @@ O código adere aos princípios **SOLID** e a padrões consolidados:
 Fluxo de uma requisição:
 
 ```
-routes/ ─▶ controllers/ ─▶ use-cases/ ─▶ repositorios/ ─▶ entity/ (TypeORM) ─▶ PostgreSQL
+routes/ ─▶ controllers/ ─▶ use-cases/ ─▶ repositories/ ─▶ schema/ (Drizzle) ─▶ PostgreSQL
    │            │              │              │
    │            │              │              └─ acesso a dados isolado
    │            │              └─ REGRA DE NEGÓCIO (única fonte de decisão)
@@ -44,19 +53,22 @@ routes/ ─▶ controllers/ ─▶ use-cases/ ─▶ repositorios/ ─▶ entity
    └─ define endpoints, middleware de auth (JWT)
 ```
 
-- **`routes/`** — declaração dos endpoints e associação ao middleware de
-  autenticação.
+- **`routes/`** — declaração dos endpoints (`/api/v1/...`) e associação ao
+  middleware de autenticação. Validação de entrada/saída via Zod
+  (`fastify-type-provider-zod`).
 - **`controllers/`** — traduzem a requisição HTTP em chamadas de use-case e
   formatam a resposta. Sem regra de negócio.
 - **`use-cases/`** — o coração da aplicação, organizados por domínio (`auth`,
-  `grupos`, `transacoes`, `despesasGrupo`, `status`, `usuarios`). Cada caso de uso
-  é uma unidade testável.
-- **`repositorios/`** — encapsulam o acesso a dados via TypeORM.
-- **`entity/`** — entidades mapeadas para tabelas.
-- **`dtos/`** — contratos de dados de entrada/saída.
-- **`middleware.ts`** — autenticação via JWT (Bearer token).
+  `users`, `transactions`, `categories`, `groups`, `groupExpenses`, `settlements`,
+  `budgets`). Cada caso de uso é uma unidade testável; os que alteram saldo rodam
+  em transação (ver *Consistência transacional e concorrência*).
+- **`repositories/`** — encapsulam o acesso a dados via **Drizzle ORM**.
+- **`db/schema/`** — tabelas tipadas do Drizzle (fonte da verdade do schema).
+- **`dtos/` (esquemas Zod)** — contratos de dados de entrada/saída, compartilháveis
+  com o mobile.
+- **`middleware.ts`** — autenticação via JWT (Bearer token) e checagem de RBAC.
 
-Benefícios: a regra de negócio é independente de Fastify e de TypeORM, o que
+Benefícios: a regra de negócio é independente de Fastify e de Drizzle, o que
 facilita testes unitários dos use-cases e a evolução de infraestrutura sem tocar no
 domínio.
 
@@ -71,10 +83,17 @@ View (app/, components/) ─▶ ViewModel (viewModels/) ─▶ Store/API (store/
 - **ViewModel** — lógica de apresentação (`useLoginViewModel`,
   `useWalletViewModel`, `useGruposViewModel`, ...), isolando as telas dos detalhes
   de estado e chamadas.
-- **Estado e sessão** — `store/` com **Zustand**; o token é guardado com
-  **expo-secure-store** (Keychain/Keystore).
-- **Dados remotos** — **TanStack Query** para cache, sincronização e estados de
-  carregamento/erro.
+- **Estado local/sessão/UI** — `store/` com **Zustand** (sessão, tema, estado
+  efêmero); o token é guardado com **expo-secure-store** (Keychain/Keystore).
+- **Estado remoto (servidor)** — **TanStack Query v5** para cache, sincronização e
+  estados de carregamento/erro. O cache é **persistido** (via
+  `@tanstack/query-persist-client-core` sobre **react-native-mmkv**) para leitura
+  *offline cache-first*; `onlineManager`/`focusManager` integram-se ao
+  **NetInfo**. Mutações financeiras são **otimistas** (`onMutate` + *rollback*),
+  reconciliando com o servidor por invalidação. Ver *Estratégia offline*.
+- **Formulários** — **React Hook Form + Zod** (`@hookform/resolvers`), com o mesmo
+  esquema Zod usado pela API (contratos ponta-a-ponta).
+- **i18n** — textos externalizados com **i18next** (PT-BR padrão, pronto para EN).
 
 ## Modelo de dados
 
@@ -86,24 +105,67 @@ Diagramas (classes, ER e esquema relacional):
 
 ![Esquema Relacional](https://github.com/user-attachments/assets/df6e22bc-06a5-4170-aeee-da422e4e660d)
 
-Entidades principais: `usuarios`, `transacoes`, `grupos`, `grupos_membros`,
-`despesas_grupo`, `pagamentos_despesa`. Chaves primárias em **UUID**, exclusão via
-*soft delete* (`data_exclusao`) e integridade referencial com `ON DELETE CASCADE`.
+> Os diagramas acima refletem o schema legado (PT-BR). O **schema do Wally 2.0**
+> abaixo é o vigente: nomes em inglês, banco novo, sem migração de dados legados.
 
-**Fonte única de verdade:** as **migrations do TypeORM** (`src/migration/`). O
-arquivo [`src/bd/banco.sql`](../src/bd/banco.sql) é um snapshot de consulta e não
-deve divergir das migrations.
+Schema do Wally 2.0 — chaves primárias em **UUID**, *soft delete* (`deleted_at`),
+timestamps e valores monetários em **inteiros de centavos** (`amount_cents`):
 
-> **Inconsistência a corrigir (backlog):** a coluna `senha` está como
-> `VARCHAR(100)` no `banco.sql` e `varchar(255)` na entidade. Com a adoção de hash
-> **Argon2id** (ver [SECURITY.md](../SECURITY.md)), a coluna precisa de **≥ 255**
-> caracteres; padronizar em ambos.
+| Tabela | Papel | Campos-chave |
+|---|---|---|
+| `users` | contas | `id, name, email (unique), password_hash, avatar_url` |
+| `categories` | RF-017 | `id, user_id?, name, icon, color, kind (income \| expense)` |
+| `transactions` | finanças pessoais | `id, user_id, category_id, type, amount_cents, description, occurred_at` |
+| `groups` | grupos | `id, name, owner_id` — **agregado travado em divisão/liquidação** |
+| `group_members` | membros | `id, group_id, user_id, role` · `unique(group_id, user_id)` |
+| `group_expenses` | despesas de grupo | `id, group_id, payer_id, amount_cents, category_id, description` |
+| `expense_shares` | cotas da divisão | `id, group_expense_id, user_id, share_cents` · invariante `Σ share_cents == amount_cents` |
+| `settlements` | RF-018 (settle up) | `id, group_id, from_user_id, to_user_id, amount_cents, settled_at` |
+| `budgets` | RF-019 | `id, user_id, category_id, period, limit_cents` |
+| `financial_events` | RF-020 (event log) | `id, actor_id, entity_type, entity_id, event_type, before jsonb, after jsonb, occurred_at` |
+| `refresh_tokens` | RNF-011 | `id, user_id, token_hash, family_id, expires_at, revoked_at` |
+| `idempotency_keys` | RNF-009 | `key (pk), user_id, request_hash, response jsonb, created_at` |
+
+**Fonte única de verdade:** as **migrations do drizzle-kit** (`db/migrations/`),
+geradas a partir do schema tipado em `db/schema/`. Não há mais `banco.sql` de
+referência. A coluna `password_hash` é dimensionada para hashes **Argon2id** (≥ 255).
+
+## Consistência transacional e concorrência
+
+Operações que alteram saldo (RF-011/012/018) são o ponto crítico de correção
+financeira. O padrão obrigatório: **uma única transação** que trava o agregado do
+grupo, relê o estado, aplica a mutação, recalcula os saldos e grava o
+`financial_event` — tudo ou nada (RNF-007/008).
+
+```ts
+await db.transaction(async (tx) => {
+  const group = await tx.select().from(groups)
+    .where(eq(groups.id, groupId)).for('update')   // bloqueio pessimista do agregado
+  // relê saldos → aplica mutação → recalcula (Σ saldos == 0) → grava financial_event
+})                                                  // commit atômico
+```
+
+Alternativa para baixa contenção: coluna `version` (concorrência otimista) + *retry*
+em conflito. Escritas usam `Idempotency-Key` (RNF-009) para tolerar *retries* de
+rede sem duplicar. Detalhes e casos extremos em
+[12-Especificacao-Tecnica.md](12-Especificacao-Tecnica.md).
+
+## Estratégia offline
+
+Segue a melhor prática de mercado (restrição 08), **não** offline-first pleno com
+fila de escrita — inadequado para um livro-razão de grupo compartilhado:
+
+- **Leitura:** *cache-first* com o cache do TanStack Query persistido no
+  **react-native-mmkv**; dados já sincronizados ficam disponíveis offline.
+- **Escrita:** exige conexão, porém com **UI otimista** (aplica localmente, envia,
+  faz *rollback* se o servidor recusar). O **servidor é a autoridade** sobre saldos
+  de grupo; a reconciliação ocorre por invalidação/refetch ao reconectar.
 
 ## Fluxo de interação
 
 1. O usuário interage com o app mobile (consultas, registro de transações).
 2. A View aciona a ViewModel, que chama a API via TanStack Query.
-3. A API autentica (JWT), executa o caso de uso e acessa o PostgreSQL via TypeORM.
+3. A API autentica (JWT), executa o caso de uso e acessa o PostgreSQL via Drizzle ORM.
 4. A resposta retorna ao app, que atualiza a interface de forma reativa.
 
 ![Fluxo de interação](https://github.com/user-attachments/assets/b79e5a70-9259-4bfd-ba69-af17519786ef)
@@ -112,10 +174,10 @@ deve divergir das migrations.
 
 | Camada | Tecnologias |
 |---|---|
-| Mobile | React Native, Expo, expo-router, Zustand, TanStack Query, React Hook Form, React Native Paper |
-| API | Node.js, Fastify, TypeORM, JWT, Swagger (OpenAPI) |
-| Dados | PostgreSQL |
-| Infra | Docker; deploy sob HTTPS/TLS (ver [09-CICD.md](09-CICD.md) e [SECURITY.md](../SECURITY.md)) |
+| Mobile | React Native, Expo, expo-router, Zustand, TanStack Query v5 (+ persist/MMKV), NetInfo, React Hook Form + Zod, React Native Paper, i18next, expo-secure-store |
+| API | Node.js, Fastify, Drizzle ORM (+ drizzle-kit), Zod (`fastify-type-provider-zod`), `@fastify/jwt` / `helmet` / `rate-limit`, JWT, Swagger (OpenAPI) |
+| Dados | PostgreSQL 16 |
+| Infra | Docker + docker-compose (com Postgres); deploy sob HTTPS/TLS+HSTS (ver [09-CICD.md](09-CICD.md) e [SECURITY.md](../SECURITY.md)) |
 
 ## Segurança e qualidade
 

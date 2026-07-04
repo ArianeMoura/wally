@@ -40,9 +40,13 @@ Dois aplicativos independentes, ambos em **TypeScript**:
 
 | Camada | Stack | Padrão |
 |---|---|---|
-| **Mobile** — `wally/` | Expo, React Native, expo-router, Zustand, TanStack Query, React Hook Form | MVVM |
-| **API** — `wally-backend/` | Node.js, Fastify, TypeORM, PostgreSQL, JWT, Swagger | Arquitetura em camadas (Clean Architecture) |
-| **Infraestrutura** | Docker, PostgreSQL | Migrations versionadas |
+| **Mobile** — `wally/` | Expo, React Native, expo-router, Zustand, TanStack Query (+ persist/MMKV), React Hook Form + Zod, i18next | MVVM |
+| **API** — `wally-backend/` | Node.js, Fastify, Drizzle ORM, PostgreSQL, Zod, JWT, Swagger | Arquitetura em camadas (Clean Architecture) |
+| **Infraestrutura** | Docker, PostgreSQL | Migrations versionadas (drizzle-kit) |
+
+> **Wally 2.0.** Produto em evolução com banco novo: persistência em **Drizzle ORM**
+> e **código/schema/API em inglês** (docs em PT-BR). Ver
+> [docs/12-Especificacao-Tecnica.md](docs/12-Especificacao-Tecnica.md).
 
 Detalhes em [docs/05-Arquitetura.md](docs/05-Arquitetura.md).
 
@@ -85,6 +89,7 @@ Guias completos: [`wally/README.md`](wally/README.md) e
 | 09 | [CI/CD](docs/09-CICD.md) | Pipelines GitHub Actions |
 | 10 | [Qualidade e Observabilidade](docs/10-Qualidade-e-Observabilidade.md) | ISO/IEC 25010, métricas, monitoramento |
 | 11 | [Referências](docs/11-Referencias.md) | Fontes citadas |
+| 12 | [Especificação Técnica](docs/12-Especificacao-Tecnica.md) | Concorrência financeira, edge cases e fundação de IA |
 
 **Governança:** [CONTRIBUTING.md](CONTRIBUTING.md) ·
 [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)

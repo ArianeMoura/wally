@@ -1,75 +1,58 @@
-import 'dotenv/config'
-import fastify from 'fastify'
-import 'reflect-metadata'
-import { AppDataSource } from './data-source'
-import { routes } from './routes'
+import Fastify, { type FastifyInstance } from 'fastify'
 import cors from '@fastify/cors'
+import helmet from '@fastify/helmet'
+import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
+import {
+  serializerCompiler,
+  validatorCompiler,
+  jsonSchemaTransform,
+  type ZodTypeProvider,
+} from 'fastify-type-provider-zod'
+import { loggerOptions } from './config/logger'
+import { healthRoutes } from './http/routes/health'
 
-const server = fastify({
-  logger: true,
-})
+export interface BuildAppOptions {
+  /** Origem(ns) permitida(s) no CORS. `false` bloqueia cross-origin. */
+  corsOrigin?: string | string[] | boolean
+  /** Readiness do banco (opcional em testes). */
+  checkDb?: () => Promise<void>
+}
 
-// Swagger configuration
-server.register(swagger, {
-  swagger: {
-    info: {
-      title: 'API Wally',
-      description:
-        'Documentação da API do aplicativo Wally - Sistema de gerenciamento de despesas compartilhadas',
-      version: '1.0.0',
+/**
+ * Monta a aplicação Fastify com validação Zod ponta-a-ponta, hardening
+ * (helmet, rate-limit, CORS restrito), OpenAPI e health checks.
+ * Não faz `listen` — isso fica em `server.ts` (testável via `app.inject`).
+ */
+export async function buildApp(
+  options: BuildAppOptions = {},
+): Promise<FastifyInstance> {
+  const app = Fastify({
+    logger: loggerOptions,
+  }).withTypeProvider<ZodTypeProvider>()
+
+  // Validação e serialização baseadas em esquemas Zod.
+  app.setValidatorCompiler(validatorCompiler)
+  app.setSerializerCompiler(serializerCompiler)
+
+  await app.register(helmet)
+  await app.register(cors, { origin: options.corsOrigin ?? false })
+  await app.register(rateLimit, { max: 100, timeWindow: '1 minute' })
+
+  await app.register(swagger, {
+    openapi: {
+      info: {
+        title: 'Wally API',
+        description: 'API do Wally 2.0',
+        version: '2.0.0',
+      },
     },
-    host: 'localhost:3333',
-    schemes: ['http'],
-    consumes: ['application/json'],
-    produces: ['application/json'],
-    tags: [
-      { name: 'auth', description: 'Endpoints de autenticação' },
-      {
-        name: 'usuarios',
-        description: 'Endpoints de gerenciamento de usuários',
-      },
-      { name: 'transacoes', description: 'Endpoints de transações' },
-      { name: 'grupos', description: 'Endpoints de gerenciamento de grupos' },
-      { name: 'status', description: 'Endpoints de status e saldo' },
-      { name: 'pagamentos', description: 'Endpoints de pagamentos' },
-      {
-        name: 'despesas-grupos',
-        description: 'Endpoints de despesas em grupo',
-      },
-    ],
-    securityDefinitions: {
-      bearerAuth: {
-        type: 'apiKey',
-        name: 'Authorization',
-        in: 'header',
-        description: 'Token de autenticação JWT (Bearer token)',
-      },
-    },
-  },
-})
+    transform: jsonSchemaTransform,
+  })
+  await app.register(swaggerUi, { routePrefix: '/wally/documentation' })
 
-server.register(swaggerUi, {
-  routePrefix: '/wally/documentation',
-  uiConfig: {
-    docExpansion: 'list',
-    deepLinking: false,
-  },
-})
+  await app.register(healthRoutes, { checkDb: options.checkDb })
 
-server.register(cors, {
-  origin: '*',
-})
-
-server.register(routes, { prefix: '/wally' })
-
-server.listen({ port: 3333, host: '0.0.0.0' }).then(() => {
-  AppDataSource.initialize()
-    .then(() => {
-      console.log('Database connected')
-    })
-    .catch((error) => console.log(error))
-
-  console.log('Server HTTP is running on port 3333')
-})
+  return app
+}

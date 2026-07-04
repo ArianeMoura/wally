@@ -18,6 +18,8 @@ produto e como executá-lo, consulte o [README principal](../README.md).
 - [03 — Processo de Desenvolvimento](03-Processo-de-Desenvolvimento.md) — Git flow e
   GitHub Projects.
 - [05 — Arquitetura](05-Arquitetura.md) — camadas, SOLID, MVVM e modelo de dados.
+- [12 — Especificação Técnica](12-Especificacao-Tecnica.md) — concorrência
+  financeira, casos extremos e fundação de IA.
 - [08 — Estratégia de Testes](08-Estrategia-de-Testes.md) — pirâmide de testes e
   automação.
 - [09 — CI/CD](09-CICD.md) — pipelines de GitHub Actions.

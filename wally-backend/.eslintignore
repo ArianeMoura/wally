@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+src/db/migrations/
+
+# Código legado TypeORM — backlog de migração (fases F1–F7)
+dtos/
+src/controllers/
+src/data-source.ts
+src/entity/
+src/middleware.ts
+src/migration/
+src/repositorios/
+src/routes/
+src/types/
+src/use-cases/

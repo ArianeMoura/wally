@@ -2,6 +2,8 @@
 .vscode/
 node_modules/
 build/
+dist/
+coverage/
 tmp/
 temp/
 

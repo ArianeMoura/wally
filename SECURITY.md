@@ -70,8 +70,13 @@ vulnerabilidades.
    > carregado** e o fallback `'secret'` é sempre usado. Padronizar o nome da
    > variável e remover o fallback.
 
-3. **JWT de curta duração + refresh token.** Reduzir a janela de uso de um token
-   vazado; permitir revogação de sessão.
+3. **JWT de curta duração + refresh token rotativo com detecção de reúso.**
+   *Access token* curto (~15 min) + *refresh token* de longa duração **rotacionado a
+   cada uso**. O refresh é **hasheado no servidor** (tabela `refresh_tokens`, nunca
+   em texto claro) e pertence a uma **família** (`family_id`): se um refresh já
+   usado/rotacionado for reapresentado, trata-se de indício de vazamento e **toda a
+   família é revogada**. Reduz a janela de um token vazado e permite revogação de
+   sessão.
 
 4. **MFA/2FA (TOTP).** Segundo fator opcional para usuários e **obrigatório para
    contas administrativas**.
@@ -96,10 +101,10 @@ vulnerabilidades.
 
 ## 4. Proteção da Aplicação (API)
 
-- **Validação de entrada** em todas as rotas (schemas Fastify/DTOs) para prevenir
-  injeção e dados malformados.
-- **Prevenção de SQL Injection** via ORM parametrizado (TypeORM) — manter; evitar
-  concatenação de SQL cru.
+- **Validação de entrada** em todas as rotas (esquemas Zod via
+  `fastify-type-provider-zod`) para prevenir injeção e dados malformados.
+- **Prevenção de SQL Injection** via consultas parametrizadas do **Drizzle ORM** —
+  evitar concatenação de SQL cru.
 - **Rate limiting** global e reforçado em rotas de autenticação.
 - **Cabeçalhos de segurança** (`helmet`/equivalente): `Content-Security-Policy`,
   `X-Content-Type-Options`, `Strict-Transport-Security`.

@@ -25,10 +25,33 @@ define os níveis de teste, as metas e a integração com os pipelines.
   há runner de teste instalado no back-end.
 - **Metas (backlog):**
   - Adicionar runner ao back-end (Vitest/Jest) e cobrir os use-cases de `auth`,
-    `transacoes`, `grupos` e `status`.
-  - Testes de integração para as rotas da API.
+    `transactions`, `groups`, `groupExpenses` e `settlements`.
+  - Testes de integração para as rotas da API (Fastify `inject` + Testcontainers).
   - Elevar a cobertura de forma incremental; medir cobertura na CI e não permitir
     regressão.
+
+### Gates de cobertura (Wally 2.0)
+
+Cobertura é um *gate* bloqueante na CI (RNF-013), com piso reforçado onde o risco é
+financeiro:
+
+| Escopo | Piso de cobertura |
+|---|---|
+| Global (backend + mobile) | ~70% linhas |
+| Use-cases financeiros (`transactions`, `groupExpenses`, `settlements`, `budgets`) | ~90% linhas |
+
+### Teste de concorrência (obrigatório)
+
+Os casos extremos de [12-Especificacao-Tecnica.md](12-Especificacao-Tecnica.md) exigem
+testes específicos, além dos unitários/integração:
+
+- **Divisão/liquidação concorrente:** disparar N requisições paralelas de
+  `split`/`settle` no mesmo grupo e assertar a invariante `Σ saldos == 0` e ausência
+  de *lost update* (valida o `FOR UPDATE`/transação — RNF-007/008).
+- **Idempotência:** reenviar a mesma requisição com o mesmo `Idempotency-Key` e
+  assertar **um único** efeito (RNF-009).
+- **Arredondamento:** dividir valores não exatos (ex.: 1000 centavos / 3) e assertar
+  `Σ expense_shares == amount_cents` (RNF-010).
 
 ## Casos de teste funcionais (referência)
 
@@ -52,6 +75,11 @@ Os fluxos abaixo servem de base para automação e verificação manual:
 | CT-14 | RF-014 | Adicionar membros |
 | CT-15 | RF-015 | Listar grupos |
 | CT-16 | RF-016 | Exibir tela inicial |
+| CT-17 | RF-017 | Categorizar transação (sugestão automática + edição) |
+| CT-18 | RF-018 | Acertar contas no grupo e recalcular saldos |
+| CT-19 | RF-019 | Alertar ao estourar orçamento por categoria |
+| CT-20 | RF-020 | Registrar evento financeiro em mutação de saldo |
+| CT-21 | RF-021 | Gerar insight de IA sobre dados anonimizados (com consentimento) |
 
 ## Testes de usabilidade
 

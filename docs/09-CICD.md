@@ -54,7 +54,9 @@ jobs:
         with: { node-version: 20, cache: npm, cache-dependency-path: wally-backend/package-lock.json }
       - run: npm ci
       - run: npx eslint .
-      - run: npm test --if-present
+      - run: npx tsc --noEmit          # typecheck estrito (any proibido)
+      - run: npm run db:migrate:check   # migrations Drizzle aplicam limpo no banco de teste
+      - run: npm test -- --coverage     # falha se abaixo do piso de cobertura
       - run: npm run build
 
   mobile:
@@ -175,9 +177,29 @@ jobs:
 - Variáveis de ambiente de execução seguem os `.env.example` de cada projeto e, em
   produção, um cofre gerenciado (ex.: AWS Secrets Manager). Ver [SECURITY.md](../SECURITY.md).
 
+## Gates bloqueantes de qualidade (Wally 2.0)
+
+Estes *checks* são **obrigatórios** para *merge* em `main` (RNF-013), não opcionais:
+
+| Gate | Ferramenta | Critério de falha |
+|---|---|---|
+| Lint | ESLint | Qualquer erro de lint |
+| Typecheck | `tsc --noEmit` (strict) | Qualquer erro de tipo; uso de `any` |
+| Testes | Vitest/Jest + jest-expo (+ Testcontainers) | Qualquer teste vermelho |
+| Cobertura | relatório de cobertura | Abaixo do piso (~70% global; ~90% financeiro — ver [08](08-Estrategia-de-Testes.md)) |
+| Migrations | drizzle-kit | Migration não aplica limpo / *drift* de schema |
+| SAST | CodeQL | Alerta de severidade alta |
+| Segredos | Gitleaks + GitHub Secret Scanning | Qualquer segredo detectado |
+| Dependências | Dependabot / `npm audit` | CVE **alta/crítica** |
+| Commits | commitlint (Conventional Commits) | Mensagem fora do padrão |
+
+Higiene local via **Husky + lint-staged** (lint + typecheck em *pre-commit*) e
+Prettier como formatador.
+
 ## Próximos passos (backlog)
 
 - [ ] Criar `.github/workflows/` com os pipelines acima.
-- [ ] Adicionar runner de testes ao back-end para habilitar `npm test`.
-- [ ] Proteger `main` (required checks: CI, CodeQL, Gitleaks + review).
+- [ ] Adicionar runner de testes (Vitest/Jest) ao back-end e relatório de cobertura.
+- [ ] Configurar Husky + lint-staged + commitlint.
+- [ ] Proteger `main` (required checks: CI, cobertura, CodeQL, Gitleaks + review).
 - [ ] Adicionar `PULL_REQUEST_TEMPLATE.md` e `ISSUE_TEMPLATE/` em `.github/`.
