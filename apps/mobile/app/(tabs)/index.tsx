@@ -1,197 +1,124 @@
+import { FlatList, Pressable, View } from 'react-native'
+import { MaterialIcons } from '@expo/vector-icons'
+import { useRouter } from 'expo-router'
+import { useTranslation } from 'react-i18next'
+import type { TransactionResponse } from '@wally/contracts'
 import {
-  StyleSheet,
-  ScrollView,
-  StatusBar,
-  SafeAreaView,
-  Pressable,
-  Alert,
-} from "react-native"
-import { PaperProvider } from "react-native-paper"
-import { Header } from "@/components/Header"
-import { BalanceCard } from "@/components/BalanceCard"
-import { ActionButtons } from "@/components/ActionButtons"
-import { TransactionList } from "@/components/TransactionList"
-import { DatePickerModal } from "@/components/DatePickerModal"
-import { TransactionDatePicker } from "@/components/TransactionDatePicker"
-import { AddTransactionDialog } from "@/components/AddTransactionDialog"
-import { router } from "expo-router"
-import { useAuthStore } from "@/store/authStore"
-import { useWalletViewModel } from "@/viewModels/useWalletViewModel"
-import { Controller } from "react-hook-form"
-import AntDesign from '@expo/vector-icons/AntDesign';
-
+  Screen,
+  AppText,
+  Card,
+  Row,
+  Money,
+  EmptyState,
+} from '../../src/components/ui'
+import {
+  useBalanceSummary,
+  useTransactions,
+  useDeleteTransaction,
+} from '../../src/features/transactions/hooks'
+import { colors, spacing, radius, shadow } from '../../src/theme/tokens'
 
 export default function Wallet() {
-  const { logout } = useAuthStore()
-  const {
-    currentMonth,
-    currentYear,
-    saldo,
-    receitas,
-    despesas,
-    filteredTransactions,
-    searchQuery,
-    setSearchQuery,
-    showDatePickerModal,
-    showTransactionDialog,
-    removerTransacao,
-    adicionarTransacao,
-    handleMonthSelect,
-    handleYearSelect,
-    formatCurrency,
-    formatDateForDisplay,
-    toggleDataPicker,
-    showPicker,
-    dialogVisible,
-    activeTransactionType,
-    transactionValue,
-    transactionDescription,
-    transactionDate,
-    currentMonthIndex,
-    setShowDatePicker,
-    setActiveDateTab,
-    showDatePicker,
-    activeDateTab,
-    meses,
-    anos,
-    handleDateChange,
-    hideTransactionDialog,
-    mudarMes,
-    setTransactionValue,
-    setTransactionDescription,
-    setShowPicker,
-    transactionForm,
-    handleSubmitTransaction,
-  } = useWalletViewModel()
+  const { t } = useTranslation()
+  const router = useRouter()
+  const summary = useBalanceSummary()
+  const transactions = useTransactions()
+  const del = useDeleteTransaction()
 
-  const handleLogout = async () => {
-    try {
-      await logout()
-      Alert.alert(
-        "Sessão Encerrada",
-        "Você foi desconectado com sucesso!",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              router.replace("/(auth)/login")
-            }
-          }
-        ]
-      );
-    } catch (error) {
-      Alert.alert(
-        "Erro",
-        "Erro ao desconectar. Tente novamente.",
-        [{ text: "OK" }]
-      );
-    }
-  };
+  const items = transactions.data?.items ?? []
 
   return (
-    <PaperProvider>
-      <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor="#9ACBD0" barStyle="dark-content" />
+    <Screen>
+      <Row style={{ marginBottom: spacing.lg }}>
+        <AppText variant="h2">{t('wallet.title')}</AppText>
+      </Row>
 
-        <Header />
-        <Pressable onPress={handleLogout}>
-          <AntDesign style={styles.logout} name="logout" size={20} color="#006A71" />
-        </Pressable>
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollViewContent}
-          showsVerticalScrollIndicator={true}
-        >
-          <BalanceCard
-            currentMonth={currentMonth}
-            currentYear={currentYear}
-            saldo={saldo}
-            receitas={receitas}
-            despesas={despesas}
-            onPreviousMonth={() => mudarMes("anterior")}
-            onNextMonth={() => mudarMes("proximo")}
-            onSelectMonth={() => showDatePickerModal("month")}
-            onSelectYear={() => showDatePickerModal("year")}
-            formatCurrency={formatCurrency}
-          />
-
-          <ActionButtons onAddTransaction={showTransactionDialog} />
-
-          <TransactionList
-            transactions={filteredTransactions}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            formatCurrency={formatCurrency}
-            onDeleteTransaction={removerTransacao}
-            currentMonth={currentMonth}
-            currentYear={currentYear}
-          />
-        </ScrollView>
-
-        <DatePickerModal
-          visible={showDatePicker}
-          onClose={() => setShowDatePicker(false)}
-          activeTab={activeDateTab}
-          onTabChange={setActiveDateTab}
-          currentMonthIndex={currentMonthIndex}
-          currentYear={currentYear}
-          onMonthSelect={handleMonthSelect}
-          onYearSelect={handleYearSelect}
-          meses={meses}
-          anos={anos}
+      <Card style={{ marginBottom: spacing.lg }}>
+        <AppText variant="label" color={colors.textMuted}>
+          {t('wallet.balance')}
+        </AppText>
+        <Money
+          cents={summary.data?.balanceCents ?? 0}
+          variant="h1"
+          colorBySign
         />
+        <Row style={{ marginTop: spacing.md }}>
+          <View>
+            <AppText variant="caption" color={colors.textMuted}>
+              {t('wallet.income')}
+            </AppText>
+            <Money cents={summary.data?.incomeCents ?? 0} variant="title" />
+          </View>
+          <View>
+            <AppText variant="caption" color={colors.textMuted}>
+              {t('wallet.expense')}
+            </AppText>
+            <Money cents={-(summary.data?.expenseCents ?? 0)} variant="title" colorBySign />
+          </View>
+        </Row>
+      </Card>
 
-        <AddTransactionDialog
-          visible={dialogVisible}
-          onDismiss={hideTransactionDialog}
-          activeTransactionType={activeTransactionType}
-          transactionValue={transactionValue}
-          onTransactionValueChange={setTransactionValue}
-          transactionDescription={transactionDescription}
-          onTransactionDescriptionChange={setTransactionDescription}
-          formattedDate={formatDateForDisplay(transactionDate)}
-          onDatePress={toggleDataPicker}
-          handleSubmitTransaction={handleSubmitTransaction}
-          transactionForm={transactionForm}
-        />
+      <Row style={{ marginBottom: spacing.md }}>
+        <AppText variant="title">{t('wallet.transactions')}</AppText>
+      </Row>
 
-        <Controller
-          control={transactionForm.control}
-          name="data"
-          render={({ field }) => (
-            <TransactionDatePicker
-              visible={showPicker}
-              onClose={() => setShowPicker(false)}
-              date={field.value}
-              onChange={(set, date) => {
-                handleDateChange(set, date)
+      <FlatList
+        data={items}
+        keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={() => <View style={{ height: spacing.sm }} />}
+        ListEmptyComponent={
+          transactions.isLoading ? null : (
+            <EmptyState message={t('wallet.noTransactions')} />
+          )
+        }
+        renderItem={({ item }) => (
+          <TransactionRow item={item} onDelete={() => del.mutate(item.id)} />
+        )}
+      />
 
-                field.onChange(date)
-              }}
-            />
-          )}
-        />
-      </SafeAreaView>
-    </PaperProvider>
+      <Pressable
+        onPress={() => router.push('/add-transacao')}
+        style={{
+          position: 'absolute',
+          right: spacing.lg,
+          bottom: spacing.xl,
+          width: 56,
+          height: 56,
+          borderRadius: radius.pill,
+          backgroundColor: colors.primary,
+          alignItems: 'center',
+          justifyContent: 'center',
+          ...shadow.card,
+        }}
+      >
+        <MaterialIcons name="add" size={28} color={colors.textOnPrimary} />
+      </Pressable>
+    </Screen>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F4F2F2",
-  },
-  scrollView: {
-    flex: 1,
-    marginTop: 20,
-  },
-  scrollViewContent: {
-    paddingBottom: 20,
-    paddingHorizontal: 16,
-  },
-    logout: {
-    position: 'absolute',
-    bottom: 64,
-    right: 16,
-  },
-})
+function TransactionRow({
+  item,
+  onDelete,
+}: {
+  item: TransactionResponse
+  onDelete: () => void
+}) {
+  const signed = item.type === 'expense' ? -item.amountCents : item.amountCents
+  return (
+    <Card style={{ paddingVertical: spacing.md }}>
+      <Row>
+        <View style={{ flex: 1 }}>
+          <AppText variant="body">{item.description}</AppText>
+          <AppText variant="caption" color={colors.textMuted}>
+            {new Date(item.occurredAt).toLocaleDateString('pt-BR')}
+          </AppText>
+        </View>
+        <Money cents={signed} variant="title" colorBySign />
+        <Pressable onPress={onDelete} style={{ marginLeft: spacing.md }}>
+          <MaterialIcons name="delete-outline" size={22} color={colors.textMuted} />
+        </Pressable>
+      </Row>
+    </Card>
+  )
+}

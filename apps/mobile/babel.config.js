@@ -1,17 +1,10 @@
+// Config de dev do Wally 2.0. A URL da API vem de EXPO_PUBLIC_API_URL
+// (variável pública do Expo), não mais do plugin dotenv-import.
+// O plugin do reanimated deve ser o último da lista.
 module.exports = function (api) {
-    api.cache(true);
-    return {
-      presets: ['babel-preset-expo'],
-      plugins: [
-        ['dotenv-import', {
-          moduleName: '@env',
-          path: '.env',
-          blacklist: null,
-          whitelist: null,
-          safe: false,
-          allowUndefined: true
-        }]
-      ]
-    };
-  };
-  
+  api.cache(true)
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: ['react-native-reanimated/plugin'],
+  }
+}

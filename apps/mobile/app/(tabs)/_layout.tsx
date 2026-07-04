@@ -1,58 +1,45 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { PortalProvider } from '@gorhom/portal';
-import * as Animatable from "react-native-animatable";
+import { Tabs } from 'expo-router'
+import { MaterialIcons } from '@expo/vector-icons'
+import { useTranslation } from 'react-i18next'
+import { colors } from '../../src/theme/tokens'
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  const customEffects = {
-    fadeInUp30px: {
-      0: {
-        opacity: 0,
-        translateY: 30, 
-      },
-      1: {
-        opacity: 1,
-        translateY: 0, 
-      },
-    }
-  }
-  Animatable.initializeRegistryWithDefinitions(customEffects);
+export default function TabsLayout() {
+  const { t } = useTranslation()
   return (
-      <Tabs
-        screenOptions={{
-          tabBarInactiveTintColor: "#FFFFFF",
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          headerShown: false,
-          tabBarBackground: TabBarBackground,
-          tabBarStyle: {
-            backgroundColor: Colors[colorScheme ?? 'light'].tabBarBackground
-          },
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: t('wallet.title'),
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="account-balance-wallet" color={color} size={size} />
+          ),
         }}
-      >
-        <Tabs.Screen
-          name="perfil"
-          options={{
-            title: 'Perfil',
-            tabBarIcon: ({ color, focused }) => <MaterialIcons name="person" size={24} color={focused ? "#9acbd0" : "#ffff"} />,
-          }} />
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Wallet',
-            tabBarIcon: ({ color, focused }) => <MaterialIcons name="account-balance-wallet" size={26} color={focused ? "#9acbd0" : "#ffff"} />,
-          }} />
-        <Tabs.Screen
-          name="grupos"
-          options={{
-            title: 'Grupos',
-            tabBarIcon: ({ color, focused }) => <MaterialIcons name="groups" size={32} color={focused ? "#9acbd0" : "#ffff"} />,
-          }} />
-      </Tabs>
-  );
+      />
+      <Tabs.Screen
+        name="grupos"
+        options={{
+          title: t('groups.title'),
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="groups" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="perfil"
+        options={{
+          title: t('profile.title'),
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="person" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tabs>
+  )
 }

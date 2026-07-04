@@ -1,183 +1,97 @@
-import React, { useCallback } from "react";
-import { View, Text, TextInput, StyleSheet, Pressable, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
-import { router } from "expo-router";
-import { Controller, useForm } from "react-hook-form";
-import { useCadastroViewModel } from "@/viewModels/useCadastroViewModel";  
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-  
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { signUpBody, type SignUpBody } from '@wally/contracts'
+import { useRouter } from 'expo-router'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { Screen, AppText, Input, Button } from '../../src/components/ui'
+import { useSignUp } from '../../src/features/auth/hooks'
+import { colors, spacing } from '../../src/theme/tokens'
+
 export default function Cadastro() {
-  const { handleSubmitCadastro, control } = useCadastroViewModel()
+  const { t } = useTranslation()
+  const router = useRouter()
+  const signUp = useSignUp()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpBody>({
+    resolver: zodResolver(signUpBody),
+    defaultValues: { name: '', email: '', password: '' },
+  })
+
+  const onSubmit = (data: SignUpBody) => {
+    signUp.mutate(data, { onSuccess: () => router.replace('/(tabs)') })
+  }
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
+    <Screen scroll>
+      <AppText variant="h1" color={colors.primaryDark} style={{ marginBottom: spacing.xl }}>
+        {t('auth.signUpTitle')}
+      </AppText>
 
-        <View style={styles.botaoVoltar}>
-
-          <Pressable
-            onPress={() => router.push('/')}>
-            <MaterialIcons name="arrow-back-ios" size={24} color="#006A71" />
-          </Pressable>
-
-        </View>
-
-        <Image
-          source={require('@/assets/images/index_logo.png')}
-          style={styles.logo} />
-
-        <Text style={styles.logoText}>WALLY</Text>
-
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollViewContent}
-          showsVerticalScrollIndicator={true}
-        >
-
-          <Text style={styles.texto}>Nome</Text>
-
-          <Controller
-            control={control}
-            name="nome"
-            render={({ field }) => (
-              <TextInput placeholder="Digite seu nome" style={styles.input} value={field.value} onChangeText={field.onChange} />
-            )}
+      <Controller
+        control={control}
+        name="name"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            label={t('auth.name')}
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.name?.message}
           />
-
-          <Text style={styles.texto}>E-mail<Text style={{ color: 'red' }}>*</Text></Text>
-
-          <Controller
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <TextInput placeholder="Digite seu e-mail" autoCapitalize="none" style={styles.input} value={field.value} onChangeText={(value) => field.onChange(value.toLowerCase())} keyboardType="email-address" />
-            )}
+        )}
+      />
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            label={t('auth.email')}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.email?.message}
           />
-
-          <Text style={styles.texto}>Telefone</Text>
-
-          <Controller
-            control={control}
-            name="telefone"
-            render={({ field }) => (
-              <TextInput placeholder="(00) 0000 0000" style={styles.input} value={field.value} onChangeText={field.onChange} />
-            )}
+        )}
+      />
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            label={t('auth.password')}
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.password?.message}
           />
+        )}
+      />
 
-          <Text style={styles.texto}>Data de Nascimento</Text>
+      {signUp.isError ? (
+        <AppText variant="caption" color={colors.expense}>
+          {signUp.error instanceof Error ? signUp.error.message : t('common.error')}
+        </AppText>
+      ) : null}
 
-          <Controller
-            control={control}
-            name="data_nascimento"
-            render={({ field }) => (
-              <TextInput placeholder="Digite sua data de nascimento" style={styles.input} value={field.value} onChangeText={field.onChange} />
-            )}
-          />
-
-          <Text style={styles.texto}>Senha<Text style={{ color: 'red' }}>*</Text></Text>
-
-          <Controller
-            control={control}
-            name="senha"
-            render={({ field }) => (
-              <TextInput placeholder="Digite sua senha" style={styles.input} value={field.value} onChangeText={field.onChange} secureTextEntry />
-            )}
-          />
-
-          <Text style={styles.texto}>Confirmar Senha<Text style={{ color: 'red' }}>*</Text></Text>
-
-          <Controller
-            control={control}
-            name="confirmarSenha"
-            render={({ field }) => (
-              <TextInput placeholder="Confirme sua senha" style={styles.input} value={field.value} onChangeText={field.onChange} secureTextEntry />
-            )}
-          />
-        </ScrollView>
-        
-        <View style={styles.containerBotao}>
-          <TouchableOpacity
-            style={styles.botaoCadastrar}
-            onPress={() => { handleSubmitCadastro(); }}
-            accessible={true}
-            accessibilityLabel="Cadastrar"
-            accessibilityHint="Toque para se cadastrar"
-            accessibilityRole="button">
-            <Text style={styles.textoBotao}>CADASTRAR</Text>
-          </TouchableOpacity>
-
-        </View>
-      </SafeAreaView>
-    </>
-  );
+      <View style={{ gap: spacing.md, marginTop: spacing.md }}>
+        <Button
+          title={t('auth.signUp')}
+          onPress={handleSubmit(onSubmit)}
+          loading={signUp.isPending}
+        />
+        <Button
+          title={t('auth.hasAccount')}
+          variant="ghost"
+          onPress={() => router.back()}
+        />
+      </View>
+    </Screen>
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F4F2F2',
-    padding: 20,
-    margin: 8,
-  },
-  botaoVoltar: {
-    position: 'absolute',
-    left: 8,
-    padding: 16,
-  },
-  logo: {
-    width: 66,
-    height: 66,
-    alignSelf: 'center',
-    marginTop: 46,
-  },
-  logoText: {
-    fontFamily: "Poppins_300Light",
-    textAlign: "center",
-    fontSize: 16,
-  },
-  scrollView: {
-    flex: 1,
-    marginTop: 20,
-  },
-  scrollViewContent: {
-    paddingBottom: 20,
-    paddingHorizontal: 16,
-  },
-  input: {
-    height: 60,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 14,
-    backgroundColor: '#fff',
-    fontFamily: 'Inter',
-  },
-  texto: {
-    fontFamily: 'Poppins_300Light',
-    padding: 8,
-    fontSize: 14,
-    color: '#777',
-    marginBottom: 10,
-    marginTop: 16,
-  },
-  botaoCadastrar: {
-    width: 330,
-    height: 52,
-    backgroundColor: '#48A6A7',
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textoBotao: {
-    color: "#fff",
-    textAlign: "center",
-    fontFamily: "Poppins_700Bold",
-    fontSize: 16,
-  },
-  containerBotao: {
-    alignItems: 'center',
-    padding: 10,
-    marginTop: 46,
-    marginBottom: 46,
-  },
-});

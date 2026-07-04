@@ -1,190 +1,91 @@
-import { StyleSheet, View, Text, TextInput, SafeAreaView, Pressable, TouchableOpacity, Image, StatusBar } from "react-native";
-import { useFonts, Poppins_700Bold, Poppins_300Light } from "@expo-google-fonts/poppins";
-import { router } from "expo-router";
-import { Controller } from "react-hook-form";
-import { useLoginViewModel } from "@/viewModels/useLoginViewModel";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { signInBody, type SignInBody } from '@wally/contracts'
+import { useRouter } from 'expo-router'
+import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
+import { Screen, AppText, Input, Button } from '../../src/components/ui'
+import { useSignIn } from '../../src/features/auth/hooks'
+import { colors, spacing } from '../../src/theme/tokens'
 
-export default function LoginScreen() {
-  useFonts({
-    Poppins_700Bold,
-    Poppins_300Light,
-  });
+export default function Login() {
+  const { t } = useTranslation()
+  const router = useRouter()
+  const signIn = useSignIn()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInBody>({
+    resolver: zodResolver(signInBody),
+    defaultValues: { email: '', password: '' },
+  })
 
-  const { handleSubmitLogin, control } = useLoginViewModel()
+  const onSubmit = (data: SignInBody) => {
+    signIn.mutate(data, {
+      onSuccess: () => router.replace('/(tabs)'),
+    })
+  }
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
+    <Screen scroll>
+      <View style={{ gap: spacing.xs, marginBottom: spacing.xl }}>
+        <AppText variant="h1" color={colors.primaryDark}>
+          {t('common.appName')}
+        </AppText>
+        <AppText variant="body" color={colors.textMuted}>
+          {t('auth.welcome')}
+        </AppText>
+      </View>
 
-        <StatusBar backgroundColor="#9ACBD0" barStyle="light-content" />
+      <Controller
+        control={control}
+        name="email"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            label={t('auth.email')}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.email?.message}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="password"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            label={t('auth.password')}
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            error={errors.password?.message}
+          />
+        )}
+      />
 
-        <View style={styles.botaoVoltar}>
+      {signIn.isError ? (
+        <AppText variant="caption" color={colors.expense}>
+          {t('auth.invalidCredentials')}
+        </AppText>
+      ) : null}
 
-          <Pressable
-            onPress={() => router.push('/')}>
-            <MaterialIcons name="arrow-back-ios" size={24} color="#006A71" />
-          </Pressable>
-
-        </View>
-
-        <Image
-          source={require('@/assets/images/index_logo.png')}
-          style={styles.logo} />
-
-        <Text style={styles.logoText}>WALLY</Text>
-
-        <View style={styles.mainContent}>
-
-          <Text style={styles.textTitulo}>Bem-vindo(a)</Text>
-          <Text style={styles.title}>à sua carteira inteligente!</Text>
-
-          <Text style={styles.texto}>E-mail</Text>
-
-          <Controller
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <TextInput
-                style={styles.input}
-                value={field.value}
-                onChangeText={field.onChange}
-                placeholder="Digite seu email"
-                keyboardType="email-address"
-                autoCapitalize="none" />
-            )} />
-
-          <Text style={styles.texto}>Senha</Text>
-
-          <Controller
-            control={control}
-            name="senha"
-            render={({ field }) => (
-              <TextInput style={styles.input} value={field.value} placeholder="Senha" onChangeText={field.onChange} secureTextEntry />
-            )} />
-
-          <View style={styles.containerBotao}>
-
-            <TouchableOpacity
-              style={styles.botaoEntrar}
-              onPress={() => { handleSubmitLogin(); }}
-              accessible={true}
-              accessibilityLabel="Entrar"
-              accessibilityHint="Toque para entrar na sua conta"
-              accessibilityRole="button">
-              <Text style={styles.textoBotao}>ENTRAR</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.botaoSenha}
-              onPress={() => router.push("/recuperarsenha")}
-              accessible={true}
-              accessibilityLabel="Esqueci minha senha"
-              accessibilityHint="Toque para redefinir senha e recuperar o acesso"
-              accessibilityRole="button">
-              <Text style={styles.textoBotaoSenha}>ESQUECI MINHA SENHA</Text>
-            </TouchableOpacity>
-
-          </View>
-        </View>
-      </SafeAreaView></>
-  );
+      <View style={{ gap: spacing.md, marginTop: spacing.md }}>
+        <Button
+          title={t('auth.signIn')}
+          onPress={handleSubmit(onSubmit)}
+          loading={signIn.isPending}
+        />
+        <Button
+          title={t('auth.noAccount')}
+          variant="ghost"
+          onPress={() => router.push('/(auth)/cadastro')}
+        />
+      </View>
+    </Screen>
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F4F2F2',
-  },
-  mainContent: {
-    flex: 1,
-    padding: 20,
-    margin: 8,
-  },
-  botaoVoltar: {
-    position: 'absolute',
-    left: 16,
-    top: 46,
-    padding: 16,
-  },
-  logo: {
-    width: 66,
-    height: 66,
-    alignSelf: 'center',
-    marginTop: 56,
-  },
-  logoText: {
-    fontFamily: "Poppins_300Light",
-    textAlign: "center",
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  textTitulo: {
-    fontFamily: "Poppins_300Light",
-    textAlign: "left",
-    alignSelf: "center",
-    color: '#777',
-    fontSize: 22,
-    marginTop: 20,
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 36,
-    marginTop: 6,
-    fontFamily: "Poppins_700Bold",
-    color: '#00494E',
-  },
-  texto: {
-    fontFamily: 'Poppins_300Light',
-    padding: 8,
-    fontSize: 14,
-    color: '#777',
-    marginBottom: 10,
-    marginTop: 16,
-  },
-  input: {
-    height: 60,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 14,
-    backgroundColor: '#fff',
-    fontFamily: 'Inter',
-  },
-  containerBotao: {
-    alignItems: 'center',
-    padding: 10,
-    marginTop: 70,
-  },
-  botaoEntrar: {
-    width: 330,
-    height: 52,
-    backgroundColor: '#48A6A7',
-    borderRadius: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  botaoSenha: {
-    width: 330,
-    height: 52,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  textoBotaoSenha: {
-    color: "#00494E",
-    textAlign: "center",
-    fontFamily: "Poppins_300Ligth",
-    fontSize: 12,
-  },
-  textoBotao: {
-    color: "#fff",
-    textAlign: "center",
-    fontFamily: "Poppins_700Bold",
-    fontSize: 16,
-  },
-});
