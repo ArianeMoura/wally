@@ -11,10 +11,6 @@ e acessibilidade. As diretrizes de qualidade seguem a norma **ISO/IEC 25010**
 
 ![User Flow do Wally](https://github.com/user-attachments/assets/613c3a40-5d50-4cab-b758-9e3ebc6d2960)
 
-## Diagrama de fluxo
-
-![Fluxograma do Wally](https://github.com/user-attachments/assets/0317ce81-dbef-4f85-80f3-790c1e2beeda)
-
 ## Wireframes
 
 ### Tela Inicial

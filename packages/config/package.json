@@ -1,0 +1,12 @@
+{
+  "name": "@wally/config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Configuração compartilhada (tsconfig, prettier) do monorepo Wally",
+  "files": [
+    "tsconfig.base.json"
+  ],
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  }
+}

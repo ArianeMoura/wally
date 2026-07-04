@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1783136866056,
+      "tag": "0000_great_santa_claus",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783191920771,
+      "tag": "0001_dizzy_dragon_lord",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783191936960,
+      "tag": "0002_rls_policies",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783194651929,
+      "tag": "0003_productive_vector",
+      "breakpoints": true
+    }
+  ]
+}

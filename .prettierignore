@@ -1,0 +1,6 @@
+**/dist
+**/node_modules
+**/.expo
+**/coverage
+apps/api/src/db/migrations
+pnpm-lock.yaml

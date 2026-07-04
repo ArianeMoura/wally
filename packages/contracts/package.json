@@ -1,0 +1,23 @@
+{
+  "name": "@wally/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Contratos Zod compartilhados (request/response) entre API, mobile e web.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@wally/config": "workspace:*",
+    "typescript": "^5.8.3",
+    "vitest": "^2.1.8"
+  }
+}

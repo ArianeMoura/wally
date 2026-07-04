@@ -1,1 +1,32 @@
-/.DS_Store
+# Sistema
+.DS_Store
+
+# Dependências
+node_modules/
+.pnpm-store/
+
+# Build / cache
+dist/
+.turbo/
+coverage/
+*.tsbuildinfo
+
+# Expo / React Native
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Ambiente / segredos (nunca versionar)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
