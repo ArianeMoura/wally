@@ -1,80 +1,106 @@
-# Wally - A Sua Carteira Inteligente 💲
-
-O **Wally** é mais do que um simples aplicativo de gestão financeira – é o aliado ideal para quem busca **controle**, **clareza** e **praticidade** no dia a dia. 
-Projetado para simplificar o gerenciamento de **ganhos** e **despesas**, tanto individuais quanto compartilhadas, o Wally oferece uma experiência intuitiva, acessível e eficiente para transformar a forma como você lida com seu dinheiro. </br>
-
-Com duas áreas principais, o Wally permite que você tenha **total controle sobre suas finanças pessoais**, registrando e categorizando entradas e saídas em tempo real, acompanhando seu saldo e tomando decisões mais inteligentes. Além disso, a funcionalidade de **gestão de despesas em grupo** facilita a organização de gastos compartilhados, proporcionando mais transparência e praticidade ao dividir contas com amigos, familiares ou colegas. Com o Wally, você não apenas administra seu dinheiro – você assume o controle do seu futuro financeiro! 
-
-Evolução independente de um projeto acadêmico. Arquitetura moderna e novas funcionalidades serão integradas ao longo do desenvolvimento ativo.
-
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8" width="126" height="126" alt="Wally" />
+<img src="https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8" width="96" height="96" alt="Wally" />
+
+# Wally
+
+**Gestão financeira moderna — finanças pessoais e despesas em grupo.**
+
+Controle de ganhos e despesas com uma experiência intuitiva, eficiente e segura.
+
+<!-- Badges de CI serão adicionados quando os workflows forem implementados (ver docs/09-CICD.md)
+![CI](https://img.shields.io/badge/CI-pending-lightgrey)
+![CodeQL](https://img.shields.io/badge/CodeQL-pending-lightgrey)
+-->
 
 </div>
 
-### Documentação
+---
 
-<ol>
-<li><a href="docs/01-Documentação de Contexto.md"> Documentação de Contexto</a></li>
-<li><a href="docs/02-Especificação do Projeto.md"> Especificação do Projeto</a></li>
-<li><a href="docs/03-Metodologia.md"> Metodologia</a></li>
-<li><a href="docs/04-Projeto de Interface.md"> Projeto de Interface</a></li>
-<li><a href="docs/05-Arquitetura da Solução.md"> Arquitetura da Solução</a></li>
-<li><a href="docs/06-Template Padrão da Aplicação.md"> Template Padrão da Aplicação</a></li>
-<li><a href="docs/07-Programação de Funcionalidades.md"> Programação de Funcionalidades</a></li>
-<li><a href="docs/08-Plano de Testes de Software.md"> Plano de Testes de Software</a></li>
-<li><a href="docs/09-Registro de Testes de Software.md"> Registro de Testes de Software</a></li>
-<li><a href="docs/10-Plano de Testes de Usabilidade.md"> Plano de Testes de Usabilidade</a></li>
-<li><a href="docs/11-Registro de Testes de Usabilidade.md"> Registro de Testes de Usabilidade</a></li>
-<li><a href="docs/12-Apresentação do Projeto.md"> Apresentação do Projeto</a></li>
-<li><a href="docs/13-Considerações Finais.md"> Considerações Finais</a></li>
-<li><a href="docs/14-Referências.md"> Referências</a></li>
-</ol>
+## Sobre
 
-### Código
+O Wally atua em duas frentes complementares:
 
-<li><a href="https://github.com/ArianeMoura/wally/blob/main/wally/README.md"> Código Fonte</a></li>
+- **Gestão pessoal** — registro e categorização de receitas e despesas em tempo
+  real, com acompanhamento inteligente de saldo.
+- **Gestão de grupos** — divisão de despesas compartilhadas com foco em
+  transparência e praticidade para amigos, familiares e colegas.
 
-### 💰 Funcionalidades Principais 
+## Funcionalidades
 
-- **Cadastro e Controle de Receitas e Despesas:** Registro detalhado de todas as transações financeiras.
-- **Cálculo Automático de Saldo Total:** Visão clara do saldo atual, atualizado em tempo real.
-- **Histórico Organizado:** Transações facilmente consultáveis por tipo (receita/despesa) e data.
-- **Filtro e Busca Personalizada:** Ferramentas intuitivas para encontrar transações específicas de forma rápida.
-- **Criação e Gestão de Grupos:** Organize despesas por categorias como viagens, casa, trabalho, etc.
-- **Inclusão de Despesas Compartilhadas:** Vincule gastos a participantes específicos do grupo.
-- **Cálculo Individual de Saldo:** Monitore o saldo devedor/credor de cada integrante do grupo.
-- **Histórico de Despesas Compartilhadas:** Acompanhe todas as transações realizadas dentro dos grupos.
-- **Autenticação Segura:** Login com e-mail e senha para acesso protegido.
-- **Recuperação de Senha:** Processo simplificado para redefinir o acesso à conta.
-- **Edição de Perfil:** Personalização de informações como nome, foto e senha.
-  
-### 📲 Tecnologia Utilizadas
+| Área | Recursos |
+|---|---|
+| **Finanças pessoais** | Receitas e despesas com valor, data e descrição; cálculo automático de saldo; extrato com filtro por nome, valor e tipo; seleção de período (mês/ano). |
+| **Grupos** | Criação e gestão de grupos; despesas com divisão automática entre participantes; saldo individual (devedor/credor); histórico de despesas. |
+| **Conta** | Autenticação com e-mail e senha; recuperação de acesso; edição de perfil. |
 
-- **React Native + Expo:** Framework para desenvolvimento mobile multiplataforma (iOS/Android).
-- **Expo Go:** Visualização e testes rápidos da aplicação diretamente no smartphone.
-- **JavaScript / TypeScript:** Linguagens utilizadas no front-end.
-- **Node.js + Fastify:** Backend eficiente e escalável.
-- **PostgreSQL:** Banco de dados relacional para persistência dos dados.
-- **Docker:** Containerização dos ambientes de desenvolvimento e produção.
-- **AWS:** Hospedagem dos serviços na nuvem.
-- **Visual Studio Code:** Editor de código com suporte amplo a extensões.
+## Arquitetura e stack
 
-### ⚙️ Ferramentas e Método Ágil
+Dois aplicativos independentes, ambos em **TypeScript**:
 
-- **GitHub:** Versionamento, gerenciamento de branches e Kanban (GitHub Projects).
-- **DBeaver:** Manipulação, análise e visualização de dados no PostgreSQL.
-- **Microsoft Teams:** Comunicação oficial e colaboração entre membros.
-- **Figma:** Design de interfaces, wireframes e protótipos colaborativos.
-- **Canva:** Criação de identidade visual e materiais gráficos.
-- **Lucid:** Diagramas de fluxo e arquitetura da aplicação.
-- **SCRUM:** Metodologia ágil adotada para planejar e organizar o trabalho.
-  
-### 💡 Propostas de Melhorias
+| Camada | Stack | Padrão |
+|---|---|---|
+| **Mobile** — `wally/` | Expo, React Native, expo-router, Zustand, TanStack Query, React Hook Form | MVVM |
+| **API** — `wally-backend/` | Node.js, Fastify, TypeORM, PostgreSQL, JWT, Swagger | Arquitetura em camadas (Clean Architecture) |
+| **Infraestrutura** | Docker, PostgreSQL | Migrations versionadas |
 
-- Implementação de **gamificação** (metas, conquistas e desafios).
-- Inclusão de recursos de **educação financeira**.
-- Desenvolvimento de **dashboard web** responsivo para usuários e administradores.
-- Expansão das **funcionalidades** de grupo (chat, notificações).
+Detalhes em [docs/05-Arquitetura.md](docs/05-Arquitetura.md).
 
+## Começando
+
+Pré-requisitos: **Node.js 20+**, **npm**, **Docker** (opcional, para o banco) e o
+app **Expo Go** ou um emulador Android/iOS.
+
+```bash
+# 1. Backend (API)
+cd wally-backend
+cp .env.example .env         # preencha as variáveis (banco, segredo do JWT)
+npm install
+npm run dev                  # sobe a API em http://localhost:3333/wally
+
+# 2. Mobile
+cd ../wally
+cp .env.example .env         # defina API_URL apontando para a API
+npm install
+npx expo start               # abra no Expo Go ou emulador
+```
+
+A documentação da API (Swagger) fica em `/wally/documentation` com a API no ar.
+Guias completos: [`wally/README.md`](wally/README.md) e
+[`wally-backend/README.md`](wally-backend/README.md).
+
+## Documentação
+
+| # | Documento | Conteúdo |
+|---|---|---|
+| — | [Visão geral](docs/README.md) | Índice e mapa dos documentos |
+| 01 | [Contexto](docs/01-Contexto.md) | Problema, objetivos, público-alvo |
+| 02 | [Especificação](docs/02-Especificacao.md) | Requisitos, casos de uso, rastreabilidade |
+| 03 | [Processo de Desenvolvimento](docs/03-Processo-de-Desenvolvimento.md) | Git flow, GitHub Projects, DoD |
+| 04 | [Design de Interface](docs/04-Design-de-Interface.md) | User flow e wireframes |
+| 05 | [Arquitetura](docs/05-Arquitetura.md) | Camadas, SOLID, MVVM, modelo de dados |
+| 06 | [Design System](docs/06-Design-System.md) | Identidade visual e tokens |
+| 07 | [Mapa de Funcionalidades](docs/07-Mapa-de-Funcionalidades.md) | Telas, requisitos e código |
+| 08 | [Estratégia de Testes](docs/08-Estrategia-de-Testes.md) | Pirâmide de testes e automação |
+| 09 | [CI/CD](docs/09-CICD.md) | Pipelines GitHub Actions |
+| 10 | [Qualidade e Observabilidade](docs/10-Qualidade-e-Observabilidade.md) | ISO/IEC 25010, métricas, monitoramento |
+| 11 | [Referências](docs/11-Referencias.md) | Fontes citadas |
+
+**Governança:** [CONTRIBUTING.md](CONTRIBUTING.md) ·
+[SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+
+## Roadmap
+
+Planejamento e priorização são conduzidos no **GitHub Projects**. Direções em
+avaliação:
+
+- Insights e automações financeiras com **IA**, com anonimização de dados
+  (ver [SECURITY.md](SECURITY.md)).
+- Dashboard web responsivo.
+- Notificações e chat nos grupos.
+- Educação financeira, metas e gamificação.
+
+## Contribuindo
+
+Leia o [Guia de Contribuição](CONTRIBUTING.md) antes de abrir um Pull Request.
+Toda contribuição passa por CI (testes, lint, SAST) e code review.
