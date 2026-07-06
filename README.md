@@ -1,12 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/1dfe0158-3208-401a-b55d-bc164f5ec9d8" width="96" height="96" alt="Wally" />
-
-# Wally
-
-**Gestão financeira moderna — finanças pessoais e despesas em grupo.**
-
-Controle de ganhos e despesas com uma experiência intuitiva, eficiente e segura.
+<img width="186" height="186" alt="wally-icon-mint" src="https://github.com/user-attachments/assets/b0ccdbbf-0646-41c6-927d-c934f9474eaa" />
 
 <!-- Badges de CI serão adicionados quando os workflows forem implementados (ver docs/09-CICD.md)
 ![CI](https://img.shields.io/badge/CI-pending-lightgrey)
@@ -14,8 +8,6 @@ Controle de ganhos e despesas com uma experiência intuitiva, eficiente e segura
 -->
 
 </div>
-
----
 
 ## Sobre
 
