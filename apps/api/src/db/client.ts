@@ -4,11 +4,11 @@ import { env } from '../config/env'
 import * as schema from './schema'
 
 /**
- * Duas conexões, por design de segurança (ver migration 0002_rls_policies):
- *   • runtime (`db`/`pool`) — papel `wally_app`, SUJEITO à RLS. É o que o servidor
- *     usa para atender requisições. Em produção use `APP_DATABASE_URL`.
- *   • dono (`ownerDb`/`ownerPool`) — `DATABASE_URL`, faz bypass de RLS. Usado por
- *     seed e tarefas administrativas. Migrations rodam via drizzle-kit (DATABASE_URL).
+ * Two connections, by security design (see migration 0002_rls_policies):
+ *   • runtime (`db`/`pool`) — role `wally_app`, subject to RLS. This is what the
+ *     server serves requests with; set `APP_DATABASE_URL` in production.
+ *   • owner (`ownerDb`/`ownerPool`) — `DATABASE_URL`, bypasses RLS. Used by the
+ *     seed and admin tasks. Migrations run through drizzle-kit on DATABASE_URL.
  */
 const runtimeUrl = env.APP_DATABASE_URL ?? env.DATABASE_URL
 

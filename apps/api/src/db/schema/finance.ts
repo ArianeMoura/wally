@@ -11,7 +11,7 @@ import { timestamps } from './_helpers'
 import { users } from './users'
 import { transactionType, categoryKind, budgetPeriod } from './enums'
 
-/** RF-017 — categorias (user_id nulo = categoria padrão do sistema). */
+/** RF-017 — categories; a null user_id marks a system default. */
 export const categories = pgTable('categories', {
   id: uuid().primaryKey().defaultRandom(),
   userId: uuid().references(() => users.id, { onDelete: 'cascade' }),
@@ -22,7 +22,7 @@ export const categories = pgTable('categories', {
   ...timestamps(),
 })
 
-/** Finanças pessoais. Valores em inteiros de centavos (RNF-010). */
+/** Personal finances. Amounts are integer cents (RNF-010). */
 export const transactions = pgTable(
   'transactions',
   {
@@ -40,12 +40,12 @@ export const transactions = pgTable(
     ...timestamps(),
   },
   (t) => [
-    // Dinheiro é sempre positivo; o sinal vem de `type` (income|expense) (RNF-010).
+    // Amounts are always positive; the sign comes from `type` (RNF-010).
     check('transactions_amount_positive', sql`${t.amountCents} > 0`),
   ],
 )
 
-/** RF-019 — orçamentos/metas por categoria. */
+/** RF-019 — per-category budgets and goals. */
 export const budgets = pgTable(
   'budgets',
   {

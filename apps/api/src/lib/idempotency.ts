@@ -5,19 +5,19 @@ import { idempotencyKeys } from '../db/schema/auth'
 import { ConflictError } from '../http/errors'
 
 /**
- * Hash determinístico do conteúdo da requisição de escrita. Guardado junto à
- * Idempotency-Key para detectar reenvio do MESMO pedido (replay) vs. reuso
- * indevido da chave com corpo diferente (RNF-009).
+ * Deterministic hash of the write request body. Stored alongside the
+ * Idempotency-Key to tell a genuine replay of the same request apart from the
+ * key being reused with a different body (RNF-009).
  */
 export function requestHash(payload: unknown): string {
   return createHash('sha256').update(JSON.stringify(payload)).digest('hex')
 }
 
 /**
- * Envolve uma escrita financeira com semântica de idempotência (RNF-009). Sem
- * chave, apenas executa. Com chave: se já houver resultado gravado para a mesma
- * chave/hash, faz *replay*; se a chave foi usada com corpo diferente, 409.
- * O INSERT roda na MESMA transação da mutação → efeito único e atômico.
+ * Wraps a financial write with idempotency semantics (RNF-009). With no key it
+ * just runs. With a key: a stored result for the same key and hash is replayed;
+ * the same key with a different body is a 409. The INSERT runs in the SAME
+ * transaction as the mutation, which is what makes the effect exactly-once.
  */
 export async function withIdempotency<T>(opts: {
   tx: Tx

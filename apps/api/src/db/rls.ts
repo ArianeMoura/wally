@@ -1,19 +1,19 @@
 import { sql } from 'drizzle-orm'
 import { db } from './client'
 
-/** Handle transacional do drizzle (derivado do callback de `db.transaction`). */
+/** Drizzle transaction handle, as passed to the `db.transaction` callback. */
 export type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0]
 
-/** Executor aceito pelos services: a conexão base ou uma transação. */
+/** What services accept: either the base connection or a transaction. */
 export type Executor = typeof db | Tx
 
 /**
- * Executa `fn` dentro de uma transação com o contexto de usuário definido para
- * a RLS (migration 0002). `set_config(..., true)` = escopo local à transação
- * (equivalente a `SET LOCAL`), então cada requisição só enxerga os próprios dados.
+ * Runs `fn` in a transaction with the RLS user context set (migration 0002).
+ * The `true` argument to `set_config` scopes it to the transaction (like
+ * `SET LOCAL`), so a request only ever sees its own rows.
  *
- * Toda leitura/escrita autenticada DEVE passar por aqui — é o que faz a RLS
- * valer no runtime (o papel `wally_app` não faz bypass).
+ * Every authenticated read and write MUST go through here: this is what makes
+ * RLS bite at runtime, since `wally_app` cannot bypass it.
  */
 export function runAsUser<T>(
   userId: string,

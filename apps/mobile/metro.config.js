@@ -1,6 +1,6 @@
-// Metro configurado para o monorepo pnpm: observa a raiz (para os pacotes
-// @wally/*) e resolve node_modules do app e da raiz. Sem isto, o Metro não
-// encontra os pacotes de workspace nem suas dependências hasteadas.
+// Metro tuned for the pnpm monorepo: watches the root (for the @wally/*
+// packages) and resolves node_modules from both the app and the root. Without
+// this, Metro finds neither the workspace packages nor their hoisted deps.
 const { getDefaultConfig } = require('expo/metro-config')
 const path = require('path')
 
@@ -14,7 +14,7 @@ config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ]
-// Resolve os pacotes internos a partir do seu código-fonte TS.
+// Resolve the internal packages straight from their TypeScript source.
 config.resolver.disableHierarchicalLookup = false
 
 module.exports = config

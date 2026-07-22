@@ -24,7 +24,7 @@ export const resetPasswordBody = z.object({
   password,
 })
 
-/** Par de tokens + usuário autenticado. */
+/** Token pair plus the authenticated user. */
 export const authResponse = z.object({
   accessToken: z.string(),
   refreshToken: z.string(),

@@ -29,11 +29,11 @@ export const groupMemberResponse = z.object({
 })
 
 /**
- * Como dividir uma despesa. A soma final é sempre reconciliada no servidor com
- * o método do maior resto (@wally/core), garantindo `Σ cotas == valor`.
- *   • equal   — igualmente entre os participantes
- *   • weights — proporcional a pesos inteiros (ex.: quem consumiu o dobro)
- *   • shares  — cotas explícitas em centavos (validadas contra o total)
+ * How to split an expense. The server always reconciles the final sum with the
+ * largest remainder method (@wally/core), enforcing `Σ shares == amount`.
+ *   • equal   — evenly across participants
+ *   • weights — proportional to integer weights
+ *   • shares  — explicit shares in cents, validated against the total
  */
 export const splitSpec = z.discriminatedUnion('mode', [
   z.object({
@@ -59,7 +59,7 @@ export const createExpenseBody = z.object({
   description: z.string().min(1).max(200),
   categoryId: uuid.optional(),
   occurredAt: isoDateTime.optional(),
-  /** Pagador; se ausente, assume o usuário autenticado. */
+  /** Payer; defaults to the authenticated user. */
   payerId: uuid.optional(),
   split: splitSpec,
 })
@@ -81,9 +81,9 @@ export const expenseResponse = z.object({
   shares: z.array(expenseShareResponse),
 })
 
-/** RF-018 — registrar uma liquidação (settle up). */
+/** RF-018 — record a settlement. */
 export const createSettlementBody = z.object({
-  /** Pagador; se ausente, assume o usuário autenticado. */
+  /** Payer; defaults to the authenticated user. */
   fromUserId: uuid.optional(),
   toUserId: uuid,
   amountCents: positiveCents,
@@ -109,7 +109,7 @@ export const transfer = z.object({
   amountCents: z.number().int().positive(),
 })
 
-/** RF-012/018 — saldos do grupo + sugestão de acerto. */
+/** RF-012/018 — group balances plus a suggested settlement. */
 export const groupBalancesResponse = z.object({
   balances: z.array(memberBalance),
   suggestedTransfers: z.array(transfer),

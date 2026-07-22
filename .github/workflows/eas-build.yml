@@ -1,7 +1,7 @@
 name: EAS Build (mobile)
 
-# Build do app mobile via EAS. Manual (workflow_dispatch) para não consumir
-# cota a cada push. Requer o segredo EXPO_TOKEN configurado no repositório.
+# Mobile build through EAS. Manual (workflow_dispatch) so it does not burn quota
+# on every push. Requires the EXPO_TOKEN secret to be set on the repository.
 on:
   workflow_dispatch:
     inputs:

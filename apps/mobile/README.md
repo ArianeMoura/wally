@@ -1,87 +1,93 @@
-# Wally — App Mobile
+# Wally — Mobile App
 
-Aplicativo mobile do Wally para gestão financeira pessoal e de grupos, construído
-com **Expo / React Native** e **TypeScript**, seguindo o padrão **MVVM**.
-
----
-
-## Pré-requisitos
-
-- **Node.js 20+** e **npm**
-- **Expo Go** no smartphone **ou** um emulador Android (AVD) / simulador iOS (Xcode)
-- Uma instância da API do Wally em execução (ver [`../wally-backend`](../wally-backend/README.md))
+Wally's mobile app for personal and group finance, built with **Expo / React Native**
+and **TypeScript**, following the **MVVM** pattern.
 
 ---
 
-## Configuração
+## Prerequisites
+
+- **Node.js 20+** and **pnpm 9** (`corepack enable`)
+- **Expo Go** on your phone **or** an Android emulator (AVD) / iOS simulator (Xcode)
+- A running Wally API instance (see [`../api`](../api/README.md))
+
+---
+
+## Setup
 
 ```bash
-# na pasta wally/
-cp .env.example .env     # defina API_URL apontando para a sua API
-npm install
-npx expo start
+# from apps/mobile/
+pnpm install -w          # installs the whole monorepo (fine to run from here)
+cp .env.example .env     # set EXPO_PUBLIC_API_URL to point at your API
+pnpm start
 ```
 
-Variáveis de ambiente:
+Environment variables:
 
-| Variável | Descrição |
-|---|---|
-| `API_URL` | URL base da API do Wally (ex.: `https://api.seu-dominio` ou `http://localhost:3333/wally` em desenvolvimento) |
+| Variable              | Description                                                                                                                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXPO_PUBLIC_API_URL` | Base host of the Wally API, **without** the route prefix — the client appends `/api/v1`. E.g. `http://localhost:3333` in development or `https://api.your-domain` in production. |
 
-> Nunca versione o arquivo `.env`. Segredos e URLs de produção não devem ser
-> commitados (ver [SECURITY.md](../SECURITY.md)).
+> On a physical device with Expo Go, `localhost` resolves to the device itself. Use your
+> machine's LAN IP instead (e.g. `http://192.168.0.10:3333`).
 
-Ao rodar `npx expo start`:
+> Never commit the `.env` file. Secrets and production URLs stay out of Git (see
+> [SECURITY.md](../../SECURITY.md)).
 
-- **Expo Go**: escaneie o QR Code exibido no terminal/navegador de dev.
-- **Emulador Android**: pressione `a`.
-- **Simulador iOS** (macOS + Xcode): pressione `i`.
+When you run `pnpm start`:
+
+- **Expo Go**: scan the QR code shown in the terminal or dev browser.
+- **Android emulator**: press `a`.
+- **iOS simulator** (macOS + Xcode): press `i`.
 
 ---
 
-## Estrutura (MVVM)
+## Structure (MVVM)
 
 ```
-app/            # Telas e rotas (expo-router): (auth), (tabs), grupo, add-despesa...
-components/     # Componentes de UI reutilizáveis (+ __tests__)
-viewModels/     # Lógica de apresentação (use...ViewModel)
-store/          # Estado global (Zustand) e sessão (expo-secure-store)
-hooks/          # Hooks compartilhados
-constants/      # Tokens de tema, cores, tipografia
-enums/          # Enumerações de domínio
+app/                # Screens and routes (expo-router): (auth), (tabs), grupo, add-despesa…
+src/
+  components/       # Reusable UI components (+ ui/)
+  features/         # Domain logic by feature: auth, groups, transactions
+  store/            # Global state (Zustand) and session (expo-secure-store)
+  lib/              # Query client, helpers and formatters
+  theme/            # Theme tokens, colours, typography
+  locales/          # i18n resources (i18next)
 ```
 
-Camadas: **View** (`app/`, `components/`) → **ViewModel** (`viewModels/`) →
-**Store/serviços** (`store/`, chamadas à API via TanStack Query). A regra de
-apresentação vive nos view models, mantendo as telas declarativas.
+Layers: **View** (`app/`, `src/components/`) → **ViewModel/feature hooks**
+(`src/features/`) → **Store & services** (`src/store/`, API calls through TanStack
+Query). Presentation logic lives in the feature hooks, keeping screens declarative.
 
 ---
 
 ## Stack
 
-- **React Native** + **Expo** (expo-router para navegação file-based)
+- **React Native** + **Expo** (expo-router for file-based navigation)
 - **TypeScript**
-- **Zustand** (estado) · **TanStack Query** (data fetching/cache)
-- **React Hook Form** (formulários) · **React Native Paper** (UI)
-- **react-native-chart-kit** (gráficos) · **expo-secure-store** (token seguro)
+- **Zustand** (state) · **TanStack Query** (data fetching and cache, persisted through
+  AsyncStorage)
+- **React Hook Form + Zod** (forms) · **React Native Paper** (UI)
+- **react-native-chart-kit** (charts) · **expo-secure-store** (secure token storage)
+- **i18next** (internationalisation, PT-BR by default)
 
 ---
 
 ## Scripts
 
 ```bash
-npm start        # inicia o servidor Expo
-npm run android  # abre no emulador Android
-npm run ios      # abre no simulador iOS
-npm run web      # executa a versão web
-npm run lint     # ESLint (expo lint)
-npm test         # testes (jest-expo)
+pnpm start      # start the Expo dev server
+pnpm android    # open on the Android emulator
+pnpm ios        # open on the iOS simulator
+pnpm web        # run the web build
+pnpm typecheck  # tsc --noEmit
+pnpm lint       # ESLint (expo lint)
+pnpm test       # tests (jest-expo)
 ```
 
 ---
 
-## Qualidade e testes
+## Quality and testing
 
-Testes com `jest-expo`. Consulte a
-[Estratégia de Testes](../docs/08-Estrategia-de-Testes.md) para metas de cobertura
-e integração com a CI.
+Tests run on `jest-expo`. See the [Testing Strategy](../../docs/TESTING.md) for coverage
+targets and CI integration.

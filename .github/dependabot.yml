@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Dependências npm de cada workspace (pnpm monorepo).
+  # npm dependencies across the workspaces.
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -12,7 +12,7 @@ updates:
       production-dependencies:
         dependency-type: production
 
-  # Ações do GitHub usadas nos workflows.
+  # GitHub Actions used by the workflows.
   - package-ecosystem: github-actions
     directory: /
     schedule:

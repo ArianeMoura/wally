@@ -7,6 +7,6 @@ export default defineConfig({
   outDir: 'dist',
   clean: true,
   sourcemap: true,
-  // Empacota os pacotes internos do workspace (consumidos como código-fonte).
+  // Bundles the internal workspace packages, which are consumed as source.
   noExternal: [/^@wally\//],
 })

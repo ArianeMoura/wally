@@ -59,7 +59,11 @@ describe('computeBalances — casos canônicos', () => {
       ],
     }
     expect(() =>
-      computeBalances({ memberIds: ['A', 'B'], expenses: [bad], settlements: [] }),
+      computeBalances({
+        memberIds: ['A', 'B'],
+        expenses: [bad],
+        settlements: [],
+      }),
     ).toThrow(MoneyError)
   })
 
@@ -87,7 +91,7 @@ describe('simplifyDebts', () => {
   })
 })
 
-// ---- Geradores para propriedades -----------------------------------------
+// ---- Generators for the property-based tests ------------------------------
 const members = ['A', 'B', 'C', 'D', 'E']
 
 const expenseArb = fc
@@ -133,7 +137,7 @@ describe('computeBalances — propriedades (fast-check)', () => {
           settlements: [],
         })
         const transfers = simplifyDebts(balances)
-        // Aplica cada transferência como se fosse uma liquidação real.
+        // Apply each transfer as if it were a real settlement.
         const settled = computeBalances({
           memberIds: members,
           expenses,

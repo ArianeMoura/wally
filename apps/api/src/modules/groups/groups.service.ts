@@ -60,7 +60,7 @@ export function listGroups(userId: string): Promise<GroupResponse[]> {
   })
 }
 
-/** Carrega um grupo visível ao usuário ou lança 404 (RLS esconde os demais). */
+/** Loads a group visible to the user or throws 404; RLS hides the rest. */
 async function requireVisibleGroup(tx: Tx, groupId: string): Promise<GroupRow> {
   const [group] = await tx
     .select()
@@ -115,8 +115,8 @@ export function addMember(
       .limit(1)
     if (!target) throw new NotFoundError('Usuário não encontrado')
 
-    // Reativa associação soft-deleted; senão insere. O unique(group,user) impede
-    // duplicatas mesmo entre linhas apagadas.
+    // Revive a soft-deleted membership, otherwise insert. unique(group,user)
+    // prevents duplicates even across deleted rows.
     const [existing] = await tx
       .select()
       .from(groupMembers)
@@ -154,8 +154,8 @@ export function removeMember(
   memberUserId: string,
 ): Promise<void> {
   return runAsUser(userId, async (tx) => {
-    // Serializa com criação de despesa (caso 2.4 da spec) via advisory lock —
-    // FOR UPDATE em `groups` seria bloqueado pela RLS para membros não-donos.
+    // Serialize against expense creation through the advisory lock: FOR UPDATE on
+    // `groups` would be blocked by RLS for members who are not the owner.
     await tx.execute(
       sql`SELECT pg_advisory_xact_lock(hashtext(${groupId})::bigint)`,
     )

@@ -1,6 +1,6 @@
 /**
- * Design tokens do Wally 2.0 — fonte única de cores, espaçamento e tipografia.
- * Nada de valores mágicos nos componentes; tudo referencia estes tokens.
+ * Design tokens — the single source of colours, spacing and typography.
+ * Components reference these instead of hard-coding values.
  */
 
 export const palette = {

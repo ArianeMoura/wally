@@ -1,9 +1,9 @@
 import { timestamp } from 'drizzle-orm/pg-core'
 
 /**
- * Colunas de auditoria compartilhadas por todas as tabelas.
- * Retorna builders novos a cada chamada (não reutilizar instâncias entre tabelas).
- * O casing `snake_case` é aplicado no cliente/drizzle-kit → `created_at`, etc.
+ * Audit columns shared by every table. Returns fresh builders on each call —
+ * instances must not be reused across tables. snake_case is applied by
+ * drizzle-kit, so these land as `created_at` and friends.
  */
 export const timestamps = () => ({
   createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),

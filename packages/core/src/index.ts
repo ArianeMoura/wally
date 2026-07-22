@@ -1,5 +1,5 @@
-// @wally/core — núcleo de domínio puro (sem I/O, sem framework).
-// Aritmética monetária, divisão por maior resto e cálculo de saldos de grupo.
+// @wally/core — pure domain core: no I/O, no framework.
+// Money arithmetic, largest-remainder splitting and group balance calculation.
 export {
   MoneyError,
   assertCents,

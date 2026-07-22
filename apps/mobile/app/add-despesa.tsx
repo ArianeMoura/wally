@@ -3,10 +3,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { Screen, AppText, Input, Button } from '../src/components/ui'
-import {
-  useGroupMembers,
-  useCreateExpense,
-} from '../src/features/groups/hooks'
+import { useGroupMembers, useCreateExpense } from '../src/features/groups/hooks'
 import { parseAmountToCents } from '../src/lib/money'
 import { colors, spacing } from '../src/theme/tokens'
 
@@ -59,8 +56,8 @@ export default function AddDespesa() {
           onChangeText={setDescription}
         />
         <AppText variant="caption" color={colors.textMuted}>
-          {t('groups.splitEqually')} ·{' '}
-          {(members.data ?? []).length} {t('groups.members').toLowerCase()}
+          {t('groups.splitEqually')} · {(members.data ?? []).length}{' '}
+          {t('groups.members').toLowerCase()}
         </AppText>
         {error ? (
           <AppText variant="caption" color={colors.expense}>
@@ -72,7 +69,11 @@ export default function AddDespesa() {
           onPress={onSubmit}
           loading={create.isPending}
         />
-        <Button title={t('common.cancel')} variant="ghost" onPress={() => router.back()} />
+        <Button
+          title={t('common.cancel')}
+          variant="ghost"
+          onPress={() => router.back()}
+        />
       </View>
     </Screen>
   )

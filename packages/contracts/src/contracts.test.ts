@@ -53,8 +53,10 @@ describe('transactions.createTransactionBody', () => {
 describe('groups.splitSpec (união discriminada)', () => {
   it('aceita modo equal', () => {
     expect(
-      splitSpec.safeParse({ mode: 'equal', participantIds: [crypto.randomUUID()] })
-        .success,
+      splitSpec.safeParse({
+        mode: 'equal',
+        participantIds: [crypto.randomUUID()],
+      }).success,
     ).toBe(true)
   })
   it('aceita modo weights', () => {

@@ -8,9 +8,9 @@ export interface ResolvedShare {
 }
 
 /**
- * Converte a especificação de divisão do cliente em cotas exatas, SEMPRE
- * reconciliadas no servidor pelo maior resto (@wally/core). Garante
- * `Σ cotas == amountCents` e valida que todos os participantes são membros.
+ * Turns the client's split spec into exact shares, always reconciled on the
+ * server by largest remainder (@wally/core). Enforces `Σ shares == amountCents`
+ * and checks every participant is a member.
  */
 export function resolveSplit(
   split: SplitSpec,
@@ -55,7 +55,7 @@ export function resolveSplit(
     }))
   }
 
-  // mode === 'shares' — cotas explícitas: validamos que fecham exatamente.
+  // mode === 'shares' — explicit shares, checked to add up exactly.
   const ids = split.shares.map((s) => s.userId)
   ensureMembers(ids)
   const sum = split.shares.reduce((acc, s) => acc + s.shareCents, 0)
