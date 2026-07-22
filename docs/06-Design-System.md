@@ -8,7 +8,7 @@ componentes — que garantem consistência em todo o produto.
 
 <div align="center"><img width="300" alt="Logomarca do Wally" src="https://github.com/user-attachments/assets/b771c1a8-d771-4380-834a-ad678e378283" /></div>
 
-- **Conceito:** o nome remete a *wallet* (carteira). A logomarca representa uma
+- **Conceito:** o nome remete a _wallet_ (carteira). A logomarca representa uma
   carteira estilizada, reforçando controle e organização financeira.
 - **Forma:** linhas suaves e fluidas, sugerindo agilidade e facilidade de uso.
 - **Ícone do cifrão:** reforça a proposta financeira do produto.
@@ -28,11 +28,11 @@ A paleta usa variações de **verde-azulado e turquesa**:
 
 ## Tipografia
 
-| Uso | Fonte | Aplicação |
-|---|---|---|
-| Logomarca | **Julius Sans One** | Assinatura da marca |
-| Títulos e destaques | **Poppins** | Títulos, subtítulos e elementos de destaque |
-| Texto corrido | **Inter** | Descrições e conteúdos extensos, com alta legibilidade |
+| Uso                 | Fonte               | Aplicação                                              |
+| ------------------- | ------------------- | ------------------------------------------------------ |
+| Logomarca           | **Julius Sans One** | Assinatura da marca                                    |
+| Títulos e destaques | **Poppins**         | Títulos, subtítulos e elementos de destaque            |
+| Texto corrido       | **Inter**           | Descrições e conteúdos extensos, com alta legibilidade |
 
 ## Ilustração
 
@@ -57,5 +57,5 @@ pontos de contato.
 
 > As fontes já estão disponíveis no app via `@expo-google-fonts/poppins` e
 > `@expo-google-fonts/inter`. Ao evoluir o produto, recomenda-se centralizar cores,
-> espaçamentos e tipografia em *design tokens* (`constants/`) para reuso consistente
+> espaçamentos e tipografia em _design tokens_ (`constants/`) para reuso consistente
 > entre telas.

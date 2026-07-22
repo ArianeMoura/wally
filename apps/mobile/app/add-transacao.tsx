@@ -73,7 +73,11 @@ export default function AddTransacao() {
           onPress={onSubmit}
           loading={create.isPending}
         />
-        <Button title={t('common.cancel')} variant="ghost" onPress={() => router.back()} />
+        <Button
+          title={t('common.cancel')}
+          variant="ghost"
+          onPress={() => router.back()}
+        />
       </View>
     </Screen>
   )

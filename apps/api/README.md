@@ -38,15 +38,15 @@ Gere os segredos JWT com `openssl rand -hex 32`.
 
 ### Variáveis de ambiente
 
-| Variável | Descrição |
-|---|---|
-| `NODE_ENV` | `development` \| `test` \| `production` |
-| `HOST` / `PORT` | Bind da API (padrão `0.0.0.0:3333`) |
-| `DATABASE_URL` | String de conexão do PostgreSQL |
-| `JWT_ACCESS_SECRET` | Segredo do *access token* (≥ 32 chars) — **obrigatório** |
-| `JWT_REFRESH_SECRET` | Segredo do *refresh token* (≥ 32 chars) — **obrigatório** |
-| `ACCESS_TOKEN_TTL` / `REFRESH_TOKEN_TTL` | Validade dos tokens (`15m`, `30d`) |
-| `CORS_ORIGIN` | Origem(ns) permitida(s); `*` apenas em desenvolvimento |
+| Variável                                 | Descrição                                                 |
+| ---------------------------------------- | --------------------------------------------------------- |
+| `NODE_ENV`                               | `development` \| `test` \| `production`                   |
+| `HOST` / `PORT`                          | Bind da API (padrão `0.0.0.0:3333`)                       |
+| `DATABASE_URL`                           | String de conexão do PostgreSQL                           |
+| `JWT_ACCESS_SECRET`                      | Segredo do _access token_ (≥ 32 chars) — **obrigatório**  |
+| `JWT_REFRESH_SECRET`                     | Segredo do _refresh token_ (≥ 32 chars) — **obrigatório** |
+| `ACCESS_TOKEN_TTL` / `REFRESH_TOKEN_TTL` | Validade dos tokens (`15m`, `30d`)                        |
+| `CORS_ORIGIN`                            | Origem(ns) permitida(s); `*` apenas em desenvolvimento    |
 
 > A configuração é validada no boot com **fail-fast** ([`src/config/env.ts`](src/config/env.ts)):
 > a API aborta se qualquer variável obrigatória faltar. Sem fallback inseguro.

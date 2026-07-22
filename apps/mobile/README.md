@@ -24,8 +24,8 @@ pnpm start
 
 Variáveis de ambiente:
 
-| Variável | Descrição |
-|---|---|
+| Variável              | Descrição                                                                                                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `EXPO_PUBLIC_API_URL` | Host base da API do Wally, **sem** o prefixo de rota — o cliente acrescenta `/api/v1`. Ex.: `http://localhost:3333` em desenvolvimento ou `https://api.seu-dominio` em produção. |
 
 > Em dispositivo físico com Expo Go, `localhost` aponta para o próprio aparelho.

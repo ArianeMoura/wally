@@ -12,11 +12,11 @@ define os níveis de teste, as metas e a integração com os pipelines.
       ─────  Unitários (muitos, rápidos; use-cases e regras)
 ```
 
-| Nível | Escopo | Ferramenta |
-|---|---|---|
-| **Unitário** | Casos de uso e regras de negócio isoladas | Vitest/Jest (backend); jest-expo (mobile) |
-| **Integração** | Rotas da API contra banco de teste; view models × API | Fastify inject + Testcontainers/DB de teste |
-| **E2E** | Fluxos críticos no app (login, transação, divisão em grupo) | Detox/Maestro (mobile) |
+| Nível          | Escopo                                                      | Ferramenta                                  |
+| -------------- | ----------------------------------------------------------- | ------------------------------------------- |
+| **Unitário**   | Casos de uso e regras de negócio isoladas                   | Vitest/Jest (backend); jest-expo (mobile)   |
+| **Integração** | Rotas da API contra banco de teste; view models × API       | Fastify inject + Testcontainers/DB de teste |
+| **E2E**        | Fluxos críticos no app (login, transação, divisão em grupo) | Detox/Maestro (mobile)                      |
 
 ## Estado atual e metas
 
@@ -32,13 +32,13 @@ define os níveis de teste, as metas e a integração com os pipelines.
 
 ### Gates de cobertura (Wally 2.0)
 
-Cobertura é um *gate* bloqueante na CI (RNF-013), com piso reforçado onde o risco é
+Cobertura é um _gate_ bloqueante na CI (RNF-013), com piso reforçado onde o risco é
 financeiro:
 
-| Escopo | Piso de cobertura |
-|---|---|
-| Global (backend + mobile) | ~70% linhas |
-| Use-cases financeiros (`transactions`, `groupExpenses`, `settlements`, `budgets`) | ~90% linhas |
+| Escopo                                                                            | Piso de cobertura |
+| --------------------------------------------------------------------------------- | ----------------- |
+| Global (backend + mobile)                                                         | ~70% linhas       |
+| Use-cases financeiros (`transactions`, `groupExpenses`, `settlements`, `budgets`) | ~90% linhas       |
 
 ### Teste de concorrência (obrigatório)
 
@@ -47,7 +47,7 @@ testes específicos, além dos unitários/integração:
 
 - **Divisão/liquidação concorrente:** disparar N requisições paralelas de
   `split`/`settle` no mesmo grupo e assertar a invariante `Σ saldos == 0` e ausência
-  de *lost update* (valida o `FOR UPDATE`/transação — RNF-007/008).
+  de _lost update_ (valida o `FOR UPDATE`/transação — RNF-007/008).
 - **Idempotência:** reenviar a mesma requisição com o mesmo `Idempotency-Key` e
   assertar **um único** efeito (RNF-009).
 - **Arredondamento:** dividir valores não exatos (ex.: 1000 centavos / 3) e assertar
@@ -57,35 +57,35 @@ testes específicos, além dos unitários/integração:
 
 Os fluxos abaixo servem de base para automação e verificação manual:
 
-| ID | Requisito | Objetivo |
-|---|---|---|
-| CT-01 | RF-001 | Autenticar com e-mail e senha |
-| CT-02 | RF-002 | Enviar link e redefinir senha |
-| CT-03 | RF-003 | Registrar novo usuário |
-| CT-04 | RF-004 | Editar perfil (nome, foto, senha) |
-| CT-05 | RF-005 | Adicionar receita/despesa |
-| CT-06 | RF-006 | Exibir extrato completo |
-| CT-07 | RF-007 | Filtrar transações |
-| CT-08 | RF-008 | Calcular saldo, receitas e despesas |
-| CT-09 | RF-009 | Selecionar mês/ano |
-| CT-10 | RF-010 | Criar grupo |
-| CT-11 | RF-011 | Adicionar despesa ao grupo com divisão |
-| CT-12 | RF-012 | Calcular saldo por participante |
-| CT-13 | RF-013 | Exibir histórico do grupo |
-| CT-14 | RF-014 | Adicionar membros |
-| CT-15 | RF-015 | Listar grupos |
-| CT-16 | RF-016 | Exibir tela inicial |
-| CT-17 | RF-017 | Categorizar transação (sugestão automática + edição) |
-| CT-18 | RF-018 | Acertar contas no grupo e recalcular saldos |
-| CT-19 | RF-019 | Alertar ao estourar orçamento por categoria |
-| CT-20 | RF-020 | Registrar evento financeiro em mutação de saldo |
-| CT-21 | RF-021 | Gerar insight de IA sobre dados anonimizados (com consentimento) |
+| ID    | Requisito | Objetivo                                                         |
+| ----- | --------- | ---------------------------------------------------------------- |
+| CT-01 | RF-001    | Autenticar com e-mail e senha                                    |
+| CT-02 | RF-002    | Enviar link e redefinir senha                                    |
+| CT-03 | RF-003    | Registrar novo usuário                                           |
+| CT-04 | RF-004    | Editar perfil (nome, foto, senha)                                |
+| CT-05 | RF-005    | Adicionar receita/despesa                                        |
+| CT-06 | RF-006    | Exibir extrato completo                                          |
+| CT-07 | RF-007    | Filtrar transações                                               |
+| CT-08 | RF-008    | Calcular saldo, receitas e despesas                              |
+| CT-09 | RF-009    | Selecionar mês/ano                                               |
+| CT-10 | RF-010    | Criar grupo                                                      |
+| CT-11 | RF-011    | Adicionar despesa ao grupo com divisão                           |
+| CT-12 | RF-012    | Calcular saldo por participante                                  |
+| CT-13 | RF-013    | Exibir histórico do grupo                                        |
+| CT-14 | RF-014    | Adicionar membros                                                |
+| CT-15 | RF-015    | Listar grupos                                                    |
+| CT-16 | RF-016    | Exibir tela inicial                                              |
+| CT-17 | RF-017    | Categorizar transação (sugestão automática + edição)             |
+| CT-18 | RF-018    | Acertar contas no grupo e recalcular saldos                      |
+| CT-19 | RF-019    | Alertar ao estourar orçamento por categoria                      |
+| CT-20 | RF-020    | Registrar evento financeiro em mutação de saldo                  |
+| CT-21 | RF-021    | Gerar insight de IA sobre dados anonimizados (com consentimento) |
 
 ## Testes de usabilidade
 
 Além dos testes automatizados, o Wally realiza avaliações de usabilidade com
 usuários reais para medir eficiência, satisfação e taxa de sucesso por tarefa
-(base: SUS — *System Usability Scale*). **Todos os dados coletados em avaliações de
+(base: SUS — _System Usability Scale_). **Todos os dados coletados em avaliações de
 usabilidade são tratados de forma anônima**, em conformidade com a LGPD (ver
 [SECURITY.md](../SECURITY.md)).
 

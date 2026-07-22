@@ -93,7 +93,6 @@ export function useCreateSettlement(groupId: string) {
         body,
         idempotencyKey(),
       ),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: KEYS.balances(groupId) }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: KEYS.balances(groupId) }),
   })
 }

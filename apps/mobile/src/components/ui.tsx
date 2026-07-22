@@ -91,12 +91,17 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'ghost' ? colors.primary : colors.textOnPrimary} />
+        <ActivityIndicator
+          color={variant === 'ghost' ? colors.primary : colors.textOnPrimary}
+        />
       ) : (
         <Text
           style={[
             typography.label,
-            { color: variant === 'ghost' ? colors.primary : colors.textOnPrimary },
+            {
+              color:
+                variant === 'ghost' ? colors.primary : colors.textOnPrimary,
+            },
           ]}
         >
           {title}

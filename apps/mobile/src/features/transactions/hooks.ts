@@ -41,7 +41,9 @@ export function useCreateTransaction() {
       api.post<TransactionResponse>('/transactions', body),
     onMutate: async (body) => {
       await qc.cancelQueries({ queryKey: KEYS.list })
-      const previous = qc.getQueryData<Paginated<TransactionResponse>>(KEYS.list)
+      const previous = qc.getQueryData<Paginated<TransactionResponse>>(
+        KEYS.list,
+      )
       const optimistic: TransactionResponse = {
         id: `optimistic-${Date.now()}`,
         userId: 'me',
@@ -76,7 +78,9 @@ export function useDeleteTransaction() {
     mutationFn: (id: string) => api.del<void>(`/transactions/${id}`),
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: KEYS.list })
-      const previous = qc.getQueryData<Paginated<TransactionResponse>>(KEYS.list)
+      const previous = qc.getQueryData<Paginated<TransactionResponse>>(
+        KEYS.list,
+      )
       qc.setQueryData<Paginated<TransactionResponse>>(KEYS.list, (old) =>
         old
           ? {
