@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@wally/config": "workspace:*",
-    "typescript": "^5.8.3",
-    "vitest": "^2.1.8"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   }
 }
