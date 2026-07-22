@@ -22,7 +22,7 @@ function toResponse(c: CategoryRow): CategoryResponse {
   }
 }
 
-/** Lista categorias visíveis: padrões do sistema + próprias (RLS garante o resto). */
+/** Visible categories: system defaults plus the user's own; RLS does the rest. */
 export async function listCategories(tx: Tx): Promise<CategoryResponse[]> {
   const rows = await tx
     .select()

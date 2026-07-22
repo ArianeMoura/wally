@@ -3,8 +3,9 @@ import { ownerDb as db, ownerPool as pool } from './client'
 import { categories } from './schema'
 
 /**
- * Categorias padrão do sistema (`user_id = NULL`), legíveis por todos (RF-017).
- * Rodado como dono do banco (bypass de RLS). Idempotente: só insere as faltantes.
+ * System default categories (`user_id = NULL`), readable by everyone (RF-017).
+ * Runs as the database owner (bypassing RLS) and is idempotent: it only inserts
+ * the ones that are missing.
  */
 const DEFAULT_CATEGORIES: {
   name: string
@@ -12,7 +13,7 @@ const DEFAULT_CATEGORIES: {
   color: string
   kind: 'income' | 'expense'
 }[] = [
-  // Receitas
+  // Income
   { name: 'Salário', icon: 'cash', color: '#16A34A', kind: 'income' },
   { name: 'Freelance', icon: 'laptop', color: '#0EA5E9', kind: 'income' },
   {
@@ -28,7 +29,7 @@ const DEFAULT_CATEGORIES: {
     color: '#65A30D',
     kind: 'income',
   },
-  // Despesas
+  // Expenses
   {
     name: 'Alimentação',
     icon: 'silverware-fork-knife',
@@ -80,7 +81,7 @@ async function main() {
   await pool.end()
 }
 
-// Executa apenas quando chamado diretamente (tsx src/db/seed.ts).
+// Only runs when invoked directly (tsx src/db/seed.ts).
 main().catch(async (err) => {
   console.error('❌ Falha no seed:', err)
   await pool.end()

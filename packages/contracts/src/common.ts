@@ -1,16 +1,16 @@
 import { z } from 'zod'
 
-/** Primitivos compartilhados por todos os domínios. */
+/** Primitives shared across every domain. */
 
 export const uuid = z.string().uuid()
 export const email = z.string().email().toLowerCase()
 export const password = z.string().min(8).max(128)
 
-/** Dinheiro: sempre inteiro de centavos (RNF-010). Nunca float. */
+/** Money is always an integer of cents (RNF-010), never a float. */
 export const positiveCents = z.number().int().positive()
 export const nonNegativeCents = z.number().int().nonnegative()
 
-/** Timestamps em respostas trafegam como ISO-8601 (JSON não tem `Date`). */
+/** Response timestamps travel as ISO-8601 strings — JSON has no `Date`. */
 export const isoDateTime = z.string().datetime({ offset: true })
 
 export const timestamps = z.object({

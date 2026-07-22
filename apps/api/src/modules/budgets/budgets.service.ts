@@ -68,7 +68,7 @@ export async function deleteBudget(tx: Tx, id: string): Promise<void> {
   if (!row) throw new NotFoundError('Orçamento não encontrado')
 }
 
-/** RF-019 — orçamentos com gasto do período corrente e alerta de estouro. */
+/** RF-019 — budgets with current-period spend and the overspend alert. */
 export async function listBudgetStatus(tx: Tx): Promise<BudgetStatus[]> {
   const rows = await tx.select().from(budgets).where(isNull(budgets.deletedAt))
 

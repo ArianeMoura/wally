@@ -91,12 +91,17 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'ghost' ? colors.primary : colors.textOnPrimary} />
+        <ActivityIndicator
+          color={variant === 'ghost' ? colors.primary : colors.textOnPrimary}
+        />
       ) : (
         <Text
           style={[
             typography.label,
-            { color: variant === 'ghost' ? colors.primary : colors.textOnPrimary },
+            {
+              color:
+                variant === 'ghost' ? colors.primary : colors.textOnPrimary,
+            },
           ]}
         >
           {title}
@@ -132,7 +137,7 @@ export function Input({
   )
 }
 
-/** Valor monetário formatado (BRL) com cor por sinal. */
+/** Formatted BRL amount, coloured by sign. */
 export function Money({
   cents,
   colorBySign = false,

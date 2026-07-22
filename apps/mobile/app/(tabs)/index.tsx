@@ -53,7 +53,11 @@ export default function Wallet() {
             <AppText variant="caption" color={colors.textMuted}>
               {t('wallet.expense')}
             </AppText>
-            <Money cents={-(summary.data?.expenseCents ?? 0)} variant="title" colorBySign />
+            <Money
+              cents={-(summary.data?.expenseCents ?? 0)}
+              variant="title"
+              colorBySign
+            />
           </View>
         </Row>
       </Card>
@@ -116,7 +120,11 @@ function TransactionRow({
         </View>
         <Money cents={signed} variant="title" colorBySign />
         <Pressable onPress={onDelete} style={{ marginLeft: spacing.md }}>
-          <MaterialIcons name="delete-outline" size={22} color={colors.textMuted} />
+          <MaterialIcons
+            name="delete-outline"
+            size={22}
+            color={colors.textMuted}
+          />
         </Pressable>
       </Row>
     </Card>

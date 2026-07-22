@@ -21,9 +21,9 @@ describe('splitByLargestRemainder — casos canônicos', () => {
   })
 
   it('resto vai para os maiores restos, empate pelo menor índice', () => {
-    // 100 / 3 = 33,33 → base 33 cada (99), 1 centavo sobra → índice 0
+    // 100 / 3 → base 33 each (99), 1 cent left over → goes to index 0
     expect(splitEqually(100, 3)).toEqual([34, 33, 33])
-    // 1 centavo entre 3 → só o primeiro recebe
+    // 1 cent across 3 → only the first participant gets it
     expect(splitEqually(1, 3)).toEqual([1, 0, 0])
   })
 
@@ -63,7 +63,10 @@ describe('splitByLargestRemainder — propriedades (fast-check)', () => {
     fc.assert(
       fc.property(
         fc.nat({ max: 1_000_000_000 }),
-        fc.array(fc.integer({ min: 1, max: 100 }), { minLength: 1, maxLength: 25 }),
+        fc.array(fc.integer({ min: 1, max: 100 }), {
+          minLength: 1,
+          maxLength: 25,
+        }),
         (total, weights) => {
           const parts = splitByLargestRemainder(total, weights)
           return sum(parts) === total
@@ -76,13 +79,18 @@ describe('splitByLargestRemainder — propriedades (fast-check)', () => {
     fc.assert(
       fc.property(
         fc.nat({ max: 1_000_000_000 }),
-        fc.array(fc.integer({ min: 1, max: 100 }), { minLength: 1, maxLength: 25 }),
+        fc.array(fc.integer({ min: 1, max: 100 }), {
+          minLength: 1,
+          maxLength: 25,
+        }),
         (total, weights) => {
           const totalWeight = sum(weights)
           const parts = splitByLargestRemainder(total, weights)
           return parts.every((part, i) => {
             const ideal = (total * (weights[i] as number)) / totalWeight
-            return part >= 0 && part >= Math.floor(ideal) && part <= Math.ceil(ideal)
+            return (
+              part >= 0 && part >= Math.floor(ideal) && part <= Math.ceil(ideal)
+            )
           })
         },
       ),
@@ -106,7 +114,10 @@ describe('splitByLargestRemainder — propriedades (fast-check)', () => {
     fc.assert(
       fc.property(
         fc.nat({ max: 1_000_000_000 }),
-        fc.array(fc.integer({ min: 1, max: 100 }), { minLength: 1, maxLength: 25 }),
+        fc.array(fc.integer({ min: 1, max: 100 }), {
+          minLength: 1,
+          maxLength: 25,
+        }),
         (total, weights) => {
           const a = splitByLargestRemainder(total, weights)
           const b = splitByLargestRemainder(total, weights)

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { uuid, password, isoDateTime } from './common'
 
-/** Representação pública do usuário (nunca inclui `passwordHash`). */
+/** Public view of a user; never carries `passwordHash`. */
 export const userPublic = z.object({
   id: uuid,
   name: z.string(),
@@ -19,7 +19,7 @@ export const updateProfileBody = z
   })
   .partial()
 
-/** Consentimento LGPD para processamento por IA (RF-021 / RNF-014). */
+/** LGPD consent for AI processing (RF-021 / RNF-014). */
 export const aiConsentBody = z.object({ consent: z.boolean() })
 
 export type UserPublic = z.infer<typeof userPublic>

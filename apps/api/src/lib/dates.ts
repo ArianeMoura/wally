@@ -1,4 +1,4 @@
-/** Intervalos de período em UTC. `end` é exclusivo (início do próximo período). */
+/** Period ranges in UTC. `end` is exclusive: the start of the next period. */
 
 export interface DateRange {
   start: Date
@@ -22,7 +22,7 @@ export function yearRange(now: Date): DateRange {
   }
 }
 
-/** Semana começando na segunda-feira (UTC). */
+/** Week starting on Monday, in UTC. */
 export function weekRange(now: Date): DateRange {
   const day = now.getUTCDay() // 0=domingo
   const diffToMonday = (day + 6) % 7

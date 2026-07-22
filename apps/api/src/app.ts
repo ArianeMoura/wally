@@ -23,25 +23,26 @@ import { groupRoutes } from './modules/groups/groups.routes'
 import { auditRoutes } from './modules/audit/audit.routes'
 
 export interface BuildAppOptions {
-  /** Origem(ns) permitida(s) no CORS. `false` bloqueia cross-origin. */
+  /** Allowed CORS origin(s). `false` blocks cross-origin entirely. */
   corsOrigin?: string | string[] | boolean
-  /** Readiness do banco (opcional em testes). */
+  /** Database readiness probe; optional in tests. */
   checkDb?: () => Promise<void>
-  /** Teto global de rate limit por minuto (default 100). Alto em testes. */
+  /** Global rate limit per minute (defaults to 100); raised in tests. */
   rateLimitMax?: number
 }
 
 /**
- * Monta a aplicação Fastify com validação Zod ponta-a-ponta, hardening
- * (helmet, rate-limit, CORS restrito), OpenAPI e health checks.
- * Não faz `listen` — isso fica em `server.ts` (testável via `app.inject`).
+ * Builds the Fastify app: end-to-end Zod validation, hardening (helmet,
+ * rate-limit, restricted CORS), OpenAPI and health checks. Deliberately does
+ * not `listen` — that lives in `server.ts`, which keeps this testable through
+ * `app.inject`.
  */
 export async function buildApp(
   options: BuildAppOptions = {},
 ): Promise<FastifyInstance> {
   const app = Fastify({
     logger: loggerOptions,
-    // Correlação (RNF-015): honra x-request-id de entrada ou gera um UUID.
+    // Correlation (RNF-015): honour an incoming x-request-id or mint a UUID.
     genReqId: (req) => {
       const header = req.headers['x-request-id']
       return typeof header === 'string' && header.length > 0
@@ -50,12 +51,11 @@ export async function buildApp(
     },
   }).withTypeProvider<ZodTypeProvider>()
 
-  // Ecoa o id de correlação na resposta.
+  // Echo the correlation id back on the response.
   app.addHook('onSend', async (request, reply) => {
     reply.header('x-request-id', request.id)
   })
 
-  // Validação e serialização baseadas em esquemas Zod.
   app.setValidatorCompiler(validatorCompiler)
   app.setSerializerCompiler(serializerCompiler)
   await app.register(errorHandler)

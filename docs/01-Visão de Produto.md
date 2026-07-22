@@ -1,6 +1,6 @@
-# Contexto
+# Visão de Produto
 
-## Visão geral
+## Introdução
 
 O Wally é um aplicativo de gestão financeira para o controle de finanças pessoais
 e a administração de despesas compartilhadas em grupo. O produto permite cadastrar

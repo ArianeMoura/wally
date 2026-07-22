@@ -7,7 +7,7 @@ export const users = pgTable('users', {
   email: text().notNull().unique(),
   passwordHash: text().notNull(), // Argon2id (F1) — dimensionado para o hash completo
   avatarUrl: text(),
-  // Consentimento LGPD para processamento por IA (RF-021 / RNF-014).
+  // LGPD consent for AI processing (RF-021 / RNF-014).
   aiConsentAt: timestamp({ withTimezone: true }),
   ...timestamps(),
 })

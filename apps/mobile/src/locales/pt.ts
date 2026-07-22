@@ -1,4 +1,4 @@
-/** Strings PT-BR (padrão). Estrutura pronta para adicionar EN futuramente. */
+/** PT-BR strings (the default locale). Structured so EN can be added later. */
 export const pt = {
   common: {
     appName: 'Wally',

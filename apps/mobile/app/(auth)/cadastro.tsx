@@ -27,7 +27,11 @@ export default function Cadastro() {
 
   return (
     <Screen scroll>
-      <AppText variant="h1" color={colors.primaryDark} style={{ marginBottom: spacing.xl }}>
+      <AppText
+        variant="h1"
+        color={colors.primaryDark}
+        style={{ marginBottom: spacing.xl }}
+      >
         {t('auth.signUpTitle')}
       </AppText>
 
@@ -76,7 +80,9 @@ export default function Cadastro() {
 
       {signUp.isError ? (
         <AppText variant="caption" color={colors.expense}>
-          {signUp.error instanceof Error ? signUp.error.message : t('common.error')}
+          {signUp.error instanceof Error
+            ? signUp.error.message
+            : t('common.error')}
         </AppText>
       ) : null}
 

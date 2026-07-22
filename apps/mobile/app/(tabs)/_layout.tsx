@@ -18,7 +18,11 @@ export default function TabsLayout() {
         options={{
           title: t('wallet.title'),
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="account-balance-wallet" color={color} size={size} />
+            <MaterialIcons
+              name="account-balance-wallet"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />

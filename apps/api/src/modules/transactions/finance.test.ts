@@ -17,7 +17,7 @@ afterAll(async () => {
   await ownerPool.end()
 })
 
-/** Cria um usuário e devolve o header de autorização. */
+/** Creates a user and returns the authorization header. */
 async function newUser(): Promise<{
   auth: { authorization: string }
   id: string
@@ -181,7 +181,7 @@ describe('transactions + saldo', () => {
     })
     expect(bDelete.statusCode).toBe(404)
 
-    // A ainda consegue apagar a própria.
+    // A can still delete their own.
     const aDelete = await app.inject({
       method: 'DELETE',
       url: `/api/v1/transactions/${txId}`,

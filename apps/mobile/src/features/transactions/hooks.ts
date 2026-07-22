@@ -33,7 +33,7 @@ export function useBalanceSummary() {
   })
 }
 
-/** Criação com UI otimista: aplica local, reconcilia com o servidor. */
+/** Optimistic create: applies locally, then reconciles with the server. */
 export function useCreateTransaction() {
   const qc = useQueryClient()
   return useMutation({
@@ -41,7 +41,9 @@ export function useCreateTransaction() {
       api.post<TransactionResponse>('/transactions', body),
     onMutate: async (body) => {
       await qc.cancelQueries({ queryKey: KEYS.list })
-      const previous = qc.getQueryData<Paginated<TransactionResponse>>(KEYS.list)
+      const previous = qc.getQueryData<Paginated<TransactionResponse>>(
+        KEYS.list,
+      )
       const optimistic: TransactionResponse = {
         id: `optimistic-${Date.now()}`,
         userId: 'me',
@@ -69,14 +71,16 @@ export function useCreateTransaction() {
   })
 }
 
-/** Remoção com UI otimista. */
+/** Optimistic delete. */
 export function useDeleteTransaction() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => api.del<void>(`/transactions/${id}`),
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: KEYS.list })
-      const previous = qc.getQueryData<Paginated<TransactionResponse>>(KEYS.list)
+      const previous = qc.getQueryData<Paginated<TransactionResponse>>(
+        KEYS.list,
+      )
       qc.setQueryData<Paginated<TransactionResponse>>(KEYS.list, (old) =>
         old
           ? {

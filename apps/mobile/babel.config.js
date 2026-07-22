@@ -1,6 +1,5 @@
-// Config de dev do Wally 2.0. A URL da API vem de EXPO_PUBLIC_API_URL
-// (variável pública do Expo), não mais do plugin dotenv-import.
-// O plugin do reanimated deve ser o último da lista.
+// The API URL comes from EXPO_PUBLIC_API_URL, an Expo public variable.
+// The reanimated plugin must stay last in the list.
 module.exports = function (api) {
   api.cache(true)
   return {

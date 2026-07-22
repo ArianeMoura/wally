@@ -1,19 +1,19 @@
 import { MoneyError, assertNonNegativeCents } from './money'
 
 /**
- * Divisão de um total em centavos por pesos, usando o método do **maior resto**
- * (largest remainder). Garante, de forma determinística e exata:
- *   • Σ cotas == totalCents  (nenhum centavo some ou é criado — RNF-010)
- *   • cada cota difere da cota "ideal" em no máximo 1 centavo
- *   • o(s) centavo(s) residual(is) vão para os maiores restos; empate → menor índice
+ * Splits a total in cents across weights using the largest remainder method.
+ * Guarantees, deterministically:
+ *   • Σ shares == totalCents (no cent is lost or invented — RNF-010)
+ *   • each share is within 1 cent of its ideal value
+ *   • leftover cents go to the largest remainders; ties break on lowest index
  *
- * A aritmética do rateio usa BigInt internamente para não perder precisão nem
- * estourar o inteiro seguro em totais/pesos grandes.
+ * Uses BigInt internally so large totals and weights neither lose precision nor
+ * overflow the safe integer range.
  *
- * @param totalCents inteiro de centavos ≥ 0
- * @param weights    pesos inteiros ≥ 0 (ex.: `[1,1,1]` para divisão igualitária;
- *                   `[2,1,1]` se o primeiro participante arca com o dobro)
- * @returns array de cotas inteiras, na mesma ordem dos pesos
+ * @param totalCents integer cents ≥ 0
+ * @param weights    integer weights ≥ 0 (`[1,1,1]` for an even split; `[2,1,1]`
+ *                   if the first participant covers double)
+ * @returns integer shares, in the same order as the weights
  */
 export function splitByLargestRemainder(
   totalCents: number,
@@ -37,7 +37,7 @@ export function splitByLargestRemainder(
   const T = BigInt(totalCents)
   const W = BigInt(totalWeight)
 
-  // base = floor(total * peso / somaPesos); rem = resto dessa divisão (inteiro).
+  // base = floor(total * weight / totalWeight); rem = the remainder of that division.
   const parts = weights.map((weight, index) => {
     const numerator = T * BigInt(weight)
     return {
@@ -48,9 +48,9 @@ export function splitByLargestRemainder(
   })
 
   const assigned = parts.reduce((s, p) => s + p.base, 0)
-  const leftover = totalCents - assigned // nº de centavos a distribuir (< weights.length)
+  const leftover = totalCents - assigned // cents left to hand out (< weights.length)
 
-  // Ordena por maior resto; empate resolvido pelo menor índice (determinístico).
+  // Largest remainder first; ties break on lowest index, keeping this deterministic.
   const order = [...parts].sort((a, b) => {
     if (a.rem === b.rem) return a.index - b.index
     return a.rem > b.rem ? -1 : 1
@@ -65,7 +65,7 @@ export function splitByLargestRemainder(
   return result
 }
 
-/** Divisão igualitária de `totalCents` entre `n` participantes. */
+/** Splits `totalCents` evenly across `n` participants. */
 export function splitEqually(totalCents: number, n: number): number[] {
   if (!Number.isInteger(n) || n <= 0) {
     throw new MoneyError(`n deve ser inteiro > 0 (recebido: ${n})`)
