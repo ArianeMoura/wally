@@ -28,12 +28,13 @@ O Wally atua em duas frentes complementares:
 
 ## Arquitetura e stack
 
-Dois aplicativos independentes, ambos em **TypeScript**:
+Monorepo **pnpm + Turborepo**, todo em **TypeScript**:
 
 | Camada | Stack | Padrão |
 |---|---|---|
-| **Mobile** — `wally/` | Expo, React Native, expo-router, Zustand, TanStack Query (+ persist/MMKV), React Hook Form + Zod, i18next | MVVM |
-| **API** — `wally-backend/` | Node.js, Fastify, Drizzle ORM, PostgreSQL, Zod, JWT, Swagger | Arquitetura em camadas (Clean Architecture) |
+| **Mobile** — [`apps/mobile/`](apps/mobile/) | Expo, React Native, expo-router, Zustand, TanStack Query (+ persist/MMKV), React Hook Form + Zod, i18next | MVVM |
+| **API** — [`apps/api/`](apps/api/) | Node.js, Fastify, Drizzle ORM, PostgreSQL, Zod, JWT, Swagger | Arquitetura em camadas (Clean Architecture) |
+| **Compartilhado** — [`packages/`](packages/) | `@wally/core` (regras de domínio), `@wally/contracts` (esquemas Zod), `@wally/config` | Consumidos via `workspace:*`, direto do fonte |
 | **Infraestrutura** | Docker, PostgreSQL | Migrations versionadas (drizzle-kit) |
 
 > **Wally 2.0.** Produto em evolução com banco novo: persistência em **Drizzle ORM**
@@ -44,26 +45,40 @@ Detalhes em [docs/05-Arquitetura.md](docs/05-Arquitetura.md).
 
 ## Começando
 
-Pré-requisitos: **Node.js 20+**, **npm**, **Docker** (opcional, para o banco) e o
-app **Expo Go** ou um emulador Android/iOS.
+Pré-requisitos: **Node.js 20+**, **pnpm 9** (`corepack enable`), **Docker** (para o
+banco) e o app **Expo Go** ou um emulador Android/iOS.
 
 ```bash
-# 1. Backend (API)
-cd wally-backend
-cp .env.example .env         # preencha as variáveis (banco, segredo do JWT)
-npm install
-npm run dev                  # sobe a API em http://localhost:3333/wally
+# 1. Dependências (na raiz — instala todos os workspaces)
+pnpm install
 
-# 2. Mobile
-cd ../wally
-cp .env.example .env         # defina API_URL apontando para a API
-npm install
-npx expo start               # abra no Expo Go ou emulador
+# 2. Banco + API
+cd apps/api
+cp .env.example .env          # gere os segredos JWT com: openssl rand -hex 32
+docker compose up -d db       # PostgreSQL em localhost:5432
+pnpm db:migrate               # cria o schema, as políticas de RLS e o papel wally_app
+pnpm db:seed                  # 15 categorias padrão — necessário para a suíte de testes
+cd ../.. && pnpm dev          # API em http://localhost:3333
+
+# 3. Mobile (outro terminal)
+cd apps/mobile
+cp .env.example .env          # EXPO_PUBLIC_API_URL apontando para a API
+pnpm start                    # abra no Expo Go ou emulador
 ```
 
-A documentação da API (Swagger) fica em `/wally/documentation` com a API no ar.
-Guias completos: [`wally/README.md`](wally/README.md) e
-[`wally-backend/README.md`](wally-backend/README.md).
+`pnpm dev` na raiz sobe apenas a API — o app mobile é iniciado com `pnpm start`
+dentro de [`apps/mobile/`](apps/mobile/).
+
+> Se a porta 5432 já estiver ocupada na sua máquina, crie um
+> `apps/api/docker-compose.override.yml` (ignorado pelo Git) com
+> `services: { db: { ports: !override ["5433:5432"] } }` e ajuste a porta em
+> `DATABASE_URL`/`APP_DATABASE_URL` no `.env`. A tag `!override` é necessária:
+> sem ela o Compose concatena as listas e tenta publicar a 5432 também.
+
+A documentação da API (Swagger) fica em `/wally/documentation` com a API no ar;
+as rotas ficam sob `/api/v1`. Guias completos:
+[`apps/mobile/README.md`](apps/mobile/README.md) e
+[`apps/api/README.md`](apps/api/README.md).
 
 ## Documentação
 

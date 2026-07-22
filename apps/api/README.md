@@ -12,7 +12,7 @@ API do Wally construída com **Node.js + Fastify + Drizzle ORM + PostgreSQL** em
 
 ## Pré-requisitos
 
-- **Node.js 20+** e **npm**
+- **Node.js 20+** e **pnpm 9** (`corepack enable`)
 - **Docker** (para subir o PostgreSQL local via `docker-compose`)
 
 ---
@@ -20,14 +20,21 @@ API do Wally construída com **Node.js + Fastify + Drizzle ORM + PostgreSQL** em
 ## Configuração
 
 ```bash
+pnpm install -w               # dependências de todo o monorepo (pode rodar daqui)
 cp .env.example .env          # preencha os segredos (ver abaixo)
 docker compose up -d db       # sobe o PostgreSQL em localhost:5432
-npm install
-npm run db:migrate            # aplica as migrations
-npm run dev                   # API em http://localhost:3333
+pnpm db:migrate               # migrations + políticas de RLS + papel wally_app
+pnpm db:seed                  # 15 categorias padrão — necessário para a suíte de testes
+pnpm dev                      # API em http://localhost:3333
 ```
 
 Gere os segredos JWT com `openssl rand -hex 32`.
+
+> Se a 5432 já estiver ocupada na sua máquina, crie um
+> `docker-compose.override.yml` (ignorado pelo Git) com
+> `services: { db: { ports: !override ["5433:5432"] } }` e ajuste a porta em
+> `DATABASE_URL`/`APP_DATABASE_URL`. A tag `!override` é necessária: sem ela o
+> Compose concatena as listas de `ports` e tenta publicar a 5432 também.
 
 ### Variáveis de ambiente
 
@@ -52,10 +59,10 @@ Schema gerido por **Drizzle ORM**; as migrations do **drizzle-kit** são a fonte
 verdade ([`src/db/schema/`](src/db/schema/) → [`src/db/migrations/`](src/db/migrations/)).
 
 ```bash
-npm run db:generate        # gera migration a partir do schema tipado
-npm run db:migrate         # aplica as migrations pendentes
-npm run db:migrate:check   # valida consistência das migrations (CI)
-npm run db:studio          # explorador visual do banco
+pnpm db:generate        # gera migration a partir do schema tipado
+pnpm db:migrate         # aplica as migrations pendentes
+pnpm db:migrate:check   # valida consistência das migrations (CI)
+pnpm db:studio          # explorador visual do banco
 ```
 
 ---
@@ -91,12 +98,12 @@ src/
 ## Scripts
 
 ```bash
-npm run dev         # desenvolvimento (tsx watch)
-npm start           # execução (node dist/server.js)
-npm run build       # build (tsc → dist/)
-npm run typecheck   # tsc --noEmit (any proibido)
-npm test            # testes (vitest)
-npm run lint        # ESLint
+pnpm dev         # desenvolvimento (tsx watch)
+pnpm start       # execução (node dist/server.js)
+pnpm build       # build (tsup → dist/)
+pnpm typecheck   # tsc --noEmit (any proibido)
+pnpm test        # testes (vitest)
+pnpm lint        # ESLint
 ```
 
 ---

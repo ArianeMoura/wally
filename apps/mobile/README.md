@@ -7,7 +7,7 @@ com **Expo / React Native** e **TypeScript**, seguindo o padrão **MVVM**.
 
 ## Pré-requisitos
 
-- **Node.js 20+** e **npm**
+- **Node.js 20+** e **pnpm 9** (`corepack enable`)
 - **Expo Go** no smartphone **ou** um emulador Android (AVD) / simulador iOS (Xcode)
 - Uma instância da API do Wally em execução (ver [`../wally-backend`](../wally-backend/README.md))
 
@@ -16,22 +16,25 @@ com **Expo / React Native** e **TypeScript**, seguindo o padrão **MVVM**.
 ## Configuração
 
 ```bash
-# na pasta wally/
-cp .env.example .env     # defina API_URL apontando para a sua API
-npm install
-npx expo start
+# na pasta apps/mobile/
+pnpm install -w          # dependências de todo o monorepo (pode rodar daqui)
+cp .env.example .env     # defina EXPO_PUBLIC_API_URL apontando para a sua API
+pnpm start
 ```
 
 Variáveis de ambiente:
 
 | Variável | Descrição |
 |---|---|
-| `API_URL` | URL base da API do Wally (ex.: `https://api.seu-dominio` ou `http://localhost:3333/wally` em desenvolvimento) |
+| `EXPO_PUBLIC_API_URL` | Host base da API do Wally, **sem** o prefixo de rota — o cliente acrescenta `/api/v1`. Ex.: `http://localhost:3333` em desenvolvimento ou `https://api.seu-dominio` em produção. |
+
+> Em dispositivo físico com Expo Go, `localhost` aponta para o próprio aparelho.
+> Use o IP da sua máquina na LAN (ex.: `http://192.168.0.10:3333`).
 
 > Nunca versione o arquivo `.env`. Segredos e URLs de produção não devem ser
 > commitados (ver [SECURITY.md](../SECURITY.md)).
 
-Ao rodar `npx expo start`:
+Ao rodar `pnpm start`:
 
 - **Expo Go**: escaneie o QR Code exibido no terminal/navegador de dev.
 - **Emulador Android**: pressione `a`.
@@ -70,12 +73,13 @@ apresentação vive nos view models, mantendo as telas declarativas.
 ## Scripts
 
 ```bash
-npm start        # inicia o servidor Expo
-npm run android  # abre no emulador Android
-npm run ios      # abre no simulador iOS
-npm run web      # executa a versão web
-npm run lint     # ESLint (expo lint)
-npm test         # testes (jest-expo)
+pnpm start      # inicia o servidor Expo
+pnpm android    # abre no emulador Android
+pnpm ios        # abre no simulador iOS
+pnpm web        # executa a versão web
+pnpm typecheck  # tsc --noEmit
+pnpm lint       # ESLint (expo lint)
+pnpm test       # testes (jest-expo)
 ```
 
 ---
