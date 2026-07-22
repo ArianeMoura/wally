@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { uuid, isoDateTime, paginationQuery } from './common'
 
-/** RF-020 — evento imutável da trilha de auditoria financeira. */
+/** RF-020 — an immutable entry in the financial audit trail. */
 export const financialEventResponse = z.object({
   id: uuid,
   actorId: uuid.nullable(),

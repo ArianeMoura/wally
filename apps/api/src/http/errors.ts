@@ -1,4 +1,4 @@
-/** Erros de domínio/HTTP tipados. Os services lançam; o error handler mapeia. */
+/** Typed domain/HTTP errors. Services throw them; the error handler maps them. */
 export class AppError extends Error {
   constructor(
     public readonly statusCode: number,

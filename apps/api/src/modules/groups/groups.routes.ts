@@ -83,7 +83,7 @@ export async function groupRoutes(app: FastifyInstance): Promise<void> {
     (request) => getGroup(request.currentUserId, request.params.id),
   )
 
-  // ---- Membros -----------------------------------------------------------
+  // ---- Members -------------------------------------------------------------
   r.get(
     '/:id/members',
     {
@@ -146,7 +146,7 @@ export async function groupRoutes(app: FastifyInstance): Promise<void> {
     },
   )
 
-  // ---- Despesas / Liquidações / Saldos -----------------------------------
+  // ---- Expenses / Settlements / Balances -----------------------------------
   r.post(
     '/:id/expenses',
     {

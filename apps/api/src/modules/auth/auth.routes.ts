@@ -14,7 +14,7 @@ import {
 import { env } from '../../config/env'
 import { AuthService } from './auth.service'
 
-// Limite reforçado contra força bruta em rotas sensíveis (SECURITY.md §2).
+// Tighter limit against brute force on sensitive routes (SECURITY.md §2).
 const strictRateLimit = { rateLimit: { max: 10, timeWindow: '1 minute' } }
 
 export async function authRoutes(app: FastifyInstance): Promise<void> {
@@ -90,7 +90,7 @@ export async function authRoutes(app: FastifyInstance): Promise<void> {
     },
     async (request) => {
       const token = await service.forgotPassword(request.body.email)
-      // Em produção, envie por e-mail. Em dev, logamos para permitir o teste.
+      // Production sends this by email; development logs it so it is testable.
       if (token && env.NODE_ENV !== 'production') {
         request.log.info({ resetToken: token }, 'token de redefinição (dev)')
       }

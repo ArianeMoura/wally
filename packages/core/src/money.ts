@@ -1,7 +1,7 @@
 /**
- * Aritmética monetária segura. Regra de ouro (RNF-010): dinheiro é sempre um
- * inteiro de centavos. `float`/`double` é proibido para valores — só entra no
- * limite da formatação para exibição.
+ * Safe money arithmetic. The rule (RNF-010): money is always an integer number
+ * of cents. Floats are banned for amounts and appear only at the formatting
+ * boundary, for display.
  */
 
 export class MoneyError extends Error {
@@ -11,7 +11,7 @@ export class MoneyError extends Error {
   }
 }
 
-/** Garante que `value` é um inteiro de centavos representável com segurança. */
+/** Asserts `value` is an integer of cents that is safely representable. */
 export function assertCents(value: number, label = 'valor'): void {
   if (!Number.isInteger(value)) {
     throw new MoneyError(
@@ -34,7 +34,7 @@ export function assertPositiveCents(value: number, label = 'valor'): void {
   if (value <= 0) throw new MoneyError(`${label} deve ser positivo (${value})`)
 }
 
-/** Soma segura de centavos (valida entradas e resultado). */
+/** Sums cents, validating both the inputs and the result. */
 export function addCents(...values: number[]): number {
   let sum = 0
   for (const v of values) {
@@ -45,7 +45,7 @@ export function addCents(...values: number[]): number {
   return sum
 }
 
-/** Formata centavos como moeda para exibição (padrão BRL). */
+/** Formats cents as display currency (BRL by default). */
 export function formatCents(
   cents: number,
   locale = 'pt-BR',

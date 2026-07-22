@@ -33,7 +33,7 @@ export function useBalanceSummary() {
   })
 }
 
-/** Criação com UI otimista: aplica local, reconcilia com o servidor. */
+/** Optimistic create: applies locally, then reconciles with the server. */
 export function useCreateTransaction() {
   const qc = useQueryClient()
   return useMutation({
@@ -71,7 +71,7 @@ export function useCreateTransaction() {
   })
 }
 
-/** Remoção com UI otimista. */
+/** Optimistic delete. */
 export function useDeleteTransaction() {
   const qc = useQueryClient()
   return useMutation({

@@ -2,10 +2,10 @@ import { pgTable, uuid, text, jsonb, timestamp } from 'drizzle-orm/pg-core'
 import { users } from './users'
 
 /**
- * RF-020 — trilha de auditoria financeira imutável.
- * Toda mutação de saldo (pessoal ou de grupo) emite um evento. Fonte para
- * observabilidade, rastreabilidade LGPD e detecção de padrões pela IA (RF-021).
- * Sem `updated_at`/`deleted_at`: eventos são append-only.
+ * RF-020 — immutable financial audit trail. Every balance mutation, personal or
+ * group, emits an event. It backs observability, LGPD traceability and AI
+ * pattern detection (RF-021). No `updated_at`/`deleted_at`: events are
+ * append-only.
  */
 export const financialEvents = pgTable('financial_events', {
   id: uuid().primaryKey().defaultRandom(),

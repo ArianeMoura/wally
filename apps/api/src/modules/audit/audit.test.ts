@@ -114,7 +114,7 @@ describe('trilha de auditoria (financial_events)', () => {
       aLog.items.some((e: { entityId: string }) => e.entityId === expenseId),
     ).toBe(true)
 
-    // Isolamento por ator: B não vê o evento cujo ator é A (RLS).
+    // Actor isolation: B cannot see an event whose actor is A (RLS).
     const bLog = await events(b.auth)
     expect(
       bLog.items.some((e: { entityId: string }) => e.entityId === expenseId),
@@ -123,7 +123,7 @@ describe('trilha de auditoria (financial_events)', () => {
 
   it('append-only: o evento é imutável (sem rota de escrita/edição)', async () => {
     const { auth } = await newUser()
-    // Não existe POST/PATCH/DELETE em /events — apenas leitura.
+    // /events is read-only: no POST/PATCH/DELETE exists.
     const post = await app.inject({
       method: 'POST',
       url: '/api/v1/events',

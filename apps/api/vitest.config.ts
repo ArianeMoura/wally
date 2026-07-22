@@ -4,7 +4,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts'],
-    // Ambiente mínimo para o boot do app nos testes (sem banco real).
+    // Minimal environment so the app boots in tests, with no real database.
     env: {
       NODE_ENV: 'test',
       DATABASE_URL: 'postgres://wally:wally@localhost:5432/wally_test',

@@ -1,8 +1,8 @@
 import { env } from './env'
 
 /**
- * Redação de campos sensíveis nos logs (SECURITY.md §4): nunca registrar
- * senha, tokens, hashes ou o header Authorization.
+ * Redaction of sensitive fields (SECURITY.md §4): passwords, tokens, hashes and
+ * the Authorization header must never reach the logs.
  */
 const redact = {
   paths: [
@@ -24,9 +24,9 @@ const redact = {
 }
 
 /**
- * Log estruturado (pino) para o Fastify (RNF-015). Dev usa `pino-pretty`;
- * produção emite JSON com redação; testes ficam silenciosos. O Fastify já
- * correlaciona cada linha por `reqId` (ver genReqId em app.ts).
+ * Structured logging (RNF-015). Development uses `pino-pretty`, production emits
+ * redacted JSON, tests stay silent. Fastify already tags each line with `reqId` —
+ * see genReqId in app.ts.
  */
 export const loggerOptions =
   env.NODE_ENV === 'development'

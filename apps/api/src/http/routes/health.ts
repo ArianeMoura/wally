@@ -1,14 +1,14 @@
 import type { FastifyInstance } from 'fastify'
 
 export interface HealthOptions {
-  /** Função de readiness (ex.: ping no banco). Ausente = readiness sempre ok. */
+  /** Readiness probe, e.g. a database ping. Omitted means always ready. */
   checkDb?: () => Promise<void>
 }
 
 /**
  * Health checks:
- * - `GET /health`        → liveness (processo vivo, sem dependências).
- * - `GET /health/ready`  → readiness (dependências, ex.: banco).
+ * - `GET /health`       → liveness: the process is up, no dependencies checked.
+ * - `GET /health/ready` → readiness: dependencies, such as the database.
  */
 export async function healthRoutes(app: FastifyInstance, opts: HealthOptions) {
   app.get('/health', async () => ({

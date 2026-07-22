@@ -22,13 +22,13 @@ export interface SettlementInput {
 }
 
 export interface BalancesInput {
-  /** Membros conhecidos do grupo (garante que apareçam com saldo 0). */
+  /** Known group members, so everyone shows up even with a zero balance. */
   memberIds: string[]
   expenses: ExpenseInput[]
   settlements: SettlementInput[]
 }
 
-/** Transferência sugerida para acertar contas (RF-018). */
+/** A suggested transfer to settle up (RF-018). */
 export interface Transfer {
   fromUserId: string
   toUserId: string
@@ -36,12 +36,12 @@ export interface Transfer {
 }
 
 /**
- * Calcula o saldo líquido de cada membro, em centavos.
- *   • saldo > 0  → o grupo deve a ele (credor)
- *   • saldo < 0  → ele deve ao grupo (devedor)
+ * Net balance per member, in cents.
+ *   • balance > 0 → the group owes them (creditor)
+ *   • balance < 0 → they owe the group (debtor)
  *
- * Invariante garantida: **Σ saldos == 0** (o que uns devem, os outros têm a
- * receber). Cada despesa valida `Σ cotas == valor` antes de compor o saldo.
+ * Invariant: Σ balances == 0. Every expense is checked for Σ shares == amount
+ * before it contributes to a balance.
  */
 export function computeBalances(input: BalancesInput): Map<string, number> {
   const balances = new Map<string, number>()
@@ -63,7 +63,7 @@ export function computeBalances(input: BalancesInput): Map<string, number> {
         `Σ cotas (${sumShares}) != valor da despesa (${expense.amountCents})`,
       )
     }
-    // Quem pagou fica credor pelo total; cada participante fica devedor pela cota.
+    // The payer is credited the full amount; each participant is debited their share.
     add(expense.payerId, expense.amountCents)
     for (const share of expense.shares) add(share.userId, -share.shareCents)
   }
@@ -73,7 +73,7 @@ export function computeBalances(input: BalancesInput): Map<string, number> {
     if (s.fromUserId === s.toUserId) {
       throw new MoneyError('liquidação não pode ter pagador == recebedor')
     }
-    // `from` paga `to`: a dívida de `from` diminui (+), o crédito de `to` diminui (-).
+    // `from` pays `to`: the debt of `from` shrinks (+), the credit of `to` shrinks (-).
     add(s.fromUserId, s.amountCents)
     add(s.toUserId, -s.amountCents)
   }
@@ -82,9 +82,9 @@ export function computeBalances(input: BalancesInput): Map<string, number> {
 }
 
 /**
- * Reduz os saldos ao **menor número de transferências** que zera o grupo
- * (algoritmo guloso: casa o maior devedor com o maior credor). Determinístico:
- * empates são resolvidos por ordem de `userId`.
+ * Reduces balances to the fewest transfers that zero the group out: a greedy
+ * match of the largest debtor against the largest creditor. Ties break on
+ * `userId` so the result is deterministic.
  */
 export function simplifyDebts(balances: Map<string, number>): Transfer[] {
   const debtors: { id: string; amt: number }[] = []

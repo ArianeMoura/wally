@@ -16,15 +16,15 @@ export class ApiError extends Error {
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE'
   body?: unknown
-  /** Chave de idempotência para escritas financeiras (RNF-009). */
+  /** Idempotency key for financial writes (RNF-009). */
   idempotencyKey?: string
-  /** Requisição pública (não injeta token nem tenta refresh). */
+  /** Public request: no token is injected and no refresh is attempted. */
   public?: boolean
 }
 
 let refreshInFlight: Promise<boolean> | null = null
 
-/** Rotaciona os tokens uma única vez, coordenando chamadas concorrentes. */
+/** Rotates the tokens once, coordinating concurrent callers. */
 async function refreshTokens(): Promise<boolean> {
   if (refreshInFlight) return refreshInFlight
   refreshInFlight = (async () => {
@@ -85,8 +85,9 @@ async function raw<T>(path: string, options: RequestOptions): Promise<T> {
 }
 
 /**
- * Executa a requisição; em 401, tenta UMA rotação de token e repete. Falhou o
- * refresh → limpa a sessão e propaga o erro (o app volta ao login).
+ * Runs the request; on a 401 it rotates the token once and retries. If the
+ * refresh fails the session is cleared and the error propagates, sending the
+ * app back to the login screen.
  */
 export async function request<T>(
   path: string,

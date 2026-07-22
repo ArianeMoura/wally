@@ -21,9 +21,9 @@ describe('splitByLargestRemainder — casos canônicos', () => {
   })
 
   it('resto vai para os maiores restos, empate pelo menor índice', () => {
-    // 100 / 3 = 33,33 → base 33 cada (99), 1 centavo sobra → índice 0
+    // 100 / 3 → base 33 each (99), 1 cent left over → goes to index 0
     expect(splitEqually(100, 3)).toEqual([34, 33, 33])
-    // 1 centavo entre 3 → só o primeiro recebe
+    // 1 cent across 3 → only the first participant gets it
     expect(splitEqually(1, 3)).toEqual([1, 0, 0])
   })
 

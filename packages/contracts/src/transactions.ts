@@ -32,7 +32,7 @@ export const transactionResponse = z.object({
   createdAt: isoDateTime,
 })
 
-/** RF-008 — resumo do período (saldo automático). */
+/** RF-008 — period summary with the automatic balance. */
 export const balanceSummary = z.object({
   incomeCents: z.number().int().nonnegative(),
   expenseCents: z.number().int().nonnegative(),

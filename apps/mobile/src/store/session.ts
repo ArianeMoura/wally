@@ -23,9 +23,9 @@ interface SessionState {
 }
 
 /**
- * Sessão do usuário. Tokens em armazenamento seguro (Keychain/Keystore via
- * expo-secure-store); o access token é injetado em cada requisição e rotacionado
- * pelo cliente HTTP quando expira (ver lib/api.ts).
+ * User session. Tokens live in secure storage (Keychain/Keystore through
+ * expo-secure-store); the access token is injected into every request and
+ * rotated by the HTTP client on expiry — see lib/api.ts.
  */
 export const useSession = create<SessionState>((set, get) => ({
   accessToken: null,
@@ -71,5 +71,5 @@ export const useSession = create<SessionState>((set, get) => ({
   },
 }))
 
-/** Acesso não-reativo (para o cliente HTTP, fora de componentes React). */
+/** Non-reactive access, for the HTTP client outside of React components. */
 export const sessionStore = useSession

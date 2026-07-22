@@ -52,12 +52,12 @@ function toSettlementResponse(s: SettlementRow): SettlementResponse {
 }
 
 /**
- * Serializa as mutações do grupo e devolve os ids de membros ativos.
+ * Serializes group mutations and returns the active member ids.
  *
- * Usa **advisory lock transacional** (fora do espaço da RLS) em vez de
- * `SELECT … FOR UPDATE` em `groups`: a policy de UPDATE de `groups` restringe o
- * lock de linha ao dono, mas qualquer membro pode lançar despesa/liquidação. O
- * advisory lock por `groupId` serializa todos igualmente e libera no commit.
+ * Uses a transactional advisory lock instead of `SELECT … FOR UPDATE` on
+ * `groups`: the UPDATE policy on `groups` restricts the row lock to the owner,
+ * but any member may record an expense or settlement. Locking by `groupId`
+ * serializes every member equally and releases on commit.
  */
 async function lockGroupAndMembers(
   tx: Tx,
@@ -84,9 +84,9 @@ async function lockGroupAndMembers(
 }
 
 /**
- * RF-011 — cria uma despesa de grupo. Padrão transacional obrigatório:
- * idempotência → lock do grupo → releitura de membros → split (@wally/core) →
- * invariante Σ cotas == valor → insert atômico → bump de versão.
+ * RF-011 — creates a group expense. Mandatory transactional order:
+ * lock the group → re-read members → split → assert Σ shares == amount →
+ * atomic insert → bump version.
  */
 export function createExpense(
   userId: string,
@@ -95,9 +95,9 @@ export function createExpense(
   idempotencyKey: string | undefined,
 ): Promise<ExpenseResponse> {
   return runAsUser(userId, async (tx) => {
-    // Trava o grupo ANTES da checagem de idempotência: requisições concorrentes
-    // do mesmo grupo serializam aqui, então a 2ª enxerga a chave já commitada
-    // (evita a corrida TOCTOU de duplicar a escrita).
+    // Lock BEFORE the idempotency check: concurrent requests for the same group
+    // serialize here, so the second one sees the already-committed key. Without
+    // this order a TOCTOU race duplicates the write.
     const memberIds = await lockGroupAndMembers(tx, groupId)
     return withIdempotency({
       tx,
@@ -148,7 +148,7 @@ export function createExpense(
   })
 }
 
-/** RF-018 — registra uma liquidação (settle up) sob a mesma disciplina. */
+/** RF-018 — records a settlement under the same transactional discipline. */
 export function createSettlement(
   userId: string,
   groupId: string,
@@ -241,13 +241,13 @@ export function listExpenses(
   groupId: string,
 ): Promise<ExpenseResponse[]> {
   return runAsUser(userId, async (tx) => {
-    // Visibilidade garantida pela RLS; grupo inexistente devolve lista vazia.
+    // RLS handles visibility; an unknown group yields an empty list.
     const rows = await loadExpensesWithShares(tx, groupId)
     return rows.map(({ expense, shares }) => toExpenseResponse(expense, shares))
   })
 }
 
-/** RF-012/018 — saldos do grupo + sugestão de acerto (Σ saldos == 0). */
+/** RF-012/018 — group balances plus a suggested settlement (Σ balances == 0). */
 export function getBalances(
   userId: string,
   groupId: string,

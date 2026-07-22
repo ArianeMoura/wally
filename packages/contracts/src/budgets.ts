@@ -20,7 +20,7 @@ export const budgetResponse = z.object({
   createdAt: isoDateTime,
 })
 
-/** RF-019 — estado do orçamento com alerta de estouro. */
+/** RF-019 — budget state, including the overspend alert. */
 export const budgetStatus = budgetResponse.extend({
   spentCents: z.number().int().nonnegative(),
   remainingCents: z.number().int(),

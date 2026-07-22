@@ -39,7 +39,7 @@ async function newUser(): Promise<User> {
   }
 }
 
-/** Cria um grupo com 3 membros (A dono, B e C). */
+/** Creates a group with 3 members: A as owner, plus B and C. */
 async function groupOfThree(): Promise<{
   a: User
   b: User
@@ -130,7 +130,7 @@ describe('grupos e membros', () => {
     })
     expect(dup.statusCode).toBe(409)
 
-    // B (não-dono) tenta adicionar alguém → 403.
+    // B is not the owner, so adding a member returns 403.
     const c = await newUser()
     const forbidden = await app.inject({
       method: 'POST',
@@ -188,7 +188,7 @@ describe('despesas, divisão e saldos', () => {
         split: { mode: 'equal', participantIds: [a.id, b.id, c.id] },
       },
     })
-    // B paga 300 para A.
+    // B pays 300 to A.
     const settle = await app.inject({
       method: 'POST',
       url: `/api/v1/groups/${groupId}/settlements`,
@@ -290,7 +290,7 @@ describe('isolamento RLS de grupo', () => {
     })
     expect(balances.statusCode).toBe(404)
 
-    // Não-membro não consegue lançar despesa no grupo.
+    // A non-member cannot record an expense in the group.
     const expense = await app.inject({
       method: 'POST',
       url: `/api/v1/groups/${groupId}/expenses`,
@@ -334,7 +334,7 @@ describe('CONCORRÊNCIA — o gate de correção financeira', () => {
     expect(list.json()).toHaveLength(N) // exatamente N, nenhuma perdida/duplicada
 
     const balances = await getBalances(a.auth, groupId)
-    // Cada despesa: A paga 100, cota 34 → +66; B e C → -33 cada.
+    // Per expense: A pays 100 with a 34 share → +66; B and C → -33 each.
     expect(balanceOf(balances, a.id)).toBe(66 * N)
     expect(balanceOf(balances, b.id)).toBe(-33 * N)
     expect(balanceOf(balances, c.id)).toBe(-33 * N)
@@ -365,7 +365,7 @@ describe('CONCORRÊNCIA — o gate de correção financeira', () => {
         }),
       ),
     )
-    // Todas respondem 201 (a 1ª cria, as demais fazem replay).
+    // All answer 201: the first creates, the rest replay.
     expect(results.every((r) => r.statusCode === 201)).toBe(true)
     const ids = new Set(results.map((r) => r.json().id))
     expect(ids.size).toBe(1)

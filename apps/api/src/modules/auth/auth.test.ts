@@ -114,7 +114,7 @@ describe('POST /auth/refresh — rotação e detecção de reúso', () => {
     const { res } = await signup()
     const original = res.json().refreshToken as string
 
-    // 1ª rotação: sucesso, gera um novo refresh.
+    // First rotation succeeds and mints a new refresh token.
     const rot1 = await app.inject({
       method: 'POST',
       url: '/api/v1/auth/refresh',
@@ -124,7 +124,7 @@ describe('POST /auth/refresh — rotação e detecção de reúso', () => {
     const rotated = rot1.json().refreshToken as string
     expect(rotated).not.toBe(original)
 
-    // Reúso do token ORIGINAL (já rotacionado) ⇒ 401 e revoga a família.
+    // Replaying the ORIGINAL, already-rotated token ⇒ 401 and family revoked.
     const reuse = await app.inject({
       method: 'POST',
       url: '/api/v1/auth/refresh',
@@ -132,7 +132,7 @@ describe('POST /auth/refresh — rotação e detecção de reúso', () => {
     })
     expect(reuse.statusCode).toBe(401)
 
-    // Como a família foi revogada, o refresh rotacionado também deixa de valer.
+    // With the family revoked, the rotated refresh token stops working too.
     const afterRevoke = await app.inject({
       method: 'POST',
       url: '/api/v1/auth/refresh',
@@ -167,7 +167,7 @@ describe('Fluxo de redefinição de senha', () => {
   it('forgot não vaza existência; reset troca a senha e invalida sessões', async () => {
     const { email, password } = await signup()
 
-    // forgot-password responde genérico (200) mesmo para e-mail inexistente.
+    // forgot-password answers a generic 200 even for an unknown email.
     const forgotUnknown = await app.inject({
       method: 'POST',
       url: '/api/v1/auth/forgot-password',
@@ -175,7 +175,7 @@ describe('Fluxo de redefinição de senha', () => {
     })
     expect(forgotUnknown.statusCode).toBe(200)
 
-    // Obtém o token diretamente do serviço (em produção iria por e-mail).
+    // Take the token straight from the service; production would email it.
     const service = new AuthService({ signAccessToken: () => 'x' })
     const token = await service.forgotPassword(email)
     expect(token).toBeTruthy()
@@ -188,7 +188,7 @@ describe('Fluxo de redefinição de senha', () => {
     })
     expect(reset.statusCode).toBe(204)
 
-    // Senha antiga não vale mais; a nova, sim.
+    // The old password stops working and the new one takes over.
     const oldLogin = await app.inject({
       method: 'POST',
       url: '/api/v1/auth/signin',

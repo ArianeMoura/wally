@@ -1,4 +1,4 @@
-# Design de Interface
+# Projeto de Interface
 
 A interface do Wally foi projetada para oferecer uma experiência intuitiva e
 eficiente na gestão financeira pessoal e em grupo, priorizando usabilidade, clareza
