@@ -1,4 +1,4 @@
-// @wally/contracts — contratos Zod compartilhados entre API, mobile e web.
+// @wally/contracts — Zod contracts shared across the API, mobile and web.
 export * from './common'
 export * from './users'
 export * from './auth'

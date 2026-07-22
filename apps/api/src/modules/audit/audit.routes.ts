@@ -8,7 +8,7 @@ import {
 import { runAsUser } from '../../db/rls'
 import { listEvents } from './audit.service'
 
-/** RF-020 — histórico de auditoria do usuário (eventos do próprio ator, via RLS). */
+/** RF-020 — the user's audit history; RLS scopes it to their own events. */
 export async function auditRoutes(app: FastifyInstance): Promise<void> {
   const r = app.withTypeProvider<ZodTypeProvider>()
 

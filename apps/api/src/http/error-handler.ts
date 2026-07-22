@@ -4,8 +4,8 @@ import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
 import { AppError } from './errors'
 
 /**
- * Error handler central. Nunca vaza stack/PII ao cliente; erros 5xx são logados
- * e respondidos de forma genérica (SECURITY.md §4).
+ * Central error handler. Never leaks a stack trace or PII to the client; 5xx
+ * errors are logged and answered generically (SECURITY.md §4).
  */
 export const errorHandler = fp(function errorHandlerPlugin(app, _opts, done) {
   app.setErrorHandler((error: FastifyError, request, reply) => {
@@ -35,7 +35,7 @@ export const errorHandler = fp(function errorHandlerPlugin(app, _opts, done) {
       })
     }
 
-    // Erros com status conhecido (JWT 401, rate-limit 429, etc.).
+    // Errors that already carry a status (JWT 401, rate-limit 429, …).
     return reply.status(statusCode).send({
       statusCode,
       error: error.code ?? 'ERROR',

@@ -165,7 +165,7 @@ export async function deleteTransaction(
   })
 }
 
-/** RF-008 — saldo automático do período (padrão: mês corrente). */
+/** RF-008 — automatic period balance; defaults to the current month. */
 export async function balanceSummaryFor(
   tx: Tx,
   from: Date | undefined,

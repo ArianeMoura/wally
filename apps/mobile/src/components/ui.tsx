@@ -137,7 +137,7 @@ export function Input({
   )
 }
 
-/** Valor monetário formatado (BRL) com cor por sinal. */
+/** Formatted BRL amount, coloured by sign. */
 export function Money({
   cents,
   colorBySign = false,

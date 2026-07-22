@@ -15,7 +15,7 @@ jobs:
     name: Lint · Typecheck · Test · Build
     runs-on: ubuntu-latest
 
-    # Postgres para os testes de integração da API (RLS, concorrência, etc.).
+    # Postgres for the API integration tests (RLS, concurrency, and so on).
     services:
       postgres:
         image: postgres:16
@@ -33,10 +33,10 @@ jobs:
 
     env:
       NODE_ENV: test
-      # Dono (migrations/seed) e runtime (wally_app, sujeito à RLS).
+      # Owner (migrations/seed) and runtime (wally_app, subject to RLS).
       DATABASE_URL: postgres://wally:wally@localhost:5432/wally
       APP_DATABASE_URL: postgres://wally_app:wally_app@localhost:5432/wally
-      # Segredos apenas de CI (não são de produção).
+      # CI-only secrets; these are not production values.
       JWT_ACCESS_SECRET: ci_access_secret_0123456789abcdef0123456789abcdef
       JWT_REFRESH_SECRET: ci_refresh_secret_fedcba9876543210fedcba9876543210
 

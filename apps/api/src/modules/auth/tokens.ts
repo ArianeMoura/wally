@@ -1,9 +1,9 @@
 import { createHmac, randomBytes } from 'node:crypto'
 
 /**
- * Refresh/reset tokens são strings opacas aleatórias. No banco guardamos apenas
- * um HMAC-SHA256 com o segredo do servidor como *pepper*: um vazamento da tabela
- * não basta para forjar tokens (RNF-011 / SECURITY.md).
+ * Refresh and reset tokens are opaque random strings. Only an HMAC-SHA256 —
+ * peppered with the server secret — is stored, so leaking the table is not
+ * enough to forge a token (RNF-011 / SECURITY.md).
  */
 export function generateOpaqueToken(): string {
   return randomBytes(32).toString('base64url')
@@ -13,7 +13,7 @@ export function hashToken(token: string, secret: string): string {
   return createHmac('sha256', secret).update(token).digest('hex')
 }
 
-/** Converte durações tipo `15m`, `30d`, `1h`, `90s` em milissegundos. */
+/** Converts durations like `15m`, `30d`, `1h`, `90s` into milliseconds. */
 export function parseDurationMs(input: string): number {
   const match = /^(\d+)\s*(ms|s|m|h|d)$/.exec(input.trim())
   if (!match) throw new Error(`duração inválida: ${input}`)

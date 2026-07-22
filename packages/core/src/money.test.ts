@@ -39,7 +39,7 @@ describe('addCents', () => {
 
 describe('formatCents', () => {
   it('formata centavos como BRL', () => {
-    // Usa espaço não separável entre "R$" e o número — comparamos o miolo.
+    // Intl puts a non-breaking space after "R$", so assert on the digits only.
     expect(formatCents(12345)).toContain('123,45')
     expect(formatCents(0)).toContain('0,00')
   })

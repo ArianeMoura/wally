@@ -19,7 +19,7 @@ import {
 import { generateOpaqueToken, hashToken, expiryFrom } from './tokens'
 
 export interface AuthServiceDeps {
-  /** Assina um access token curto para o usuário (injeta o `app.jwt`). */
+  /** Signs a short-lived access token for the user, using `app.jwt`. */
   signAccessToken: (userId: string) => string
 }
 
@@ -36,8 +36,8 @@ function toUserPublic(u: UserRow): UserPublic {
   }
 }
 
-// Hash "descartável" para equalizar o tempo de resposta quando o e-mail não
-// existe (mitiga enumeração de usuários por timing no login).
+// Throwaway hash that equalises response time when the email does not exist,
+// blocking user enumeration by timing the login.
 let dummyHashPromise: Promise<string> | null = null
 function dummyHash(): Promise<string> {
   dummyHashPromise ??= argon2.hash('wally-timing-guard', {
@@ -126,7 +126,7 @@ export class AuthService {
 
     if (!row) throw new UnauthorizedError('Refresh token inválido')
 
-    // Reúso de um token já rotacionado ⇒ indício de vazamento: revoga a família.
+    // Replaying an already-rotated token signals a leak: revoke the family.
     if (row.revokedAt) {
       await this.revokeFamily(row.familyId)
       throw new UnauthorizedError('Refresh token reutilizado — sessão revogada')
@@ -135,7 +135,7 @@ export class AuthService {
       throw new UnauthorizedError('Refresh token expirado')
     }
 
-    // Rotação: marca o atual como usado e emite um novo na mesma família.
+    // Rotate: mark the current token used and issue a new one in the same family.
     await db
       .update(refreshTokens)
       .set({ revokedAt: new Date() })
@@ -175,9 +175,9 @@ export class AuthService {
   }
 
   /**
-   * Gera um token de reset. Retorna o token em claro apenas para o chamador
-   * (envio por e-mail / log em dev) — nunca é exposto na resposta HTTP. Retorna
-   * `null` quando o e-mail não existe, sem vazar essa informação.
+   * Issues a reset token. The plaintext token is returned to the caller only, for
+   * emailing (or logging in development) — it never reaches the HTTP response.
+   * Returns `null` for an unknown email without leaking that fact.
    */
   async forgotPassword(email: string): Promise<string | null> {
     const [user] = await db
@@ -217,7 +217,7 @@ export class AuthService {
       .set({ usedAt: new Date() })
       .where(eq(passwordResetTokens.id, row.id))
 
-    // Invalida todas as sessões ativas do usuário após troca de senha.
+    // Invalidate every active session after a password change.
     await db
       .update(refreshTokens)
       .set({ revokedAt: new Date() })

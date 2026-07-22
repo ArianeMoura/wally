@@ -22,9 +22,10 @@ function toResponse(e: EventRow): FinancialEventResponse {
 }
 
 /**
- * RF-020 — grava um evento imutável (append-only) de mutação de saldo, DENTRO da
- * mesma transação da operação (atômico). `actorId` == usuário atual satisfaz a
- * RLS de `financial_events`. Base para rastreabilidade LGPD e IA temporal.
+ * RF-020 — appends an immutable balance-mutation event inside the SAME
+ * transaction as the operation, so the two commit together. `actorId` being the
+ * current user is what satisfies RLS on `financial_events`. Backs LGPD
+ * traceability and time-series AI.
  */
 export async function emitFinancialEvent(
   tx: Tx,

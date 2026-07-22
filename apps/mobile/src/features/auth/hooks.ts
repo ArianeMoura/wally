@@ -29,7 +29,7 @@ export function useLogout() {
     try {
       if (refreshToken) await api.post('/auth/logout', { refreshToken })
     } catch {
-      // logout é best-effort; limpamos localmente de qualquer forma.
+      // Logout is best-effort; clear locally either way.
     }
     await clear()
     queryClient.clear()

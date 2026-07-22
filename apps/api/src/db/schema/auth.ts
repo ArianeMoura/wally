@@ -9,9 +9,9 @@ import {
 import { users } from './users'
 
 /**
- * RNF-011 — refresh tokens rotativos com detecção de reúso.
- * Guardados apenas como hash; `familyId` agrupa a cadeia de rotação para revogação
- * em massa quando um token já usado é reapresentado (indício de vazamento).
+ * RNF-011 — rotating refresh tokens with reuse detection. Stored only as a hash;
+ * `familyId` groups the rotation chain so the whole family can be revoked at once
+ * when an already-used token is replayed, which signals a leak.
  */
 export const refreshTokens = pgTable('refresh_tokens', {
   id: uuid().primaryKey().defaultRandom(),
@@ -26,8 +26,8 @@ export const refreshTokens = pgTable('refresh_tokens', {
 })
 
 /**
- * RNF-009 — idempotência de escrita financeira.
- * A mesma `key` (por usuário) retorna a resposta original em vez de reprocessar.
+ * RNF-009 — idempotent financial writes. The same `key`, per user, replays the
+ * original response instead of reprocessing.
  */
 export const idempotencyKeys = pgTable('idempotency_keys', {
   key: text().primaryKey(),
@@ -41,9 +41,9 @@ export const idempotencyKeys = pgTable('idempotency_keys', {
 })
 
 /**
- * RF-002 — recuperação de senha. Token de uso único, hasheado, com expiração
- * curta. Não vaza a existência da conta (o endpoint responde igual para e-mails
- * conhecidos e desconhecidos).
+ * RF-002 — password recovery. Single-use, hashed, short-lived token. The
+ * endpoint answers identically for known and unknown emails, so it never leaks
+ * whether an account exists.
  */
 export const passwordResetTokens = pgTable('password_reset_tokens', {
   id: uuid().primaryKey().defaultRandom(),

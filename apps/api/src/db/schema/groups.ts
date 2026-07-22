@@ -20,7 +20,7 @@ export const groups = pgTable('groups', {
   ownerId: uuid()
     .notNull()
     .references(() => users.id, { onDelete: 'restrict' }),
-  // Concorrência otimista: incrementado a cada mutação de saldo (RNF-008).
+  // Optimistic concurrency: bumped on every balance mutation (RNF-008).
   version: integer().notNull().default(0),
   ...timestamps(),
 })
@@ -41,7 +41,7 @@ export const groupMembers = pgTable(
   (t) => [unique().on(t.groupId, t.userId)],
 )
 
-/** RF-011 — despesa de grupo. Valor em centavos (RNF-010). */
+/** RF-011 — group expense. Amount in cents (RNF-010). */
 export const groupExpenses = pgTable(
   'group_expenses',
   {
@@ -63,7 +63,7 @@ export const groupExpenses = pgTable(
   (t) => [check('group_expenses_amount_positive', sql`${t.amountCents} > 0`)],
 )
 
-/** Cotas da divisão. Invariante: Σ shareCents == group_expenses.amountCents. */
+/** Split shares. Invariant: Σ shareCents == group_expenses.amountCents. */
 export const expenseShares = pgTable(
   'expense_shares',
   {
@@ -78,13 +78,13 @@ export const expenseShares = pgTable(
     ...timestamps(),
   },
   (t) => [
-    // Cota nunca negativa; a soma == total é verificada na transação (F6).
+    // A share is never negative; the sum == total check happens in the transaction.
     check('expense_shares_non_negative', sql`${t.shareCents} >= 0`),
     unique().on(t.groupExpenseId, t.userId),
   ],
 )
 
-/** RF-018 — liquidação (settle up) de saldo entre membros. */
+/** RF-018 — settling a balance between two members. */
 export const settlements = pgTable(
   'settlements',
   {
@@ -104,7 +104,7 @@ export const settlements = pgTable(
   },
   (t) => [
     check('settlements_amount_positive', sql`${t.amountCents} > 0`),
-    // Não faz sentido liquidar consigo mesmo.
+    // Settling with yourself is meaningless.
     check(
       'settlements_distinct_parties',
       sql`${t.fromUserId} <> ${t.toUserId}`,

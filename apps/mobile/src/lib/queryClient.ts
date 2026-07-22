@@ -2,7 +2,7 @@ import { QueryClient } from '@tanstack/react-query'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-/** Instância única do QueryClient (nunca recriar dentro de componentes). */
+/** Single QueryClient instance — never recreate this inside a component. */
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -15,9 +15,9 @@ export const queryClient = new QueryClient({
 })
 
 /**
- * Persistência do cache (RNF-012) — leitura *cache-first* offline. Usa
- * AsyncStorage (compatível com Expo Go); para um dev build, react-native-mmkv
- * é um upgrade de performance direto.
+ * Cache persistence (RNF-012) for cache-first offline reads. Uses AsyncStorage
+ * because it works inside Expo Go; on a dev build, react-native-mmkv is a drop-in
+ * performance upgrade.
  */
 export const asyncStoragePersister = createAsyncStoragePersister({
   storage: AsyncStorage,

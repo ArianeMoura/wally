@@ -1,108 +1,112 @@
-# Wally — API Backend (Wally 2.0)
+# Wally — API
 
-API do Wally construída com **Node.js + Fastify + Drizzle ORM + PostgreSQL** em
-**TypeScript**, seguindo uma **arquitetura em camadas** (Clean Architecture):
+Wally's API, built with **Node.js + Fastify + Drizzle ORM + PostgreSQL** in
+**TypeScript**, following a **layered architecture** (Clean Architecture):
 `controller → use-case → repository → schema (Drizzle)`.
 
-> **Idioma (restrição 10):** código, schema e API em **inglês**; documentação em
-> **PT-BR**. Ver [../docs/05-Arquitetura.md](../docs/05-Arquitetura.md) e
-> [../docs/12-Especificacao-Tecnica.md](../docs/12-Especificacao-Tecnica.md).
+> **Language (constraint 10):** code, schema and API in **English**. See
+> [ARCHITECTURE.md](../../docs/ARCHITECTURE.md).
 
 ---
 
-## Pré-requisitos
+## Prerequisites
 
-- **Node.js 20+** e **pnpm 9** (`corepack enable`)
-- **Docker** (para subir o PostgreSQL local via `docker-compose`)
+- **Node.js 20+** and **pnpm 9** (`corepack enable`)
+- **Docker** (to run PostgreSQL locally through `docker compose`)
 
 ---
 
-## Configuração
+## Setup
 
 ```bash
-pnpm install -w               # dependências de todo o monorepo (pode rodar daqui)
-cp .env.example .env          # preencha os segredos (ver abaixo)
-docker compose up -d db       # sobe o PostgreSQL em localhost:5432
-pnpm db:migrate               # migrations + políticas de RLS + papel wally_app
-pnpm db:seed                  # 15 categorias padrão — necessário para a suíte de testes
-pnpm dev                      # API em http://localhost:3333
+pnpm install -w               # installs the whole monorepo (fine to run from here)
+cp .env.example .env          # fill in the secrets (see below)
+docker compose up -d db       # PostgreSQL on localhost:5432
+pnpm db:migrate               # migrations + RLS policies + the wally_app role
+pnpm db:seed                  # 15 default categories — required by the test suite
+pnpm dev                      # API on http://localhost:3333
 ```
 
-Gere os segredos JWT com `openssl rand -hex 32`.
+Generate the JWT secrets with `openssl rand -hex 32`.
 
-> Se a 5432 já estiver ocupada na sua máquina, crie um
-> `docker-compose.override.yml` (ignorado pelo Git) com
-> `services: { db: { ports: !override ["5433:5432"] } }` e ajuste a porta em
-> `DATABASE_URL`/`APP_DATABASE_URL`. A tag `!override` é necessária: sem ela o
-> Compose concatena as listas de `ports` e tenta publicar a 5432 também.
+> If port 5432 is already taken on your machine, create a `docker-compose.override.yml`
+> (Git-ignored) with `services: { db: { ports: !override ["5433:5432"] } }` and adjust
+> the port in `DATABASE_URL`/`APP_DATABASE_URL`. The `!override` tag is required:
+> without it Compose concatenates the `ports` lists and tries to publish 5432 as well.
 
-### Variáveis de ambiente
+### Environment variables
 
-| Variável                                 | Descrição                                                 |
-| ---------------------------------------- | --------------------------------------------------------- |
-| `NODE_ENV`                               | `development` \| `test` \| `production`                   |
-| `HOST` / `PORT`                          | Bind da API (padrão `0.0.0.0:3333`)                       |
-| `DATABASE_URL`                           | String de conexão do PostgreSQL                           |
-| `JWT_ACCESS_SECRET`                      | Segredo do _access token_ (≥ 32 chars) — **obrigatório**  |
-| `JWT_REFRESH_SECRET`                     | Segredo do _refresh token_ (≥ 32 chars) — **obrigatório** |
-| `ACCESS_TOKEN_TTL` / `REFRESH_TOKEN_TTL` | Validade dos tokens (`15m`, `30d`)                        |
-| `CORS_ORIGIN`                            | Origem(ns) permitida(s); `*` apenas em desenvolvimento    |
+| Variable                                 | Description                                                       |
+| ---------------------------------------- | ----------------------------------------------------------------- |
+| `NODE_ENV`                               | `development` \| `test` \| `production`                           |
+| `HOST` / `PORT`                          | API bind address (defaults to `0.0.0.0:3333`)                     |
+| `DATABASE_URL`                           | Owner connection — used by migrations and the seed (bypasses RLS) |
+| `APP_DATABASE_URL`                       | Runtime connection as `wally_app` — **subject to RLS**            |
+| `JWT_ACCESS_SECRET`                      | Access token secret (≥ 32 chars) — **required**                   |
+| `JWT_REFRESH_SECRET`                     | Refresh token secret (≥ 32 chars) — **required**                  |
+| `ACCESS_TOKEN_TTL` / `REFRESH_TOKEN_TTL` | Token lifetimes (`15m`, `30d`)                                    |
+| `RESET_TOKEN_TTL`                        | Password reset token lifetime (`1h`)                              |
+| `CORS_ORIGIN`                            | Allowed origin(s), comma-separated; `*` in development only       |
 
-> A configuração é validada no boot com **fail-fast** ([`src/config/env.ts`](src/config/env.ts)):
-> a API aborta se qualquer variável obrigatória faltar. Sem fallback inseguro.
+> Configuration is validated at boot with **fail-fast**
+> ([`src/config/env.ts`](src/config/env.ts)): the API aborts if any required variable is
+> missing. There are no insecure fallbacks.
 
 ---
 
-## Migrations e banco
+## Migrations and database
 
-Schema gerido por **Drizzle ORM**; as migrations do **drizzle-kit** são a fonte da
-verdade ([`src/db/schema/`](src/db/schema/) → [`src/db/migrations/`](src/db/migrations/)).
+The schema is managed by **Drizzle ORM**; the **drizzle-kit** migrations are the source
+of truth ([`src/db/schema/`](src/db/schema/) → [`src/db/migrations/`](src/db/migrations/)).
 
 ```bash
-pnpm db:generate        # gera migration a partir do schema tipado
-pnpm db:migrate         # aplica as migrations pendentes
-pnpm db:migrate:check   # valida consistência das migrations (CI)
-pnpm db:studio          # explorador visual do banco
+pnpm db:generate        # generate a migration from the typed schema
+pnpm db:migrate         # apply pending migrations
+pnpm db:migrate:check   # validate migration consistency (CI)
+pnpm db:seed            # insert the default categories
+pnpm db:studio          # visual database explorer
 ```
 
----
-
-## Documentação da API (Swagger)
-
-Com a API no ar: `/wally/documentation` (OpenAPI gerado a partir dos esquemas Zod).
+Migration `0002_rls_policies.sql` creates the **`wally_app`** role that the server uses
+at runtime, subject to Row-Level Security. Migrations and the seed run as the owner.
 
 ---
 
-## Estrutura
+## API documentation (Swagger)
+
+While the API is running: `/wally/documentation` (OpenAPI generated from the Zod
+schemas). Routes are served under `/api/v1`.
+
+---
+
+## Structure
 
 ```
 src/
-  config/           # env (fail-fast) e logger (pino)
+  config/           # env (fail-fast) and logger (pino, with redaction)
   db/
-    schema/         # tabelas Drizzle (fonte da verdade)
-    migrations/     # migrations geradas pelo drizzle-kit
-    client.ts       # pool pg + cliente Drizzle
-  http/routes/      # rotas Fastify (ex.: health)
-  app.ts            # buildApp() — plugins, Zod, Swagger (sem listen)
-  server.ts         # bootstrap: carrega env, sobe o servidor, graceful shutdown
+    schema/         # Drizzle tables (source of truth)
+    migrations/     # drizzle-kit generated migrations
+    client.ts       # pg pool + Drizzle client (owner and runtime roles)
+    seed.ts         # default categories
+  http/routes/      # cross-cutting routes (e.g. health)
+  modules/          # domains: auth, categories, transactions, budgets, groups, audit
+  lib/              # shared helpers (idempotency, tokens)
+  plugins/          # Fastify plugins (auth, request correlation)
+  app.ts            # buildApp() — plugins, Zod, Swagger (no listen)
+  server.ts         # bootstrap: loads env, starts the server, graceful shutdown
 ```
-
-> **Código legado (backlog de migração).** As pastas `controllers/`, `entity/`,
-> `repositorios/`, `use-cases/`, `routes/`, `migration/` e `data-source.ts` são da
-> versão TypeORM anterior. Estão **excluídas do build** (`tsconfig.json`) e serão
-> reimplementadas em inglês nas fases F1–F7, sendo removidas à medida que cada
-> domínio for migrado.
 
 ---
 
 ## Scripts
 
 ```bash
-pnpm dev         # desenvolvimento (tsx watch)
-pnpm start       # execução (node dist/server.js)
+pnpm dev         # development (tsx watch)
+pnpm start       # run the build (node dist/server.js)
 pnpm build       # build (tsup → dist/)
-pnpm typecheck   # tsc --noEmit (any proibido)
-pnpm test        # testes (vitest)
+pnpm typecheck   # tsc --noEmit (`any` is banned)
+pnpm test        # tests (vitest)
 pnpm lint        # ESLint
 ```
 
@@ -111,5 +115,5 @@ pnpm lint        # ESLint
 ## Docker
 
 ```bash
-docker compose up --build   # sobe PostgreSQL (db) + API (app) na porta 3333
+docker compose up --build   # PostgreSQL (db) + API (app) on port 3333
 ```

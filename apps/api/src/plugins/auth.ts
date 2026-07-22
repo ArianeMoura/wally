@@ -23,8 +23,8 @@ declare module '@fastify/jwt' {
 }
 
 /**
- * Registra JWT (access token curto) e o guard `authenticate`. O payload carrega
- * apenas `sub` (id do usuário) — nada de PII no token.
+ * Registers JWT (short-lived access token) and the `authenticate` guard. The
+ * payload carries only `sub`, the user id — no PII goes into the token.
  */
 export const authPlugin = fp(async function authPluginFn(app) {
   await app.register(fastifyJwt, {

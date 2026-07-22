@@ -11,7 +11,7 @@ import type {
 } from '@wally/contracts'
 import { api } from '../../lib/api'
 
-/** Chave de idempotência por intenção de escrita (RNF-009). */
+/** One idempotency key per write intent (RNF-009). */
 function idempotencyKey(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`
 }
