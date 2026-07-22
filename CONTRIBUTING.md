@@ -17,7 +17,7 @@ docs/             # Documentação de produto e engenharia
 
 > **Wally 2.0.** A persistência usa **Drizzle ORM**; o schema/migrations vivem em
 > `wally-backend/src/db/`. Código, schema e API são em **inglês**; documentação em
-> **PT-BR** (ver *Convenção de idioma* abaixo).
+> **PT-BR** (ver _Convenção de idioma_ abaixo).
 
 Cada projeto (`wally/`, `wally-backend/`) tem seu próprio `package.json` e é
 executado de forma independente.
@@ -26,7 +26,7 @@ executado de forma independente.
 
 ## 2. Fluxo de trabalho (Git)
 
-Adotamos um fluxo baseado em *trunk* com branches de curta duração.
+Adotamos um fluxo baseado em _trunk_ com branches de curta duração.
 
 - **`main`** — sempre estável e implantável. Protegida: recebe código apenas via
   Pull Request aprovado e com CI verde.
@@ -70,7 +70,7 @@ Tipos comuns: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `ci`.
 - **TypeScript** em todo o código; `any` é **proibido** (typecheck estrito na CI).
 - **Back-end** — respeitar a arquitetura em camadas
   (`controller → use-case → repository → schema (Drizzle)`). Regra de negócio vive
-  nos *use-cases*, nunca no controller. Toda mutação de saldo roda em transação com
+  nos _use-cases_, nunca no controller. Toda mutação de saldo roda em transação com
   controle de concorrência. Ver [docs/05-Arquitetura.md](docs/05-Arquitetura.md) e
   [docs/12-Especificacao-Tecnica.md](docs/12-Especificacao-Tecnica.md).
 - **Mobile** — respeitar o padrão MVVM (`view` em `app/` e `components/`,

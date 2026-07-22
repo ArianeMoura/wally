@@ -25,7 +25,11 @@ export default function RecuperarSenha() {
 
   return (
     <Screen scroll>
-      <AppText variant="h1" color={colors.primaryDark} style={{ marginBottom: spacing.xl }}>
+      <AppText
+        variant="h1"
+        color={colors.primaryDark}
+        style={{ marginBottom: spacing.xl }}
+      >
         Recuperar senha
       </AppText>
 
@@ -46,11 +50,7 @@ export default function RecuperarSenha() {
         </View>
       )}
 
-      <Button
-        title="Voltar"
-        variant="ghost"
-        onPress={() => router.back()}
-      />
+      <Button title="Voltar" variant="ghost" onPress={() => router.back()} />
     </Screen>
   )
 }

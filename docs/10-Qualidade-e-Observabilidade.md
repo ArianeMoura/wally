@@ -7,27 +7,27 @@ estratégia de monitoramento.
 
 ## Características de qualidade (ISO/IEC 25010)
 
-| Característica | Subcaracterísticas priorizadas | Aplicação no Wally |
-|---|---|---|
-| **Adequação funcional** | Completude, correção | Cálculos financeiros exatos; requisitos atendidos |
-| **Segurança** | Confidencialidade, integridade, autenticidade | Ver [SECURITY.md](../SECURITY.md) |
-| **Confiabilidade** | Maturidade, disponibilidade, tolerância a falhas | Alta disponibilidade e recuperação de falhas |
-| **Usabilidade** | Apreensibilidade, operabilidade, acessibilidade | Interface intuitiva e acessível |
-| **Eficiência de desempenho** | Tempo de resposta, uso de recursos | Respostas rápidas e app leve |
-| **Manutenibilidade** | Modularidade, reusabilidade, analisabilidade | Arquitetura em camadas e MVVM ([05-Arquitetura.md](05-Arquitetura.md)) |
-| **Portabilidade** | Adaptabilidade, instalabilidade | Android e iOS a partir de uma base única |
+| Característica               | Subcaracterísticas priorizadas                   | Aplicação no Wally                                                     |
+| ---------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------- |
+| **Adequação funcional**      | Completude, correção                             | Cálculos financeiros exatos; requisitos atendidos                      |
+| **Segurança**                | Confidencialidade, integridade, autenticidade    | Ver [SECURITY.md](../SECURITY.md)                                      |
+| **Confiabilidade**           | Maturidade, disponibilidade, tolerância a falhas | Alta disponibilidade e recuperação de falhas                           |
+| **Usabilidade**              | Apreensibilidade, operabilidade, acessibilidade  | Interface intuitiva e acessível                                        |
+| **Eficiência de desempenho** | Tempo de resposta, uso de recursos               | Respostas rápidas e app leve                                           |
+| **Manutenibilidade**         | Modularidade, reusabilidade, analisabilidade     | Arquitetura em camadas e MVVM ([05-Arquitetura.md](05-Arquitetura.md)) |
+| **Portabilidade**            | Adaptabilidade, instalabilidade                  | Android e iOS a partir de uma base única                               |
 
 ## Métricas de acompanhamento
 
-| Métrica | O que mede |
-|---|---|
-| Satisfação do usuário (SUS) | Experiência percebida em testes de usabilidade |
-| Taxa de erros/falhas | Frequência de falhas críticas reportadas |
-| Tempo médio de resposta | Latência de telas e chamadas de API |
-| MTBF / MTTR | Estabilidade e tempo de recuperação após falhas |
-| Cobertura de testes | Proporção de código coberto por testes automatizados |
-| Incidentes de segurança | Tentativas de acesso não autorizado e vulnerabilidades |
-| Conformidade de acessibilidade | Aderência às diretrizes de acessibilidade |
+| Métrica                        | O que mede                                             |
+| ------------------------------ | ------------------------------------------------------ |
+| Satisfação do usuário (SUS)    | Experiência percebida em testes de usabilidade         |
+| Taxa de erros/falhas           | Frequência de falhas críticas reportadas               |
+| Tempo médio de resposta        | Latência de telas e chamadas de API                    |
+| MTBF / MTTR                    | Estabilidade e tempo de recuperação após falhas        |
+| Cobertura de testes            | Proporção de código coberto por testes automatizados   |
+| Incidentes de segurança        | Tentativas de acesso não autorizado e vulnerabilidades |
+| Conformidade de acessibilidade | Aderência às diretrizes de acessibilidade              |
 
 ## Observabilidade
 

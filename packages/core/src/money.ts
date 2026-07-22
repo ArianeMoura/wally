@@ -14,7 +14,9 @@ export class MoneyError extends Error {
 /** Garante que `value` é um inteiro de centavos representável com segurança. */
 export function assertCents(value: number, label = 'valor'): void {
   if (!Number.isInteger(value)) {
-    throw new MoneyError(`${label} deve ser inteiro de centavos (recebido: ${value})`)
+    throw new MoneyError(
+      `${label} deve ser inteiro de centavos (recebido: ${value})`,
+    )
   }
   if (!Number.isSafeInteger(value)) {
     throw new MoneyError(`${label} excede o inteiro seguro (${value})`)
@@ -23,7 +25,8 @@ export function assertCents(value: number, label = 'valor'): void {
 
 export function assertNonNegativeCents(value: number, label = 'valor'): void {
   assertCents(value, label)
-  if (value < 0) throw new MoneyError(`${label} não pode ser negativo (${value})`)
+  if (value < 0)
+    throw new MoneyError(`${label} não pode ser negativo (${value})`)
 }
 
 export function assertPositiveCents(value: number, label = 'valor'): void {

@@ -7,7 +7,7 @@ mobile (Expo/React Native) e uma API (Node.js/Fastify), com persistência em
 
 > **Wally 2.0 — produto em evolução.** O Wally passou de projeto acadêmico a
 > produto pessoal, com **banco de dados novo**, API própria, hospedagem e evolução
-> contínua. Aproveitando a janela do banco *greenfield*, a persistência migrou de
+> contínua. Aproveitando a janela do banco _greenfield_, a persistência migrou de
 > TypeORM para **Drizzle ORM** (SQL-first) e o **schema/código/API nasceram em
 > inglês** (documentação permanece em PT-BR — restrição 10 em
 > [02-Especificacao.md](02-Especificacao.md)). Os casos de concorrência financeira
@@ -61,7 +61,7 @@ routes/ ─▶ controllers/ ─▶ use-cases/ ─▶ repositories/ ─▶ schema
 - **`use-cases/`** — o coração da aplicação, organizados por domínio (`auth`,
   `users`, `transactions`, `categories`, `groups`, `groupExpenses`, `settlements`,
   `budgets`). Cada caso de uso é uma unidade testável; os que alteram saldo rodam
-  em transação (ver *Consistência transacional e concorrência*).
+  em transação (ver _Consistência transacional e concorrência_).
 - **`repositories/`** — encapsulam o acesso a dados via **Drizzle ORM**.
 - **`db/schema/`** — tabelas tipadas do Drizzle (fonte da verdade do schema).
 - **`dtos/` (esquemas Zod)** — contratos de dados de entrada/saída, compartilháveis
@@ -88,9 +88,9 @@ View (app/, components/) ─▶ ViewModel (viewModels/) ─▶ Store/API (store/
 - **Estado remoto (servidor)** — **TanStack Query v5** para cache, sincronização e
   estados de carregamento/erro. O cache é **persistido** (via
   `@tanstack/query-persist-client-core` sobre **react-native-mmkv**) para leitura
-  *offline cache-first*; `onlineManager`/`focusManager` integram-se ao
-  **NetInfo**. Mutações financeiras são **otimistas** (`onMutate` + *rollback*),
-  reconciliando com o servidor por invalidação. Ver *Estratégia offline*.
+  _offline cache-first_; `onlineManager`/`focusManager` integram-se ao
+  **NetInfo**. Mutações financeiras são **otimistas** (`onMutate` + _rollback_),
+  reconciliando com o servidor por invalidação. Ver _Estratégia offline_.
 - **Formulários** — **React Hook Form + Zod** (`@hookform/resolvers`), com o mesmo
   esquema Zod usado pela API (contratos ponta-a-ponta).
 - **i18n** — textos externalizados com **i18next** (PT-BR padrão, pronto para EN).
@@ -108,23 +108,23 @@ Diagramas (classes, ER e esquema relacional):
 > Os diagramas acima refletem o schema legado (PT-BR). O **schema do Wally 2.0**
 > abaixo é o vigente: nomes em inglês, banco novo, sem migração de dados legados.
 
-Schema do Wally 2.0 — chaves primárias em **UUID**, *soft delete* (`deleted_at`),
+Schema do Wally 2.0 — chaves primárias em **UUID**, _soft delete_ (`deleted_at`),
 timestamps e valores monetários em **inteiros de centavos** (`amount_cents`):
 
-| Tabela | Papel | Campos-chave |
-|---|---|---|
-| `users` | contas | `id, name, email (unique), password_hash, avatar_url` |
-| `categories` | RF-017 | `id, user_id?, name, icon, color, kind (income \| expense)` |
-| `transactions` | finanças pessoais | `id, user_id, category_id, type, amount_cents, description, occurred_at` |
-| `groups` | grupos | `id, name, owner_id` — **agregado travado em divisão/liquidação** |
-| `group_members` | membros | `id, group_id, user_id, role` · `unique(group_id, user_id)` |
-| `group_expenses` | despesas de grupo | `id, group_id, payer_id, amount_cents, category_id, description` |
-| `expense_shares` | cotas da divisão | `id, group_expense_id, user_id, share_cents` · invariante `Σ share_cents == amount_cents` |
-| `settlements` | RF-018 (settle up) | `id, group_id, from_user_id, to_user_id, amount_cents, settled_at` |
-| `budgets` | RF-019 | `id, user_id, category_id, period, limit_cents` |
+| Tabela             | Papel              | Campos-chave                                                                               |
+| ------------------ | ------------------ | ------------------------------------------------------------------------------------------ |
+| `users`            | contas             | `id, name, email (unique), password_hash, avatar_url`                                      |
+| `categories`       | RF-017             | `id, user_id?, name, icon, color, kind (income \| expense)`                                |
+| `transactions`     | finanças pessoais  | `id, user_id, category_id, type, amount_cents, description, occurred_at`                   |
+| `groups`           | grupos             | `id, name, owner_id` — **agregado travado em divisão/liquidação**                          |
+| `group_members`    | membros            | `id, group_id, user_id, role` · `unique(group_id, user_id)`                                |
+| `group_expenses`   | despesas de grupo  | `id, group_id, payer_id, amount_cents, category_id, description`                           |
+| `expense_shares`   | cotas da divisão   | `id, group_expense_id, user_id, share_cents` · invariante `Σ share_cents == amount_cents`  |
+| `settlements`      | RF-018 (settle up) | `id, group_id, from_user_id, to_user_id, amount_cents, settled_at`                         |
+| `budgets`          | RF-019             | `id, user_id, category_id, period, limit_cents`                                            |
 | `financial_events` | RF-020 (event log) | `id, actor_id, entity_type, entity_id, event_type, before jsonb, after jsonb, occurred_at` |
-| `refresh_tokens` | RNF-011 | `id, user_id, token_hash, family_id, expires_at, revoked_at` |
-| `idempotency_keys` | RNF-009 | `key (pk), user_id, request_hash, response jsonb, created_at` |
+| `refresh_tokens`   | RNF-011            | `id, user_id, token_hash, family_id, expires_at, revoked_at`                               |
+| `idempotency_keys` | RNF-009            | `key (pk), user_id, request_hash, response jsonb, created_at`                              |
 
 **Fonte única de verdade:** as **migrations do drizzle-kit** (`db/migrations/`),
 geradas a partir do schema tipado em `db/schema/`. Não há mais `banco.sql` de
@@ -139,14 +139,17 @@ grupo, relê o estado, aplica a mutação, recalcula os saldos e grava o
 
 ```ts
 await db.transaction(async (tx) => {
-  const group = await tx.select().from(groups)
-    .where(eq(groups.id, groupId)).for('update')   // bloqueio pessimista do agregado
+  const group = await tx
+    .select()
+    .from(groups)
+    .where(eq(groups.id, groupId))
+    .for('update') // bloqueio pessimista do agregado
   // relê saldos → aplica mutação → recalcula (Σ saldos == 0) → grava financial_event
-})                                                  // commit atômico
+}) // commit atômico
 ```
 
-Alternativa para baixa contenção: coluna `version` (concorrência otimista) + *retry*
-em conflito. Escritas usam `Idempotency-Key` (RNF-009) para tolerar *retries* de
+Alternativa para baixa contenção: coluna `version` (concorrência otimista) + _retry_
+em conflito. Escritas usam `Idempotency-Key` (RNF-009) para tolerar _retries_ de
 rede sem duplicar. Detalhes e casos extremos em
 [12-Especificacao-Tecnica.md](12-Especificacao-Tecnica.md).
 
@@ -155,10 +158,10 @@ rede sem duplicar. Detalhes e casos extremos em
 Segue a melhor prática de mercado (restrição 08), **não** offline-first pleno com
 fila de escrita — inadequado para um livro-razão de grupo compartilhado:
 
-- **Leitura:** *cache-first* com o cache do TanStack Query persistido no
+- **Leitura:** _cache-first_ com o cache do TanStack Query persistido no
   **react-native-mmkv**; dados já sincronizados ficam disponíveis offline.
 - **Escrita:** exige conexão, porém com **UI otimista** (aplica localmente, envia,
-  faz *rollback* se o servidor recusar). O **servidor é a autoridade** sobre saldos
+  faz _rollback_ se o servidor recusar). O **servidor é a autoridade** sobre saldos
   de grupo; a reconciliação ocorre por invalidação/refetch ao reconectar.
 
 ## Fluxo de interação
@@ -172,12 +175,12 @@ fila de escrita — inadequado para um livro-razão de grupo compartilhado:
 
 ## Stack tecnológica
 
-| Camada | Tecnologias |
-|---|---|
+| Camada | Tecnologias                                                                                                                                                  |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Mobile | React Native, Expo, expo-router, Zustand, TanStack Query v5 (+ persist/MMKV), NetInfo, React Hook Form + Zod, React Native Paper, i18next, expo-secure-store |
-| API | Node.js, Fastify, Drizzle ORM (+ drizzle-kit), Zod (`fastify-type-provider-zod`), `@fastify/jwt` / `helmet` / `rate-limit`, JWT, Swagger (OpenAPI) |
-| Dados | PostgreSQL 16 |
-| Infra | Docker + docker-compose (com Postgres); deploy sob HTTPS/TLS+HSTS (ver [09-CICD.md](09-CICD.md) e [SECURITY.md](../SECURITY.md)) |
+| API    | Node.js, Fastify, Drizzle ORM (+ drizzle-kit), Zod (`fastify-type-provider-zod`), `@fastify/jwt` / `helmet` / `rate-limit`, JWT, Swagger (OpenAPI)           |
+| Dados  | PostgreSQL 16                                                                                                                                                |
+| Infra  | Docker + docker-compose (com Postgres); deploy sob HTTPS/TLS+HSTS (ver [09-CICD.md](09-CICD.md) e [SECURITY.md](../SECURITY.md))                             |
 
 ## Segurança e qualidade
 

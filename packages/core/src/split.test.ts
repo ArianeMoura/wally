@@ -63,7 +63,10 @@ describe('splitByLargestRemainder — propriedades (fast-check)', () => {
     fc.assert(
       fc.property(
         fc.nat({ max: 1_000_000_000 }),
-        fc.array(fc.integer({ min: 1, max: 100 }), { minLength: 1, maxLength: 25 }),
+        fc.array(fc.integer({ min: 1, max: 100 }), {
+          minLength: 1,
+          maxLength: 25,
+        }),
         (total, weights) => {
           const parts = splitByLargestRemainder(total, weights)
           return sum(parts) === total
@@ -76,13 +79,18 @@ describe('splitByLargestRemainder — propriedades (fast-check)', () => {
     fc.assert(
       fc.property(
         fc.nat({ max: 1_000_000_000 }),
-        fc.array(fc.integer({ min: 1, max: 100 }), { minLength: 1, maxLength: 25 }),
+        fc.array(fc.integer({ min: 1, max: 100 }), {
+          minLength: 1,
+          maxLength: 25,
+        }),
         (total, weights) => {
           const totalWeight = sum(weights)
           const parts = splitByLargestRemainder(total, weights)
           return parts.every((part, i) => {
             const ideal = (total * (weights[i] as number)) / totalWeight
-            return part >= 0 && part >= Math.floor(ideal) && part <= Math.ceil(ideal)
+            return (
+              part >= 0 && part >= Math.floor(ideal) && part <= Math.ceil(ideal)
+            )
           })
         },
       ),
@@ -106,7 +114,10 @@ describe('splitByLargestRemainder — propriedades (fast-check)', () => {
     fc.assert(
       fc.property(
         fc.nat({ max: 1_000_000_000 }),
-        fc.array(fc.integer({ min: 1, max: 100 }), { minLength: 1, maxLength: 25 }),
+        fc.array(fc.integer({ min: 1, max: 100 }), {
+          minLength: 1,
+          maxLength: 25,
+        }),
         (total, weights) => {
           const a = splitByLargestRemainder(total, weights)
           const b = splitByLargestRemainder(total, weights)

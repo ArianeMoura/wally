@@ -59,7 +59,11 @@ describe('computeBalances — casos canônicos', () => {
       ],
     }
     expect(() =>
-      computeBalances({ memberIds: ['A', 'B'], expenses: [bad], settlements: [] }),
+      computeBalances({
+        memberIds: ['A', 'B'],
+        expenses: [bad],
+        settlements: [],
+      }),
     ).toThrow(MoneyError)
   })
 

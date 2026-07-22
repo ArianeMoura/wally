@@ -10,14 +10,14 @@ previstos e fornece os workflows de referência.
 
 ## Visão geral dos pipelines
 
-| Gatilho | Pipeline | Objetivo |
-|---|---|---|
-| Pull Request → `main` | **CI** | Lint, testes (unit + integração), build de verificação |
-| Pull Request → `main` | **SAST (CodeQL)** | Análise estática de segurança |
-| Pull Request / push | **Secret Scanning (Gitleaks)** | Impedir segredos no histórico |
-| Agendado / PR | **Dependências (Dependabot / npm audit)** | Detectar CVEs |
-| Push em `main` / tag | **Build Mobile (EAS)** | Gerar artefatos do app |
-| Push em `main` | **Build & Push da imagem da API** | Empacotar a API (Docker) |
+| Gatilho               | Pipeline                                  | Objetivo                                               |
+| --------------------- | ----------------------------------------- | ------------------------------------------------------ |
+| Pull Request → `main` | **CI**                                    | Lint, testes (unit + integração), build de verificação |
+| Pull Request → `main` | **SAST (CodeQL)**                         | Análise estática de segurança                          |
+| Pull Request / push   | **Secret Scanning (Gitleaks)**            | Impedir segredos no histórico                          |
+| Agendado / PR         | **Dependências (Dependabot / npm audit)** | Detectar CVEs                                          |
+| Push em `main` / tag  | **Build Mobile (EAS)**                    | Gerar artefatos do app                                 |
+| Push em `main`        | **Build & Push da imagem da API**         | Empacotar a API (Docker)                               |
 
 Recomenda-se proteger a branch `main` exigindo: CI verde, revisão aprovada e
 ausência de segredos detectados.
@@ -51,12 +51,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm, cache-dependency-path: wally-backend/package-lock.json }
+        with:
+          {
+            node-version: 20,
+            cache: npm,
+            cache-dependency-path: wally-backend/package-lock.json,
+          }
       - run: npm ci
       - run: npx eslint .
-      - run: npx tsc --noEmit          # typecheck estrito (any proibido)
-      - run: npm run db:migrate:check   # migrations Drizzle aplicam limpo no banco de teste
-      - run: npm test -- --coverage     # falha se abaixo do piso de cobertura
+      - run: npx tsc --noEmit # typecheck estrito (any proibido)
+      - run: npm run db:migrate:check # migrations Drizzle aplicam limpo no banco de teste
+      - run: npm test -- --coverage # falha se abaixo do piso de cobertura
       - run: npm run build
 
   mobile:
@@ -67,7 +72,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm, cache-dependency-path: wally/package-lock.json }
+        with:
+          {
+            node-version: 20,
+            cache: npm,
+            cache-dependency-path: wally/package-lock.json,
+          }
       - run: npm ci
       - run: npm run lint
       - run: npm test -- --ci --watchAll=false
@@ -83,7 +93,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 3 * * 1'   # varredura semanal
+    - cron: '0 3 * * 1' # varredura semanal
 
 jobs:
   analyze:
@@ -139,7 +149,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm, cache-dependency-path: wally/package-lock.json }
+        with:
+          {
+            node-version: 20,
+            cache: npm,
+            cache-dependency-path: wally/package-lock.json,
+          }
       - run: npm ci
       - uses: expo/expo-github-action@v8
         with:
@@ -166,7 +181,7 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: ./wally-backend
-          push: false   # defina true + login no registry quando houver ambiente
+          push: false # defina true + login no registry quando houver ambiente
           tags: wally-backend:latest
 ```
 
@@ -179,21 +194,21 @@ jobs:
 
 ## Gates bloqueantes de qualidade (Wally 2.0)
 
-Estes *checks* são **obrigatórios** para *merge* em `main` (RNF-013), não opcionais:
+Estes _checks_ são **obrigatórios** para _merge_ em `main` (RNF-013), não opcionais:
 
-| Gate | Ferramenta | Critério de falha |
-|---|---|---|
-| Lint | ESLint | Qualquer erro de lint |
-| Typecheck | `tsc --noEmit` (strict) | Qualquer erro de tipo; uso de `any` |
-| Testes | Vitest/Jest + jest-expo (+ Testcontainers) | Qualquer teste vermelho |
-| Cobertura | relatório de cobertura | Abaixo do piso (~70% global; ~90% financeiro — ver [08](08-Estrategia-de-Testes.md)) |
-| Migrations | drizzle-kit | Migration não aplica limpo / *drift* de schema |
-| SAST | CodeQL | Alerta de severidade alta |
-| Segredos | Gitleaks + GitHub Secret Scanning | Qualquer segredo detectado |
-| Dependências | Dependabot / `npm audit` | CVE **alta/crítica** |
-| Commits | commitlint (Conventional Commits) | Mensagem fora do padrão |
+| Gate         | Ferramenta                                 | Critério de falha                                                                    |
+| ------------ | ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Lint         | ESLint                                     | Qualquer erro de lint                                                                |
+| Typecheck    | `tsc --noEmit` (strict)                    | Qualquer erro de tipo; uso de `any`                                                  |
+| Testes       | Vitest/Jest + jest-expo (+ Testcontainers) | Qualquer teste vermelho                                                              |
+| Cobertura    | relatório de cobertura                     | Abaixo do piso (~70% global; ~90% financeiro — ver [08](08-Estrategia-de-Testes.md)) |
+| Migrations   | drizzle-kit                                | Migration não aplica limpo / _drift_ de schema                                       |
+| SAST         | CodeQL                                     | Alerta de severidade alta                                                            |
+| Segredos     | Gitleaks + GitHub Secret Scanning          | Qualquer segredo detectado                                                           |
+| Dependências | Dependabot / `npm audit`                   | CVE **alta/crítica**                                                                 |
+| Commits      | commitlint (Conventional Commits)          | Mensagem fora do padrão                                                              |
 
-Higiene local via **Husky + lint-staged** (lint + typecheck em *pre-commit*) e
+Higiene local via **Husky + lint-staged** (lint + typecheck em _pre-commit_) e
 Prettier como formatador.
 
 ## Próximos passos (backlog)

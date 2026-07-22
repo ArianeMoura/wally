@@ -1,4 +1,8 @@
-import { MoneyError, assertNonNegativeCents, assertPositiveCents } from './money'
+import {
+  MoneyError,
+  assertNonNegativeCents,
+  assertPositiveCents,
+} from './money'
 
 export interface ShareInput {
   userId: string

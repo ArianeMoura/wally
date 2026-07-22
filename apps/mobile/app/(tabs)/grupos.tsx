@@ -2,13 +2,7 @@ import { FlatList, Pressable, View } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
-import {
-  Screen,
-  AppText,
-  Card,
-  Row,
-  EmptyState,
-} from '../../src/components/ui'
+import { Screen, AppText, Card, Row, EmptyState } from '../../src/components/ui'
 import { useGroups } from '../../src/features/groups/hooks'
 import { colors, spacing, radius, shadow } from '../../src/theme/tokens'
 
@@ -29,12 +23,12 @@ export default function Grupos() {
         keyExtractor={(g) => g.id}
         ItemSeparatorComponent={() => <View style={{ height: spacing.sm }} />}
         ListEmptyComponent={
-          groups.isLoading ? null : <EmptyState message={t('groups.noGroups')} />
+          groups.isLoading ? null : (
+            <EmptyState message={t('groups.noGroups')} />
+          )
         }
         renderItem={({ item }) => (
-          <Pressable
-            onPress={() => router.push(`/grupo?id=${item.id}`)}
-          >
+          <Pressable onPress={() => router.push(`/grupo?id=${item.id}`)}>
             <Card>
               <Row>
                 <AppText variant="title">{item.name}</AppText>

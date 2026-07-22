@@ -28,16 +28,16 @@ vulnerabilidades.
 
 ## 2. Autenticação e Sessão
 
-| Diretriz | Alvo | Estado |
-|---|---|---|
-| Hashing de senha | **Argon2id** (preferencial) ou **bcrypt** (custo ≥ 12) | Pendente |
-| Verificação de login | Comparação por hash com verificação em tempo constante | Pendente |
-| Token de acesso | JWT curto (15 min) + **refresh token** rotativo | Parcial — JWT 24h, sem refresh |
-| Segredo de assinatura | Variável obrigatória; falha no boot se ausente | Pendente — fallback inseguro |
-| MFA/2FA | TOTP opcional para o usuário e obrigatório para contas administrativas | Pendente |
-| Proteção de força bruta | Rate limiting + bloqueio progressivo no login e no reset | Pendente |
-| Reset de senha | Token de uso único, com expiração curta, sem vazar existência de conta | Parcial — revisar |
-| Armazenamento no cliente | Token em `expo-secure-store` (Keychain/Keystore) | Implementado |
+| Diretriz                 | Alvo                                                                   | Estado                         |
+| ------------------------ | ---------------------------------------------------------------------- | ------------------------------ |
+| Hashing de senha         | **Argon2id** (preferencial) ou **bcrypt** (custo ≥ 12)                 | Pendente                       |
+| Verificação de login     | Comparação por hash com verificação em tempo constante                 | Pendente                       |
+| Token de acesso          | JWT curto (15 min) + **refresh token** rotativo                        | Parcial — JWT 24h, sem refresh |
+| Segredo de assinatura    | Variável obrigatória; falha no boot se ausente                         | Pendente — fallback inseguro   |
+| MFA/2FA                  | TOTP opcional para o usuário e obrigatório para contas administrativas | Pendente                       |
+| Proteção de força bruta  | Rate limiting + bloqueio progressivo no login e no reset               | Pendente                       |
+| Reset de senha           | Token de uso único, com expiração curta, sem vazar existência de conta | Parcial — revisar              |
+| Armazenamento no cliente | Token em `expo-secure-store` (Keychain/Keystore)                       | Implementado                   |
 
 ### Requisitos de implementação (backlog P0)
 
@@ -71,7 +71,7 @@ vulnerabilidades.
    > variável e remover o fallback.
 
 3. **JWT de curta duração + refresh token rotativo com detecção de reúso.**
-   *Access token* curto (~15 min) + *refresh token* de longa duração **rotacionado a
+   _Access token_ curto (~15 min) + _refresh token_ de longa duração **rotacionado a
    cada uso**. O refresh é **hasheado no servidor** (tabela `refresh_tokens`, nunca
    em texto claro) e pertence a uma **família** (`family_id`): se um refresh já
    usado/rotacionado for reapresentado, trata-se de indício de vazamento e **toda a
@@ -85,12 +85,12 @@ vulnerabilidades.
 
 ## 3. Criptografia de Dados
 
-| Camada | Diretriz | Estado |
-|---|---|---|
-| **Em trânsito** | **TLS 1.2+** obrigatório (HTTPS/HSTS); nenhum tráfego em HTTP | Pendente — API exposta em HTTP |
-| **Em repouso** | Criptografia de volume/disco no banco; criptografia em nível de coluna para campos sensíveis quando aplicável | Pendente |
-| **Segredos** | Gestão via variáveis de ambiente e cofre (AWS Secrets Manager / SSM), nunca em repositório | Parcial — `.env` fora do git |
-| **Backups** | Criptografados e testados periodicamente | Pendente |
+| Camada          | Diretriz                                                                                                      | Estado                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **Em trânsito** | **TLS 1.2+** obrigatório (HTTPS/HSTS); nenhum tráfego em HTTP                                                 | Pendente — API exposta em HTTP |
+| **Em repouso**  | Criptografia de volume/disco no banco; criptografia em nível de coluna para campos sensíveis quando aplicável | Pendente                       |
+| **Segredos**    | Gestão via variáveis de ambiente e cofre (AWS Secrets Manager / SSM), nunca em repositório                    | Parcial — `.env` fora do git   |
+| **Backups**     | Criptografados e testados periodicamente                                                                      | Pendente                       |
 
 - O endpoint público não deve ser servido por IP/porta em HTTP. Publicar atrás de
   um domínio com TLS terminado em load balancer/reverse proxy e **HSTS** ativo.
@@ -109,7 +109,7 @@ vulnerabilidades.
 - **Cabeçalhos de segurança** (`helmet`/equivalente): `Content-Security-Policy`,
   `X-Content-Type-Options`, `Strict-Transport-Security`.
 - **Autorização por recurso.** Além de autenticar (quem é o usuário), verificar
-  autorização (o usuário pode acessar *este* grupo/transação?).
+  autorização (o usuário pode acessar _este_ grupo/transação?).
 - **Logs sem dados sensíveis.** Nunca registrar senha, token ou PII em log.
 
 ---
@@ -122,7 +122,7 @@ O Wally trata dados pessoais e financeiros e deve observar a
 - **Base legal e finalidade.** Coletar apenas os dados necessários (minimização),
   com finalidade explícita e consentimento quando exigido.
 - **Direitos do titular.** Suportar acesso, correção, portabilidade e
-  **eliminação** ("direito ao esquecimento"). O modelo já usa *soft delete*
+  **eliminação** ("direito ao esquecimento"). O modelo já usa _soft delete_
   (`data_exclusao`); a exclusão definitiva deve ser suportada por processo de
   expurgo.
 - **Retenção.** Definir prazos de retenção e rotina de expurgo de dados expirados.
@@ -168,7 +168,7 @@ Encontrou uma vulnerabilidade? **Não abra uma issue pública.**
   ou para o canal de segurança definido pela operação (ex.: `security@wally.app`).
 - Inclua passos de reprodução, impacto e, se possível, uma prova de conceito.
 - Compromisso de resposta inicial em até **5 dias úteis** e correção coordenada
-  antes de qualquer divulgação pública (*responsible disclosure*).
+  antes de qualquer divulgação pública (_responsible disclosure_).
 
 ---
 

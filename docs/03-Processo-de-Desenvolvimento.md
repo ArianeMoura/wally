@@ -22,7 +22,7 @@ rastreabilidade entre planejamento e código.
 
 ## Controle de versão (Git flow)
 
-Fluxo baseado em *trunk* com branches de curta duração:
+Fluxo baseado em _trunk_ com branches de curta duração:
 
 - **`main`** — sempre estável e implantável; protegida por revisão + CI verde.
 - **`feat/*`, `fix/*`, `chore/*`, `docs/*`** — branches de trabalho a partir de
@@ -37,20 +37,20 @@ Toda alteração passa por automação no GitHub Actions antes do merge:
 
 - Testes unitários e de integração.
 - Lint e formatação (ESLint).
-- Análise estática de segurança (SAST/CodeQL) e *secret scanning*.
+- Análise estática de segurança (SAST/CodeQL) e _secret scanning_.
 - Build do app mobile e da imagem da API.
 
 O desenho completo dos pipelines está em [09-CICD.md](09-CICD.md).
 
 ## Ambientes de trabalho
 
-| Finalidade | Ferramenta |
-|---|---|
-| Código e versionamento | Git + GitHub |
-| Planejamento | GitHub Projects (board, issues, milestones) |
-| Design e prototipação | Figma |
-| Documentação da API | Swagger (OpenAPI) |
-| Banco de dados | PostgreSQL |
+| Finalidade             | Ferramenta                                  |
+| ---------------------- | ------------------------------------------- |
+| Código e versionamento | Git + GitHub                                |
+| Planejamento           | GitHub Projects (board, issues, milestones) |
+| Design e prototipação  | Figma                                       |
+| Documentação da API    | Swagger (OpenAPI)                           |
+| Banco de dados         | PostgreSQL                                  |
 
 ## Ferramentas de desenvolvimento
 

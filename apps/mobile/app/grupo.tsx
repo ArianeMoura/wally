@@ -31,7 +31,10 @@ export default function GrupoDetalhe() {
   return (
     <Screen>
       <Row style={{ marginBottom: spacing.lg }}>
-        <Pressable onPress={() => router.back()} style={{ marginRight: spacing.md }}>
+        <Pressable
+          onPress={() => router.back()}
+          style={{ marginRight: spacing.md }}
+        >
           <MaterialIcons name="arrow-back" size={24} color={colors.text} />
         </Pressable>
         <AppText variant="h2">{group.data?.name ?? '—'}</AppText>

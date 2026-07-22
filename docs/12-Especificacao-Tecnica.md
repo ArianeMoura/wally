@@ -21,7 +21,7 @@ RNFs e restrições) e a [Arquitetura](05-Arquitetura.md) (stack e schema).
 3. **O servidor é a autoridade.** O cliente é otimista, mas o saldo de grupo é
    sempre reconciliado contra o servidor (restrição 08).
 4. **Escrita idempotente** (RNF-009). Um mesmo `Idempotency-Key` produz no máximo um
-   efeito, independentemente de *retries*.
+   efeito, independentemente de _retries_.
 5. **Invariantes verificadas antes do commit.** Ex.: `Σ expense_shares == amount` e
    `Σ saldos do grupo == 0`.
 
@@ -32,34 +32,36 @@ RNFs e restrições) e a [Arquitetura](05-Arquitetura.md) (stack e schema).
 Três cenários críticos que a arquitetura **deve** resolver, com a defesa e a
 invariante de cada um.
 
-### 2.1 Despesa duplicada por *double-submit* / *retry* de rede
+### 2.1 Despesa duplicada por _double-submit_ / _retry_ de rede
 
 **Cenário.** O usuário toca "adicionar despesa" duas vezes, ou o cliente refaz um
 `POST` cuja resposta expirou por timeout — resultando em duas linhas em
 `group_expenses` e saldo inflado.
 
 **Defesa.**
+
 - Cliente gera um **`Idempotency-Key`** (UUID) por intenção de escrita e o reenvia
-  em *retries* (RNF-009).
-- O servidor persiste a chave em `idempotency_keys` com *unique constraint*; a
+  em _retries_ (RNF-009).
+- O servidor persiste a chave em `idempotency_keys` com _unique constraint_; a
   segunda chegada **retorna a resposta original** em vez de reprocessar.
-- UI otimista aplica localmente e faz *rollback* se o servidor recusar.
+- UI otimista aplica localmente e faz _rollback_ se o servidor recusar.
 
 **Invariante.** Uma intenção de escrita ⇒ no máximo um `group_expense`.
 
-### 2.2 Divisão/liquidação concorrente no mesmo saldo (*lost update*)
+### 2.2 Divisão/liquidação concorrente no mesmo saldo (_lost update_)
 
 **Cenário.** Dois membros adicionam despesas e/ou acertam contas (`settle up`) no
 mesmo grupo simultaneamente. Ambos leem o saldo antigo e gravam por cima → totais
 inconsistentes (a última escrita "vence" e perde a outra).
 
 **Defesa.**
+
 - Uma única **transação** (RNF-007) que aplica **bloqueio pessimista**
   `SELECT … FOR UPDATE` no agregado `groups` (RNF-008), serializando as operações
   concorrentes sobre aquele grupo.
 - Os saldos são **relidos e recalculados dentro da transação**, nunca a partir de um
   valor lido antes dela.
-- Alternativa de baixa contenção: coluna `version` (concorrência otimista) + *retry*
+- Alternativa de baixa contenção: coluna `version` (concorrência otimista) + _retry_
   no conflito.
 
 **Invariante.** Após cada transação, `Σ saldos do grupo == 0` (o que uns devem, os
@@ -72,8 +74,9 @@ soma das cotas dar R$ 9,99 ou R$ 10,01 — some/cria um centavo. Liquidações p
 concorrentes agravam o desvio.
 
 **Defesa.**
+
 - Trabalhar em **centavos inteiros** (RNF-010): 1000 centavos / 3.
-- Distribuir o resto por **maior resto** (*largest remainder*): as cotas base são
+- Distribuir o resto por **maior resto** (_largest remainder_): as cotas base são
   `floor`, e o(s) centavo(s) residual(is) vão para os participantes de forma
   determinística (ordem estável), de modo que a soma feche exatamente.
 - A verificação `Σ expense_shares == amount_cents` roda **dentro da transação**,
@@ -84,7 +87,7 @@ concorrentes agravam o desvio.
 ### 2.4 (Bônus) Membro removido durante criação de despesa
 
 Um membro é removido/soft-deleted (`group_members.deleted_at`) enquanto uma despesa
-que o referencia está sendo criada. **Defesa:** reler a associação de *membership*
+que o referencia está sendo criada. **Defesa:** reler a associação de _membership_
 sob a mesma trava (`FOR UPDATE`) da transação 2.2; se o membro não estiver mais
 ativo, a operação é rejeitada de forma consistente (não parcial).
 
@@ -130,12 +133,12 @@ atrás dessa fronteira, não um acoplamento do domínio.
 
 ## 4. Rastreabilidade
 
-| Tema | Requisitos/Restrições |
-|---|---|
+| Tema                | Requisitos/Restrições                                 |
+| ------------------- | ----------------------------------------------------- |
 | Correção financeira | RNF-007, RNF-008, RNF-009, RNF-010; restrições 06, 07 |
-| Offline | RNF-012; restrições 05, 08 |
-| Fundação de IA | RF-017, RF-020, RF-021, RNF-014; restrição 09 |
-| Idioma | Restrição 10 |
+| Offline             | RNF-012; restrições 05, 08                            |
+| Fundação de IA      | RF-017, RF-020, RF-021, RNF-014; restrição 09         |
+| Idioma              | Restrição 10                                          |
 
 Ver também: [02-Especificacao.md](02-Especificacao.md),
 [05-Arquitetura.md](05-Arquitetura.md), [SECURITY.md](../SECURITY.md),
