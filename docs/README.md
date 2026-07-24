@@ -29,4 +29,3 @@ product and how to run it, see the [main README](../README.md).
 
 - [CONTRIBUTING](../CONTRIBUTING.md) — how to contribute.
 - [SECURITY](../SECURITY.md) — security, cryptography and LGPD compliance.
-- [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md) — code of conduct.
