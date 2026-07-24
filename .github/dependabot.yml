@@ -1,19 +1,36 @@
 version: 2
 updates:
-  # npm dependencies across the workspaces.
+  # npm dependencies across the monorepo workspaces.
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    # Group only the safe minor/patch updates so each weekly PR is small and
+    # mergeable. Major bumps (Expo SDK, React Native, zod, TypeScript, …) are
+    # ignored here and handled deliberately on a dedicated branch.
     groups:
       dev-dependencies:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
       production-dependencies:
         dependency-type: production
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: '*'
+        update-types:
+          - version-update:semver-major
 
-  # GitHub Actions used by the workflows.
+  # GitHub Actions: a single grouped PR instead of one per action.
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - '*'
