@@ -24,6 +24,19 @@ updates:
       - dependency-name: '*'
         update-types:
           - version-update:semver-major
+      # The Expo / React Native ecosystem is pinned per Expo SDK. Its compatible
+      # versions ship as semver-minor, so the major-ignore above does not catch
+      # them — pin here and bump the whole set deliberately with the SDK.
+      - dependency-name: 'expo'
+      - dependency-name: 'expo-*'
+      - dependency-name: '@expo/*'
+      - dependency-name: 'react'
+      - dependency-name: 'react-dom'
+      - dependency-name: 'react-native'
+      - dependency-name: 'react-native-*'
+      - dependency-name: '@react-native-community/*'
+      - dependency-name: '@react-native-async-storage/*'
+      - dependency-name: 'jest-expo'
 
   # GitHub Actions: a single grouped PR instead of one per action.
   - package-ecosystem: github-actions
