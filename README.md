@@ -94,8 +94,7 @@ are served under `/api/v1`. Full guides:
 | [03 — Projeto de Interface](docs/03-Projeto%20de%20Interface.md) · PT-BR                   | User flow and wireframes                                       |
 | [04 — Referências](docs/04-Refer%C3%AAncias.md) · PT-BR                                    | Cited sources and standards                                    |
 
-**Governance:** [CONTRIBUTING.md](CONTRIBUTING.md) ·
-[SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+**Governance:** [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md)
 
 ## Roadmap
 
